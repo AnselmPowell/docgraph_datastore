@@ -1,0 +1,104 @@
+
+Installation for Local If you would like to run the partitioning logic locally, you will need to install a combination of system dependencies, as outlined in the Unstructured documentation here. For example, on Macs you can install the required dependencies with: # base dependencies brew install libmagic poppler tesseract # If parsing xml / html documents: brew install libxml2 libxslt ## I have a windows laptop how can i install these the easier way possible
+
+
+✅ python-magic-bin
+✅ unstructured and unstructured[local-inference]
+✅ Poppler Utils (confirmed working with pdftoppm -v)
+✅ Tesseract OCR (confirmed working with tesseract --version)
+✅ Required XML libraries via pip installs
+You can now process documents locally using these tools. Would you like to:
+
+Test the installation by processing a sample document?
+Learn how to use these tools with specific file types?
+Move on to a different topic?
+
+
+
+# Installation
+
+
+pip install python-magic-bin
+pip install unstructured[local-inference]
+pip install lxml
+
+
+# POPPLER installation
+
+For poppler utils:
+Download the pre-compiled Windows binary:
+
+
+Go to: https://github.com/oschwartz10612/poppler-windows/releases/
+Download the latest release zip file
+
+I'll guide you through extracting the poppler zip file step by step:
+
+First, let's locate your downloaded file:
+
+powershellCopycd C:\Users\anselm.powell\Downloads
+
+Create a new directory for poppler in your Documents folder:
+
+powershellCopymkdir C:\Users\anselm.powell\Documents\poppler-windows
+
+To extract the zip file, you can use PowerShell's Expand-Archive command. Assuming the downloaded file is named "release-xxxx.zip" (replace with your actual filename):
+
+powershellCopyExpand-Archive -Path ".\release-xxxx.zip" -DestinationPath "C:\Users\anselm.powell\Documents\poppler-windows"
+
+
+Perfect! We found the bin folder. Now let's set up the correct PATH to point to this location:
+powershellCopy$env:PATH += ";C:\Users\anselm.powell\Documents\poppler-windows\poppler-24.08.0\Library\bin"
+To make this change permanent (so you don't have to set it every time you open PowerShell), run:
+powershellCopy[System.Environment]::SetEnvironmentVariable(
+    "Path",
+    [System.Environment]::GetEnvironmentVariable("Path", "User") + ";C:\Users\anselm.powell\Documents\poppler-windows\poppler-24.08.0\Library\bin",
+    "User"
+)
+Let's verify that it's working. Try running:
+powershellCopypdftoppm -v
+If this works, we've successfully installed and configured poppler-utils! We can then move on to installing the next dependency (Tesseract).
+Let me know if you get any errors or if the verification command works!
+
+
+
+
+# TESSERACT Installation
+
+
+For Tesseract:
+
+Now let's move on to installing Tesseract. As mentioned earlier:
+
+Download Tesseract installer:
+
+
+Go to: https://github.com/UB-Mannheim/tesseract/wiki
+Download the 64-bit version (tesseract-ocr-w64-setup-5.3.3.exe)
+
+
+Run the installer:
+
+
+When prompted, select "Just Me" (not "All Users")
+Keep note of where it installs (it will likely be in C:\Users\anselm.powell\AppData\Local\Programs\Tesseract-OCR)
+
+For libxml2 and libxslt:
+These are actually included when you install lxml via pip, which we did in the previous step. If not:
+
+bashCopypip install lxml
+After installing these:
+
+Create or update your user environment variables (no admin needed):
+
+PS  
+[System.Environment]::SetEnvironmentVariable("Path",[System.Environment]::GetEnvironmentVariable("Path", "User") + ";C:\Users\anselm.powell\Documents\poppler-windows\poppler-24.08.0\Library\bin","User")
+
+[System.Environment]::SetEnvironmentVariable("Path",[System.Environment]::GetEnvironmentVariable("Path", "User") + ";C:\Users\anselm.powell\AppData\Local\Programs\Tesseract-OCR","User")
+
+check PS 
+
+pdftoppm -v
+tesseract --version
+
+& "C:\Users\anselm.powell\AppData\Local\Programs\Tesseract-OCR\tesseract.exe" --version
