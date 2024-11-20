@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     'document_analysis',
     'vector_store',
     'pgvector',
-     'governance_analysis',
+     'research_assistant',
 ]
 
 
@@ -93,14 +93,6 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 CORS_ALLOW_ALL_ORIGINS = False
 
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
-print("--------- DATABASE URL  ",app_config['DATABASE_URL'])
-
-DATABASES = {
-    'default': dj_database_url.config(default=app_config['DATABASE_URL'])
-}
 
 # Vector store settings
 VECTOR_STORE = {
@@ -127,12 +119,39 @@ MONITORING_SETTINGS = {
     'TRACK_DOCUMENT_METRICS': True
 }
 
+
+# Research Assistant settings
+RESEARCH_SETTINGS = {
+    'MAX_DOCUMENTS': 5,
+    'SUPPORTED_FORMATS': ['pdf', 'docx', 'txt'],
+    'MIN_CONFIDENCE_SCORE': 0.2,
+    'ENABLE_OCR': True,
+    'OCR_LANGUAGE': 'eng'
+}
+
+# Document processing settings
+PROCESSING_SETTINGS = {
+    'CHUNK_SIZE': 1000,
+    'MAX_TOKENS': 8000,
+    'ENABLE_TABLE_EXTRACTION': True,
+    'ENABLE_IMAGE_ANALYSIS': True
+}
+
 # DATABASES = {
 #     'default': {
 #             'ENGINE': 'django.db.backends.sqlite3',
 #             'NAME': BASE_DIR / 'db.sqlite3',
 #         }
 # }
+
+# Database
+# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+
+print("--------- DATABASE URL  ",app_config['DATABASE_URL'])
+
+DATABASES = {
+    'default': dj_database_url.config(default=app_config['DATABASE_URL'])
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -207,3 +226,31 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ]
 }
+
+
+
+
+
+
+
+
+
+
+# try:
+#             # First clear all previous_section references in document_sections
+#             await sync_to_async(DocumentSection.objects.all().update)(previous_section=None)
+#             print("[Database Cleanup] Cleared all previous section references")
+            
+#             # Then delete all sections
+#             sections_count = await sync_to_async(DocumentSection.objects.all().delete)()
+#             print(f"[Database Cleanup] Deleted {sections_count[0]} sections")
+            
+#             # Finally delete all documents
+#             docs_count = await sync_to_async(DocumentMetadata.objects.all().delete)()
+#             print(f"[Database Cleanup] Deleted {docs_count[0]} documents")
+            
+#             print("[Database Cleanup] Successfully cleared all database records")
+
+#         except Exception as e:
+#             print(f"[Database Cleanup] Error cleaning database: {str(e)}")
+#             raise

@@ -22,3 +22,8 @@ venv/
 # OS generated files
 .DS_Store
 Thumbs.db
+
+
+# Research Assistant temporary files
+src/research_assistant/data/*
+!src/research_assistant/data/.gitkeep

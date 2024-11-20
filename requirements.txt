@@ -33,3 +33,21 @@ python-magic-bin
 unstructured[local-inference]
 lxml
 
+
+
+# PDF Processing
+PyMuPDF==1.23.8
+pdf2image==1.16.3
+pytesseract==0.3.10
+PyPDF2==3.0.1
+
+# Document Processing
+python-docx==0.8.11
+python-pptx==0.6.21
+unstructured==0.12.0
+pandas==2.1.4
+numpy==1.26.3
+
+# OCR and Image Processing
+Pillow==10.2.0
+pytesseract==0.3.10
