@@ -31,6 +31,7 @@ pymupdf
 
 python-magic-bin
 unstructured[local-inference]
+unstructured-inference
 lxml
 
 
@@ -40,6 +41,7 @@ PyMuPDF==1.23.8
 pdf2image==1.16.3
 pytesseract==0.3.10
 PyPDF2==3.0.1
+ pdfminer.six
 
 # Document Processing
 python-docx==0.8.11

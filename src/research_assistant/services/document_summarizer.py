@@ -8,9 +8,9 @@ import re
 from datetime import datetime
 
 from .monitoring.system_monitor import AIModelCosts
-from .cache_manager import DocumentCacheManager
 
-class MetadataSchema(BaseModel):
+
+class MetadataSchema(BaseModel): 
     """Schema for document metadata extraction"""
     title: str = Field(..., description="Document title")
     authors: list[str] = Field(..., description="List of authors")
@@ -28,7 +28,6 @@ class DocumentSummarizer:
     def __init__(self):
         self.llm = OpenAI(api_key=settings.OPENAI_API_KEY)
         print("[DocumentSummarizer] Initialized with monitoring")
-        self.cache_manager = DocumentCacheManager()  # Add this
         print("[DocumentSummarizer] Initialized with cache manager")
 
     def _construct_prompt(self, text: str) -> str:
@@ -108,24 +107,6 @@ class DocumentSummarizer:
         """Generate document summary and extract metadata"""
         print("[DocumentSummarizer] Starting document summary generation")
         
-        # Check cache first
-        query_data = {
-            'text_preview': text[:1000],
-            'type': 'summary'
-        }
-        query_hash = self.cache_manager.generate_query_hash(query_data)
-        print(f"[DocumentSummarizer] Query hash: {query_hash}")
-        
-        cached_summary = self.cache_manager.get_llm_response_sync(
-            document_id=document_id,
-            response_type='summary',
-            query_hash=query_hash  # Use the already generated hash
-        )
-        
-        print(f"[DocumentSummarizer] Cached summary: {cached_summary}")
-        if cached_summary:
-            print("[DocumentSummarizer] Using cached summary: \n \n \n", cached_summary )
-            return cached_summary
 
         # If no cache, proceed with normal summary generation
         cleaned_text = self._clean_text(text)
@@ -153,14 +134,6 @@ class DocumentSummarizer:
         # Process publication date if present
         if metadata.get('publication_date'):
             metadata['publication_date'] = self._parse_date(metadata['publication_date'])
-        
-        # Store in cache
-        self.cache_manager.store_llm_response_sync(
-            document_id=document_id,
-            response_type='summary',
-            query_hash=query_hash,
-            response_data=metadata
-        )
 
         print("[DocumentSummarizer] Metadata extraction complete")
         print(f"[DocumentSummarizer] Found {len(metadata)} metadata fields")

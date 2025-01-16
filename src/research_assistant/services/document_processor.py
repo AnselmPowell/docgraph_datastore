@@ -1,5 +1,3 @@
-# src/research_assistant/services/document_processor.py
-
 from typing import Dict, List, Tuple, Any, Optional, NamedTuple
 import time
 from datetime import datetime
@@ -16,14 +14,19 @@ import pandas as pd
 from pdf2image import convert_from_path
 from PyPDF2 import PdfReader
 from unstructured.partition.pdf import partition_pdf
-from unstructured.documents.elements import (
-    Title, NarrativeText, ListItem, Table, Image as UnstructuredImage
-)
+# from unstructured.documents.elements import (
+#     Title, NarrativeText, ListItem, Table, Image as UnstructuredImage
+# )
 
 from django.conf import settings
-from research_assistant.models import DocumentSection
+# from research_assistant.models import DocumentSection
 
 from .cache_manager import DocumentCacheManager
+
+from .database_cleanup import clear_document_sections, clear_document_sections_by_id
+ 
+
+
 
 # Update citation patterns
 CITATION_PATTERNS = [
@@ -118,6 +121,27 @@ REFERENCE_ENTRY_PATTERNS = {
 }
 
 
+INTEXT_CITATION_PATTERNS = {
+    'parenthetical_full': r'\(((?:[A-Z][a-z]+,?\s+)+et al\.,\s+\d{4})\)',  
+    # (De Jong, Michiel, et al., 2022)
+    
+    'parenthetical_short': r'\(([A-Z][a-z]+\s+et\s+al\.,\s+\d{4})\)',
+    # (De Jong et al., 2022)
+    
+    'narrative': r'([A-Z][a-z]+\s+et\s+al\.\s+\(\d{4}\))',
+    # De Jong et al. (2022)
+    
+    'with_page': r'\(([A-Z][a-z]+\s+et\s+al\.,\s+\d{4},\s+p\.?\s+\d+)\)',
+    # (De Jong et al., 2022, p. 45)
+    
+    'full_author_list': r'([A-Z][a-z]+,\s+(?:[A-Z][a-z]+,\s+)*(?:and\s+)?[A-Z][a-z]+\s+\(\d{4}\))',
+    # De Jong, Zemlyanskiy, FitzGerald, Sha, and Cohen (2022)
+    
+    'numbered': r'\[(\d+)\]'
+    # [22]
+}
+
+
 
 
 IMAGE_EXTENSIONS = {'.png', '.jpg', '.jpeg', '.tiff', '.bmp'}
@@ -163,16 +187,16 @@ class Section:
         section_type: str,
         position: int,
         title_group: TitleGroup,
-        page_number: int,
+        section_start_page_number: int,
         document_id: str,
     ):
         self.elements = elements
         self.type = section_type
         self.position = position
         self.title_group = title_group
-        self.page_number = page_number
+        self.section_start_page_number = section_start_page_number
         self.document_id = document_id
-        self.section_id = f"{document_id}_p{page_number}_{section_type}_{uuid.uuid4().hex[:8]}"
+        self.section_id = f"{document_id}_p{section_start_page_number}_{section_type}_{uuid.uuid4().hex[:8]}"
         self.prev_section = None
         self.next_section = None
         
@@ -188,6 +212,7 @@ class Section:
 
 class DocumentProcessor:
     """Enhanced document processor with title-based chunking and section organization"""
+
     
     def __init__(self, document_id: str = None, document_url: str = None):
         print("\n[DocumentProcessor] Initializing document processor")
@@ -197,13 +222,11 @@ class DocumentProcessor:
         self.data_dir.mkdir(parents=True, exist_ok=True)
         self.title_groups = []
         self.sections = []
-
-        self.cache_manager = DocumentCacheManager()
         
         print(f"[DocumentProcessor] Initialized for document {self.document_id}")
         print(f"[DocumentProcessor] Document URL: {document_url}")
         print(f"[DocumentProcessor] Data directory: {self.data_dir}")
-        
+
 
     def _download_file(self, url: str) -> str:
         """Download file from URL with enhanced monitoring"""
@@ -229,6 +252,69 @@ class DocumentProcessor:
         
         
         return str(file_path)
+
+    def process_document_from_url(self, url: str) -> List[Dict[str, Any]]:
+        """Process document from URL"""
+        print(f"\n[DocumentProcessor] Processing document from URL: {url}")
+        # clear_document_sections()
+        # clear_document_sections_by_id(self.document_id)
+
+        
+
+        # print(f"[DocumentProcessor] No cache found, processing document", x)
+        print(f"[DocumentProcessor] Starting URL processing")
+        file_path = self._download_file(url)
+        sections, reference_data = self.process_document(file_path)
+        print(f"[DocumentProcessor] Retrieved {len(sections)} sections")
+        return sections, reference_data
+
+
+    def _create_sections(self, elements: List[Any]) -> List[Dict]:
+        """Create sections from elements"""
+        sections = []
+        current_page = 1
+        position = 0
+        
+        for element in elements:
+            # Make sure we're working with the correct data structure
+            try:
+                # Get element metadata
+                if hasattr(element, 'metadata'):
+                    metadata = element.metadata
+                    current_page = getattr(metadata, 'page_number', current_page)
+                
+                # Get element type and text
+                element_type = element.type if hasattr(element, 'type') else 'text'
+                element_text = element.text if hasattr(element, 'text') else ''
+
+                section_data = {
+                    'content': {
+                        'type': element_type,
+                        'text': element_text,
+                        'has_citations': False
+                    },
+                    'section_start_page_number': current_page,
+                    'position': position,
+                    'section_id': f"{self.document_id}_p{current_page}_{position}",
+                    'pointer': {
+                        'section_start_text': element_text[:200] if element_text else '',
+                        'title_group_number': None,
+                        'title_text': None
+                    },
+                    'elements': [element]
+                }
+                
+                sections.append(section_data)
+                position += 1
+
+            except Exception as e:
+                print(f"[CreateSection] Error processing element: {str(e)}")
+                continue
+        
+        print(f"[CreateSection] Created {len(sections)} sections")
+        return sections
+
+        
 
     def _extract_reference_section(self, elements: List[Any]) -> Tuple[List[Any], Dict[str, Any]]:
         """Extract reference section with comprehensive text analysis"""
@@ -353,120 +439,265 @@ class DocumentProcessor:
         print(f"- Section starts on page {reference_data['start_page']}")
         print(f"- Section starts at index {reference_data['start_index']}")
         
-        return [], reference_data
+        return reference_data
 
+
+    def _match_citations_to_references(self, section_text: str, references: Dict) -> List[Dict]:
+        """Enhanced citation-reference matching using dual approach"""
+        print("\n[CitationMatcher] Starting citation-reference matching")
+        
+        matches = []
+        
+        # Approach 1: Find citations and match to references
+        for pattern_name, pattern in INTEXT_CITATION_PATTERNS.items():
+            for match in re.finditer(pattern, section_text):
+                citation_text = match.group(0)
+                print(f"[CitationMatcher] Found citation: {citation_text}")
+                
+                # Extract key components based on pattern type
+                citation_data = self._parse_citation(pattern_name, match)
+                if citation_data:
+                    # Find matching reference
+                    reference = self._find_matching_reference(citation_data, references)
+                    if reference:
+                        matches.append({
+                            'citation_text': citation_text,
+                            'citation_position': match.span(),
+                            'reference': reference,
+                            'match_type': pattern_name
+                        })
+        
+        # Approach 2: Reference-based search
+        matches.extend(self._find_references_in_text(section_text, references))
+        
+        # Deduplicate matches
+        return self._deduplicate_matches(matches)
+
+    def _parse_citation(self, pattern_name: str, match) -> Dict:
+        """Extract author, year, and other components from citation"""
+        text = match.group(1)
+        
+        if pattern_name == 'numbered':
+            return {'type': 'numbered', 'number': text}
+            
+        # Extract year
+        year_match = re.search(r'\d{4}', text)
+        if not year_match:
+            return None
+        
+        year = year_match.group(0)
+        
+        # Extract authors based on pattern
+        if pattern_name in ['parenthetical_full', 'full_author_list']:
+            # Handle full author lists
+            authors = re.findall(r'([A-Z][a-z]+)(?:,|\s+and\s+|\s*$)', text[:year_match.start()])
+        else:
+            # Handle et al. cases
+            author_match = re.match(r'([A-Z][a-z]+)', text)
+            if author_match:
+                authors = [author_match.group(1)]
+                
+        return {
+            'type': pattern_name,
+            'year': year,
+            'authors': authors,
+            'page': re.search(r'p\.?\s*(\d+)', text),
+            'raw_text': text
+        }
+
+    def _find_references_in_text(self, text: str, references: Dict) -> List[Dict]:
+        """Search for references by looking for dates and author names"""
+        matches = []
+        
+        # Find all years in text
+        year_positions = [(m.group(0), m.start()) 
+                        for m in re.finditer(r'\b\d{4}\b', text)]
+        
+        for ref_id, ref_data in references.items():
+            # Extract year from reference
+            ref_year = re.search(r'\b\d{4}\b', ref_data['text'])
+            if not ref_year:
+                continue
+                
+            # Look for matching years in text
+            for year, year_pos in year_positions:
+                if year == ref_year.group(0):
+                    # Look for author names in preceding text
+                    context = text[max(0, year_pos-100):year_pos]
+                    
+                    # Extract author names from reference
+                    ref_authors = self._extract_authors_from_reference(ref_data['text'])
+                    
+                    # Check for author name matches
+                    for author in ref_authors:
+                        if author.lower() in context.lower():
+                            matches.append({
+                                'citation_text': context[max(0, len(context)-50):] + year,
+                                'citation_position': (year_pos-50, year_pos + len(year)),
+                                'reference': ref_data,
+                                'match_type': 'context_match'
+                            })
+                            break
+                            
+        return matches
 
     def _extract_citations(self, text: str, reference_data: Dict[str, Any]) -> List[Dict[str, Any]]:
-        """Enhanced citation extraction with reference matching"""
-        print("\n" + "="*50)
-        print("[Citation Extraction] Starting citation extraction process")
+        """Extract all citations from text section - both numbered and author citations"""
+        print("\n[Citation Extraction] Starting citation extraction process")
         print(f"[Citation Extraction] Text length: {len(text)}")
         
-        # Clean the input text first
-        cleaned_text = re.sub(r'\s+', ' ', text).strip()  # Normalize whitespace
-        print("\n[Text Processing] Cleaned text sample:")
-        print(f"'{cleaned_text[:100]}...'")
-        print("="*50 + "\n")
-
+        # Clean the input text but preserve necessary whitespace
+        cleaned_text = re.sub(r'\s+', ' ', text).strip()
         citations = []
         
-        try:
-            print("[Citation Extraction] Processing citation patterns:")
-            for pattern in CITATION_PATTERNS:
-                print(f"\n[Pattern Analysis] Checking pattern: {pattern}")
-                matches = re.finditer(pattern, cleaned_text)
-                
-                for match in matches:
-                    try:
-                        citation_text = match.group(0)
-                        print(f"\n  [Found Citation] Raw text: '{citation_text}'")
-                        print(f"  [Found Citation] Position: {match.span()}")
-                        
-                        # Basic validation of citation text
-                        if not citation_text or len(citation_text) > 100:  # Skip invalid citations
-                            print("  [Validation] Skipping invalid citation")
-                            continue
-
-                        citation_data = {
-                            'text': citation_text,
-                            'type': 'unknown',
-                            'references': [],
-                            'position': match.span(),
-                            'source': 'text'  # Default source
-                        }
-
-                        # Detect citation source (table, figure, or text)
-                        context_before = cleaned_text[max(0, match.start() - 50):match.start()]
-                        if any(marker in context_before.lower() for marker in ['table', 'fig', 'figure']):
-                            citation_data['source'] = 'figure/table'
-                            print("  [Context] Citation found in figure/table")
-
-                        # Handle different citation types
-                        if citation_text.startswith('['):
-                            print("  [Citation Type] Detected numbered citation")
-                            citation_data['type'] = 'numbered'
-                            
-                            # Extract numbers, handle both [1] and [1,2,3] formats
-                            numbers = re.findall(r'\d+', citation_text)
-                            print(f"  [Number Extraction] Found numbers: {numbers}")
-
-                            for num in numbers:
-                                print(f"  [Reference Lookup] Checking reference #{num}")
-                                if ref_text := reference_data['entries'].get(num):
-                                    print(f"  [Reference Match] Found matching reference for #{num}")
-                                    citation_data['references'].append({
-                                        'id': num,
-                                        'text': ref_text
-                                    })
-                                else:
-                                    print(f"  [Reference Lookup] No matching reference found for #{num}")
-
-                        else:
-                            print("  [Citation Type] Checking for author-year format")
-                            # Enhanced author-year pattern to handle various formats
-                            author_year_match = re.search(r'(?:\()?([A-Za-z]+)(?:,|\s+et\s+al\.?)?\s*[,\s]\s*(\d{4})(?:\))?', citation_text)
-                            
-                            if author_year_match:
-                                author = author_year_match.group(1).strip()
-                                year = author_year_match.group(2)
-                                print(f"  [Author-Year] Extracted: Author='{author}', Year='{year}'")
-                                
-                                citation_data['type'] = 'author_year'
-                                ref_id = f"{author}_{year}"
-                                
-                                if ref_text := reference_data['entries'].get(ref_id):
-                                    print(f"  [Reference Match] Found matching reference")
-                                    citation_data['references'].append({
-                                        'id': ref_id,
-                                        'text': ref_text
-                                    })
-                                else:
-                                    print(f"  [Reference Lookup] No matching reference found for {ref_id}")
-
+        # 1. Find all numbered citations [X] or [X,Y,Z]
+        numbered_pattern = r'\[(\d+(?:,\s*\d+)*)\]'
+        print("[Citation Extraction] Looking for numbered citations")
+        
+        for match in re.finditer(numbered_pattern, cleaned_text):
+            print(f"[Citation Extraction] Found numbered citation: {match.group(0)}")
+            if citation_data := self._process_numbered_citation(match, reference_data):
+                citations.append(citation_data)
+                print(f"[Citation Extraction] Processed numbered citation at position {match.span()}")
+        
+        # 2. Find all author-year citations
+        print("[Citation Extraction] Looking for author-year citations")
+        for pattern_name, pattern in INTEXT_CITATION_PATTERNS.items():
+            if pattern_name != 'numbered':  # Skip numbered pattern as we handled it above
+                print(f"[Citation Extraction] Checking pattern: {pattern_name}")
+                for match in re.finditer(pattern, cleaned_text):
+                    if citation_data := self._process_author_citation(match, reference_data):
                         citations.append(citation_data)
-                        print(f"  [Processing] Added citation to list (Total: {len(citations)})")
+                        print(f"[Citation Extraction] Processed author citation at position {match.span()}")
+        
+        # # 3. Search by reference text (find additional matches)
+        # print("[Citation Extraction] Looking for additional reference matches")
+        # ref_citations = self._find_reference_matches(cleaned_text, reference_data)
+        # citations.extend(ref_citations)
 
-                    except Exception as e:
-                        print(f"  [Warning] Error processing individual citation: {str(e)}")
-                        continue
+        # Remove any duplicates
+        unique_citations = self._deduplicate_citations(citations)
+        
+        # Sort citations by position in text
+        unique_citations.sort(key=lambda x: x['position'][0])
+        
+        print(f"[Citation Extraction] Found {len(unique_citations)} unique citations")
+        for idx, citation in enumerate(unique_citations, 1):
+            print(f"Citation {idx}: {citation['text']}")
+        
+        return unique_citations if unique_citations else []  # Return empty list instead of None
 
-            print("\n" + "="*50)
-            print("[Citation Summary]")
-            print(f"Total citations found: {len(citations)}")
-            for idx, citation in enumerate(citations, 1):
-                print(f"\nCitation #{idx}:")
-                print(f"- Text: '{citation['text']}'")
-                print(f"- Type: {citation['type']}")
-                print(f"- Source: {citation['source']}")
-                print(f"- References matched: {len(citation['references'])}")
-            print("="*50)
+    
+    def _process_numbered_citation(self, match, reference_data) -> Optional[Dict]:
+        """Process numbered citations including multiple numbers and various formats"""
+        print("\n[Citation Extraction] Processing numbered citation")
+        try:
+            # Get the full matched text and numbers
+            full_citation = match.group(0)
+            numbers_part = match.group(1)  # Gets just the numbers between brackets
+            
+            print(f"[Citation Extraction] Full citation: {full_citation}")
+            print(f"[Citation Extraction] Numbers part: {numbers_part}")
+
+            citation_data = {
+                'text': full_citation,
+                'type': 'numbered',
+                'references': [],
+                'position': match.span(),
+                'source': 'text'
+            }
+
+            # Split numbers and convert to strings
+            numbers = [str(num.strip()) for num in numbers_part.split(',')]
+            print(f"[Citation Extraction] Numbers after split: {numbers}")
+
+            # Process each reference number
+            for ref_num in numbers:
+                print(f"[Citation Extraction] Processing reference number: {ref_num}")
+                
+                # Make sure we're using string keys
+                ref_entries = reference_data.get('entries', {})
+                if ref_num in ref_entries:
+                    ref = ref_entries[ref_num]
+                    print(f"[Citation Extraction] Found reference {ref_num}")
+                    
+                    # Handle different reference formats
+                    ref_text = ref['text'] if isinstance(ref, dict) else ref
+                    citation_data['references'].append({
+                        'id': ref_num,
+                        'text': ref_text 
+                    })
+                    print(f"[Citation Extraction] Added reference {ref_num}")
+
+            return citation_data if citation_data['references'] else None
 
         except Exception as e:
-            print(f"[Error] Fatal error in citation extraction: {str(e)}")
-            print(f"[Error] Returning empty citations list")
-            return []
+            print(f"[Citation Extraction] Error processing citation: {str(e)}")
+            print(f"[Citation Extraction] Match groups: {match.groups()}")
+            return None
 
-        return citations
+
+    def _find_reference_matches(self, text: str, reference_data: Dict) -> List[Dict]:
+        """Find citations by matching reference content"""
+        matches = []
+        
+        # Process each reference entry
+        for ref_id, ref_data in reference_data['entries'].items():
+            ref_text = ref_data.get('text', '')
+            if not ref_text:
+                continue
+
+            # Extract year from reference
+            year_match = re.search(r'\b(19|20)\d{2}\b', ref_text)
+            if not year_match:
+                continue
+                
+            year = year_match.group(0)
+            
+            # Find all instances of this year in the text
+            for year_match in re.finditer(r'\b' + year + r'\b', text):
+                year_pos = year_match.start()
+                
+                # Look at text before the year (up to 100 chars)
+                context = text[max(0, year_pos - 100):year_pos]
+                
+                # Extract first author's surname from reference
+                author_match = re.match(r'([A-Z][a-z]+)', ref_text)
+                if not author_match:
+                    continue
+                    
+                author = author_match.group(1)
+                
+                # If author name is found in context before year
+                if author.lower() in context.lower():
+                    citation_pos = (year_pos - min(100, year_pos), year_pos + len(year))
+                    
+                    matches.append({
+                        'text': text[citation_pos[0]:citation_pos[1]],
+                        'type': 'author_year',
+                        'references': [{
+                            'id': ref_id,
+                            'text': ref_text
+                        }],
+                        'position': citation_pos,
+                        'source': 'text'
+                    })
+        
+        return matches
+
+    def _deduplicate_citations(self, citations: List[Dict]) -> List[Dict]:
+        """Remove duplicate citations based on position"""
+        seen_positions = set()
+        unique_citations = []
+        
+        for citation in citations:
+            pos = citation.get('position')
+            if pos and pos not in seen_positions:
+                seen_positions.add(pos)
+                unique_citations.append(citation)
+                
+        return unique_citations
+
     
     def _determine_element_type(self, element: Any) -> str:
         """Determine element type with monitoring"""
@@ -516,7 +747,7 @@ class DocumentProcessor:
         current_group = None
         group_number = 0
         
-        # Debug initial elements
+        
         print(f"[DocumentProcessor] Total elements to process: {len(elements)}")
         if elements and len(elements) > 0:
             element_dict = elements[0].to_dict()
@@ -553,6 +784,7 @@ class DocumentProcessor:
         for idx, group in enumerate(title_groups, 1):
             print(f"[DocumentProcessor] Group {idx} has {len(group.elements)} elements")
         
+        print(f"[DocumentProcessor] return Title group")
         return title_groups
 
     def _create_sections_from_title_group(self, title_group: TitleGroup) -> List[Section]:
@@ -563,17 +795,20 @@ class DocumentProcessor:
         text_elements = []
         current_position = len(self.sections)
         
+        print(f"[DocumentProcessor] Processing {len(title_group.elements)} elements")
         for element in title_group.elements:
             element_type = self._determine_element_type(element)
-            
+            print(f"[DocumentProcessor] Element type: {element_type}")
             if element_type in ['image', 'table', 'diagram']:
                 # Process pending text elements
+                print(f"[DocumentProcessor]  Processing text elements")
                 if text_elements:
                     sections.extend(self._create_text_sections(
                         text_elements, 
                         current_position + len(sections),
                         title_group
                     ))
+                    print(f"[DocumentProcessor] Created text sections")
                     text_elements = []
                 
                 # Create section for non-text element
@@ -582,7 +817,7 @@ class DocumentProcessor:
                     section_type=element_type,
                     position=current_position + len(sections),
                     title_group=title_group,
-                    page_number=element.metadata.page_number if hasattr(element.metadata, 'page_number') else 1,
+                    section_start_page_number=element.metadata.page_number if hasattr(element.metadata, 'page_number') else 1,
                     document_id=self.document_id
                 ))
             else:
@@ -620,8 +855,8 @@ class DocumentProcessor:
                     elements=elements[i:i+3],
                     section_type='text',
                     position=start_position + len(sections),
-                    title_group=title_group,
-                    page_number=elements[i].metadata.page_number if hasattr(elements[i].metadata, 'page_number') else 1,
+                    title_group=title_group, 
+                    section_start_page_number=elements[i].metadata.page_number if hasattr(elements[i].metadata, 'page_number') else 1,
                     document_id=self.document_id
                 ))
                 i += 3
@@ -632,7 +867,7 @@ class DocumentProcessor:
                     section_type='text',
                     position=start_position + len(sections),
                     title_group=title_group,
-                    page_number=elements[i].metadata.page_number if hasattr(elements[i].metadata, 'page_number') else 1,
+                    section_start_page_number=elements[i].metadata.page_number if hasattr(elements[i].metadata, 'page_number') else 1,
                     document_id=self.document_id
                 ))
                 i += remaining
@@ -661,45 +896,30 @@ class DocumentProcessor:
             'document_id': section.document_id,
             'section_id': section.section_id,
             'section_type': section.type,
-            'page_number': section.page_number,
+            'section_start_page_number': section.section_start_page_number,
             'position': section.position,
             'url': self.document_url,
             'pointer': {
-                'page_number': section.page_number,
-                'section_start': section.get_combined_text()[:15].ljust(15),
+                'section_start_page_number': section.section_start_page_number,
+                'section_start_text': section.get_combined_text()[:15].ljust(15),
                 'title_group_number': section.title_group.group_number,
                 'title_text': section.title_group.get_title_text()
             },
+            'elements': section.elements,
             'content': {
                 'text': section.get_combined_text(),
                 'type': section.type,
-                # Update citations to use new extraction
-                'citations': []  # Will be filled by reference data
+                'has_citations': False,
             },
-            'metadata': {
-                'element_details': {},
-                'adjacent_sections': {},
-                # Add new citation metadata
-                'citations': {
-                    'entries': [],
-                    'count': 0,
-                    'types': [],
-                    'has_matches': False
-                },
-                # Add reference relationships
-                'reference_data': {
-                    'matches': [],
-                    'section_type': 'content'  # or 'references' for reference section
-                }
-            }
+            'citations': [],
+            # Add reference relationships
+            'reference_data': {
+                'matches': [],
+                'section_type': 'content'  # or 'references' for reference section
+            },
+
         }
         
-        # Add context information
-        prev_text, next_text = section.get_context_text()
-        if prev_text:
-            section_data['metadata']['adjacent_sections']['previous'] = prev_text
-        if next_text:
-            section_data['metadata']['adjacent_sections']['next'] = next_text
                 
         return section_data
 
@@ -708,66 +928,49 @@ class DocumentProcessor:
         print(f"\n[DocumentProcessor] Starting document processing: {self.document_id}")
         
         start_time = time.time()
-
-
-
-        # Convert PDF to images
-        # print("[DocumentProcessor] Converting PDF to images")
-        # page_images = convert_from_path(file_path, dpi=300)
-        # print(f"[DocumentProcessor] Converted {len(page_images)} pages to images")
         
         # Parse PDF content
         print("[DocumentProcessor] Parsing PDF content")
-        elements = partition_pdf(
-            filename=file_path,
-            strategy="hi_res",
-            include_page_breaks=True,
-            infer_table_structure=True,
-            extract_image_block_types=['image'],
-            extract_image_blocks_to_playload=True,
-            chunking_strategy="by_title",
-            max_characters=10000,
-            combine_text_under_n_chars=2000,
-            new_after_n_chars=6000,
-        )
-        
+        # elements = partition_pdf(
+        #     filename=file_path,
+        #     strategy="hi_res",
+        #     include_page_breaks=True,
+        #     infer_table_structure=True,
+        #     extract_image_block_types=['image'],
+        #     extract_image_blocks_to_playload=True,
+        #     chunking_strategy="by_title",
+        #     max_characters=10000,
+        #     combine_text_under_n_chars=2000,
+        #     new_after_n_chars=6000,
+        # )
+        elements = ""
         print("[DocumentProcessor] Number of section elements: ", len(elements) )
             # Extract reference section first
         reference_data = self._extract_reference_section(elements)
-        # print(f"STOP HERE")
-        # print(f"[DocumentProcessor] {stop}")
+    
+        print("\n[DocumentProcessor] Extracted reference data:",)
         print(f"[DocumentProcessor] Extracted {len(elements)} elements")
+        print("\n [DocumentProcessor] Extracted reference data:", reference_data)
+       
         
         # Organize into title groups
         self.title_groups = self._organize_title_groups(elements)
         
+        print(f"[DocumentProcessor] Created {len(self.title_groups)} title groups")
         # Create sections from title groups
         for title_group in self.title_groups:
             new_sections = self._create_sections_from_title_group(title_group)
             self.sections.extend(new_sections)
             title_group.sections = new_sections
         
+        print(f"[DocumentProcessor] add sections")
         # Link adjacent sections
         self._link_adjacent_sections()
-        
+        print(f"[DocumentProcessor] Linked adjacent sections")
         # Create final section data
         processed_sections = []
         for section in self.sections:
             section_data = self._create_section_data(section)
-            processed_sections.append(section_data)
-
-            # Add citations and references if this is a text section
-            print("[DocumentProcessor] Processing section type: ", section.type)
-            if section.type == 'text':
-                citations = self._extract_citations(
-                    section.get_combined_text(), 
-                    reference_data
-                )
-                section_data['metadata']['citations']['entries'] = citations
-                section_data['metadata']['citations']['count'] = len(citations)
-                section_data['metadata']['citations']['types'] = list(set(c['type'] for c in citations))
-                section_data['metadata']['citations']['has_matches'] = any(c['references'] for c in citations)
-            
             processed_sections.append(section_data)
         
         processing_time = time.time() - start_time
@@ -775,31 +978,122 @@ class DocumentProcessor:
         print(f"  Title groups: {len(self.title_groups)}")
         print(f"  Total sections: {len(processed_sections)}")
         print(f"  Processing time: {processing_time:.2f}s")
-        
-
 
         # Cleanup
         if os.path.exists(file_path):
             os.remove(file_path)
             print(f"[DocumentProcessor] Cleaned up temporary file: {file_path}")
         
-        return processed_sections
+        return processed_sections, reference_data
 
-    def process_document_from_url(self, url: str) -> List[Dict[str, Any]]:
-        """Process document from URL"""
-        print(f"\n[DocumentProcessor] Processing document from URL: {url}")
+   
 
-        # Check if document exists in cache/DB
-        cached_data = self.cache_manager.get_document_data_sync(self.document_id)
-        print(f"[DocumentProcessor] Cached data:{self.document_id} ------ {cached_data}")
-        if cached_data:
-            print("[DocumentProcessor] Using cached document data")
-            # Important: Return the processed sections from the cache
-            return cached_data.get('sections', [])
 
-        print("[DocumentProcessor] No cache found, processing document")
-        print(f"[DocumentProcessor] Starting URL processing")
-        file_path = self._download_file(url)
-        sections = self.process_document(file_path)
-        print(f"[DocumentProcessor] Retrieved {len(sections)} sections")
-        return sections
+
+
+    # def process_document(self, file_path: str) -> List[Dict[str, Any]]:
+    #     """Enhanced document processing with title-based chunking"""
+    #     print(f"\n[DocumentProcessor] Starting document processing: {self.document_id}")
+        
+    #     start_time = time.time()
+
+
+    #     # Convert PDF to images
+    #     # print("[DocumentProcessor] Converting PDF to images")
+    #     # page_images = convert_from_path(file_path, dpi=300)
+    #     # print(f"[DocumentProcessor] Converted {len(page_images)} pages to images")
+        
+    #     # Parse PDF content
+    #     print("[DocumentProcessor] Parsing PDF content")
+    #     elements = partition_pdf(
+    #         filename=file_path,
+    #         strategy="hi_res",
+    #         include_page_breaks=True,
+    #         infer_table_structure=True,
+    #         extract_image_block_types=['image'],
+    #         extract_image_blocks_to_playload=True,
+    #         chunking_strategy="by_title",
+    #         max_characters=10000,
+    #         combine_text_under_n_chars=2000,
+    #         new_after_n_chars=6000,
+    #     )
+        
+    #     print("[DocumentProcessor] Number of section elements: ", len(elements) )
+    #         # Extract reference section first
+    #     reference_data = self._extract_reference_section(elements)
+    
+    #     print("\n[DocumentProcessor] Extracted reference data:",)
+    #     print(f"[DocumentProcessor] Extracted {len(elements)} elements")
+    #     print("\n [DocumentProcessor] Extracted reference data:", reference_data)
+       
+        
+    #     # Organize into title groups
+    #     self.title_groups = self._organize_title_groups(elements)
+        
+    #     print(f"[DocumentProcessor] Created {len(self.title_groups)} title groups")
+    #     # Create sections from title groups
+    #     for title_group in self.title_groups:
+    #         new_sections = self._create_sections_from_title_group(title_group)
+    #         self.sections.extend(new_sections)
+    #         title_group.sections = new_sections
+        
+    #     print(f"[DocumentProcessor] add sections")
+    #     # Link adjacent sections
+    #     self._link_adjacent_sections()
+    #     print(f"[DocumentProcessor] Linked adjacent sections")
+    #     # Create final section data
+    #     processed_sections = []
+    #     for section in self.sections:
+    #         section_data = self._create_section_data(section)
+    #         processed_sections.append(section_data)
+
+    #         Add citations and references if this is a text section
+    #         print("[DocumentProcessor] Processing section type: ", section.type)
+    #         if section.type == 'text':
+    #             citations = self._extract_citations(
+    #                 section.get_combined_text(), 
+    #                 reference_data
+    #             )
+    #             section_data['citations'] = citations
+    #             section_data['content']['has_citations'] = True
+            
+    #         processed_sections.append(section_data)
+        
+    #     processing_time = time.time() - start_time
+    #     print(f"\n[DocumentProcessor] Processing completed:")
+    #     print(f"  Title groups: {len(self.title_groups)}")
+    #     print(f"  Total sections: {len(processed_sections)}")
+    #     print(f"  Processing time: {processing_time:.2f}s")
+
+    #     # Cleanup
+    #     if os.path.exists(file_path):
+    #         os.remove(file_path)
+    #         print(f"[DocumentProcessor] Cleaned up temporary file: {file_path}")
+        
+    #     return processed_sections, reference_data
+
+    # def process_document_from_url(self, url: str) -> List[Dict[str, Any]]:
+    #     """Process document from URL"""
+    #     print(f"\n[DocumentProcessor] Processing document from URL: {url}")
+    #     # clear_document_sections()
+    #     # clear_document_sections_by_id(self.document_id)
+    #     # print(x)
+
+
+    #     # Check if document exists in cache/DB
+    #     cached_data = self.cache_manager.get_document_data_sync(self.document_id)
+    #     print(f"[DocumentProcessor] Cached data:{self.document_id} ------ {cached_data}")
+    #     if cached_data:
+    #         print("[DocumentProcessor] Using cached document data")
+    #         # Important: Return the processed sections and the reference data from the cache
+    #         print(f"[DocumentProcessor] Returning cached data: ", cached_data['document'])
+    #         return cached_data['sections'], cached_data['document'].reference
+        
+    #     print("[DocumentProcessor] No cache found, processing document")
+    #     # print(f"[DocumentProcessor] No cache found, processing document", x)
+    #     print(f"[DocumentProcessor] Starting URL processing")
+    #     file_path = self._download_file(url)
+    #     sections, reference_data = self.process_document(file_path)
+    #     print(f"[DocumentProcessor] Retrieved {len(sections)} sections")
+    #     return sections, reference_data
+

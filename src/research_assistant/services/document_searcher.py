@@ -1,35 +1,38 @@
+
+
 # src/research_assistant/services/document_searcher.py
-from typing import Dict, List
+
+from typing import Dict, List, Any
 import json
 from openai import OpenAI
 from django.conf import settings
 from pydantic import BaseModel, Field
 from .monitoring.system_monitor import AIModelCosts
-from .cache_manager import DocumentCacheManager
+from research_assistant.services.document_processor import DocumentProcessor
+from ..models import DocumentMetadata
+from .search.relevance_scorer import RelevanceScorer
 
 class SearchResultSchema(BaseModel):
     """Schema for section search results"""
-    has_context: bool = Field(..., description="Whether section contains context")
-    context: str = Field(None, description="Matching context text")
-    has_theme: bool = Field(..., description="Whether section contains theme")
-    theme: str = Field(None, description="Matching theme text") 
-    has_keyword: bool = Field(..., description="Whether section contains keyword")
-    keyword: str = Field(None, description="Matching keyword text")
-    has_similar_keyword: bool = Field(..., description="Whether section contains similar keyword")
-    similar_keyword: str = Field(None, description="Matching similar keyword text")
-    section_type: str = Field("text", description="Type of section (text, table, figure, etc)")
+    has_context: bool = Field(..., description="Whether section contains or answers the context provided by the user")
+    context: str = Field(None, description="Matching context text, provide the exact matching text from the section, based on the context statement/question asked by the user")
+    has_theme: bool = Field(..., description="Whether section contains theme true or false")
+    theme: str = Field(None, description="Matching theme text, provide the exact matching text that matches the theme from the section")
+    has_keyword: bool = Field(..., description="Whether section contains keyword true or false" )
+    keyword: str = Field(None, description="Matching keyword text, extract the sentence containing the keyword from the section")
+    has_similar_keyword: bool = Field(..., description="Whether section contains similar keyword, true or false")
+    similar_keyword: str = Field(None, description="Matching similar keyword text, extract the sentence containing the similar keyword from the section")
 
 class DocumentSearcher:
     """Search document sections for relevant content with enhanced monitoring"""
     
     def __init__(self):
         print("\n[DocumentSearcher] Initializing searcher")
-
         self.llm = OpenAI(api_key=settings.OPENAI_API_KEY)
         self.total_tokens_used = 0
         self.total_api_calls = 0
+        self.relevance_scorer = RelevanceScorer()
         print("[DocumentSearcher] Initialization complete")
-        self.cache_manager = DocumentCacheManager()
 
     def _construct_search_prompt(
         self,
@@ -56,51 +59,72 @@ class DocumentSearcher:
         
         # Your original prompt with proper formatting
         prompt = f"""
-        Background Academic Document Summary: \n
+        Background of the Academic Document Summary: \n
         {summary} \n
-
+        ################## 
         Above is a summary of a academic document to understand the what the academic document is about. \n
-        The user is looking for specific infomration in the document. below is thier search criteria. \n
-        Context is the information the user is looking for in the document. \n
-        Theme is the topic or subject matter of the document the user provided. \n
-        Keywords are the exact keywords that the user is looking for in the document. \n
-        Similar keywords are synonyms or related concepts to the keywords that are in the document based on the context.\n \n
+        The user is looking for specific information in the document. below is thier search criteria. \n
+        Context: is the information the user is looking for in the document. \n
+        Theme: is the topic or subject matter of the document the user provided. \n
+        Keywords: are the exact keywords that the user is looking for in the document. \n
+        Similar keywords: are synonyms or related concepts to the keywords that are in the document based on the context.\n \n
+        I will share with you a sections from the document, your job is to look for anything in that section that the user may find useful  using the information in the search criteria. Then return that extracted information from the document to the user.
+        
+        ################### \n
+        User Search Criteria: \n
+        # Context: \n
+        {context} \n
+        # Theme: \n
+        {theme} \n
+        # Keywords: \n
+        {keywords_str} \n 
 
+
+        # Your goal is to use the Search Criterias above given by the user to analyze the Document Section Content below and determine if any of it is relevant to the user based on the search criteria. \n
+        # The "context" can contain questions from the user, or information the user is looking for. If the context is a question check the Current Document Section Content Below to see if it answers any of the questions. If yes, extract the exact matching text from the section in full with its citations or sources. \n
+        # The "context" can also be information or a statment made by the user, If the context is a information or a statment made by the user check the Current Document Section Content Below that any part of the context is relevant this could be a supporting statment or a opposing statment both is considered relevant match \n
+        # 
+        ######################## \n
+        \n \n
+        # Current Document Section Content Below: \n
+        {text} \n 
+        \n ######################
+
+        Note: The Document Section Content Above is one part of the Academic Document, Focus your analysis only on the "Current Document Section" above 
+        
+        ## Your goal is to use the Search Criterias provided by the user to analyze the  Document Current Section and determine if it is anything relevant to the user. \n
+
+        Task: Analyze the current section against the search criteria:
+        1. Context Match: Does the document section have any relation to the context asked by the user? If yes, extract the exact matching text from the section in full with citations (e.g [44]/ (John, 2018)) or sources. \n
+        2. Theme Match: Does the section align with the theme? If yes, extract the exact matching text in full with citations or sources.
+        3. Keyword Match: Does the section contain any exact keywords? If yes, extract the sentence containing the keyword from the section. \n
+        4. Similar Concepts: Does the section contain related concepts? If yes, extract the relevant text.
+
+
+
+        Must always Return Json response format :\n 
+        has_context: bool, 
+        context: str ,
+        has_theme: bool, 
+        theme: str ,
+        has_keyword: bool, 
+        keyword: str ,
+        has_similar_keyword: bool, 
+        similar_keyword: str , \n 
+         ###################
         Search Criteria: \n
         # Context: \n
         {context} \n
         # Theme: \n
         {theme} \n
         # Keywords: \n
-        {keywords_str} \n \n ####
-
-
-        # Your goal is to use the Search Criterias above given by the user to analyze the Document Section Content below and determine if any of it is relevant to the user based on the search criteria. \n
-
-        # Current Document Section Content Below: \n
-        {text} \n \n####
-
-        Note: The Document Section Content Above is one part of the Academic Document, Focus your analysis only on the "Current Section" above 
+        {keywords_str}
         
-        ## Your goal is to use the Search Criterias to analyze the Current Section and determine if it is relevant to the user's search. \n
-        Any uncertainty should be marked as false. \n
-
-        Task: Analyze the current section against the search criteria:
-        1. Context Match: Does the section directly relate to the context? If yes, extract the exact matching text from the section. \n
-        2. Theme Match: Does the section align with the theme? If yes, extract the exact matching text.
-        3. Keyword Match: Does the section contain any exact keywords? If yes, extract the sentence containing the keyword from the section. \n
-        4. Similar Concepts: Does the section contain related concepts? If yes, extract the relevant text.
-
-        Strict Matching Rules:
-        - Only mark as true if there is a clear, direct match in the current section if not return false
-        - Use context to understand meaning but extract matches only from current section
-        - Default to false if uncertain
-        - Context matches must be topically relevant, it can argue for or against the context, if uncertain return false
-        - Theme matches must show clear thematic alignment 
         """
         
         print(f"[DocumentSearcher] Prompt constructed, length: {len(prompt)}")
         return prompt
+
 
     def analyze_section(
         self,
@@ -121,6 +145,7 @@ class DocumentSearcher:
         analysis_text = []
         
         analysis_text.append(main_text)
+        
 
         
         # Combine all text
@@ -272,6 +297,7 @@ class DocumentSearcher:
         
         return is_relevant
 
+
     def search_document(
         self,
         sections: List[Dict],
@@ -279,36 +305,14 @@ class DocumentSearcher:
         theme: str,
         keywords: List[str],
         summary: str,
-        document_id: str
+        document_id: str,
+        reference_data: Dict
     ) -> Dict:
         """Search document with comprehensive context-aware monitoring"""
         print("\n[DocumentSearcher] Starting full document search")
         print(f"[DocumentSearcher] Total sections: {len(sections)}")
 
-        # Check cache first
-        query_data = {
-            'context': context,
-            'theme': theme,
-            'keywords': sorted(keywords),
-            'type': 'search'
-        }
-        query_hash = self.cache_manager.generate_query_hash(query_data)
-        
-        cached_results = self.cache_manager.get_llm_response_sync(  # Note: sync version
-            document_id=document_id,
-            response_type='search',
-            query_hash=query_hash
-        )
 
-        print(f"[DocumentSearcher] Is Search Cached ")
-        if cached_results:
-            print("[DocumentSearcher] Using cached search results: ")
-            # print(x)
-            return cached_results
-        print(f"[DocumentSearcher] No Search Cached Found ")
-        
-        
-        total_sections = len(sections)
         matches = {
             "context": 0,
             "theme": 0,
@@ -320,79 +324,83 @@ class DocumentSearcher:
         }
 
         # Process each section
-        print("[DocumentSearcher] Process each section")
-        print(f"[DocumentSearcher] Total sections:", sections[0])
+        total_sections = len(sections)
+        relevant_sections = []
+
         for idx, section in enumerate(sections, 1):
-            # Only analyze text sections with LLM
             if section['section_type'] == 'text':
-                print(f"\n[DocumentSearcher] Processing text section number {idx}/{total_sections}")
-                
                 results = self.analyze_section(
-                    section=section,  # Pass full section data
+                    section=section,
                     context=context,
                     theme=theme,
                     keywords=keywords,
                     summary=summary
                 )
-                print(f"[DocumentSearcher] Results: {results}")
-                
-                # Track matches
-                print(f"[DocumentSearcher] Adding matches to section")
-                if results["has_context"]:
-                    matches["context"] += 1
-                    section["matching_context"] = results["context"]
-                    section["relevance_type"].append("context")
-                    print(f"[DocumentSearcher] Matched context: {results['context']}")
 
-                if results["has_theme"]:
-                    matches["theme"] += 1
-                    section["matching_theme"] = results["theme"]
-                    section["relevance_type"].append("theme")
-                    print(f"[DocumentSearcher] Matched theme: {results['theme']}")
-                    
-                if results["has_keyword"]:
-                    matches["keyword"] += 1
-                    section["matching_keywords"].append(results["keyword"])
-                    section["relevance_type"].append("keyword")
-                    print(f"[DocumentSearcher] Matched keyword: {results['keyword']}")
-                    
-                if results["has_similar_keyword"]:
-                    matches["similar"] += 1
-                    section["matching_similar_keywords"].append(results["similar_keyword"]) 
-                    section["relevance_type"].append("similar_keyword")
-                    print(f"[DocumentSearcher] Matched similar keyword: {results['similar_keyword']}")
+                # Track matches and update relevance data
+                if results["has_context"] or results["has_theme"]:
+                    if results["has_context"]:
+                        matches["context"] += 1
+                        section["matching_context"] = results["context"]
+                        section["relevance_type"].append("context")
 
-                if any([results["has_context"], results["has_theme"], 
-                    results["has_keyword"], results["has_similar_keyword"]]):
+                    if results["has_theme"]:
+                        matches["theme"] += 1
+                        section["matching_theme"] = results["theme"]
+                        section["relevance_type"].append("theme")
+
+                    if results["has_keyword"]:
+                        matches["keyword"] += 1
+                        section["matching_keywords"] = [results["keyword"]]
+                        section["relevance_type"].append("keyword")
+
+                    if results["has_similar_keyword"]:
+                        matches["similar"] += 1
+                        section["matching_similar_keywords"] = [results["similar_keyword"]]
+                        section["relevance_type"].append("similar_keyword")
+
+                    # Process citations if needed
+                    if results["has_context"] or results["has_theme"]:
+                        doc_processor = DocumentProcessor()
+                        
+                        if results["has_context"]:
+                            context_citations = doc_processor._extract_citations(
+                                text=results["context"],
+                                reference_data=reference_data
+                            )
+                            section["context_citations"] = context_citations
+                        else:
+                            section["context_citations"] = []
+
+                        if results["has_theme"]:
+                            theme_citations = doc_processor._extract_citations(
+                                text=results["theme"],
+                                reference_data=reference_data
+                            )
+                            section["theme_citations"] = theme_citations
+                        else:
+                            section["theme_citations"] = []
+
+                        section["matching_citations"] = {
+                            'context': context_citations if results["has_context"] else [],
+                            'theme': theme_citations if results["has_theme"] else []
+                        }
+
                     matches["relevant_sections"].append(section)
-                    print("[DocumentSearcher], Add relevant section")
-            else:
-                # For non-text sections, store if they belong to a matching title group
-                if any(s['title_group_number'] == section['title_group_number'] 
-                    for s in matches["relevant_sections"]):
-                    matches["relevant_sections"].append(section)
 
-        print(f"[DocumentSearcher] Calculating document relevance score")
-        is_document_relevance = self.check_summary_relevance(summary, context)
-
-        print(f"[DocumentSearcher] Document relevance: {is_document_relevance}")
-        final_score = self.calculate_relevance_score(total_sections, matches["context"],matches["theme"],matches["keyword"],matches["similar"],
-            is_document_relevance
+        # Calculate relevance score using both systems
+        is_document_relevant = self.check_summary_relevance(summary, context)
+        
+        relevance_data = self.relevance_scorer.calculate_document_score(
+            sections=matches["relevant_sections"],
+            total_sections=total_sections,
+            has_summary_match=is_document_relevant
         )
 
-        print(f"[DocumentSearcher] Number of relevant sections: {len(matches['relevant_sections'])}")
-        print(f"[DocumentSearcher] Final relevance score: {final_score}")
-        matches["relevance_score"] = final_score
-
-        # Cache results before returning
-        self.cache_manager.store_llm_response_sync(  
-            document_id=document_id,
-            response_type='search',
-            query_hash=query_hash,
-            response_data=matches
-        )
-
+        matches["relevance_score"] = relevance_data["final_score"]
+        matches["total_matches"] = len(matches["relevant_sections"])
 
         return matches
 
 
+    

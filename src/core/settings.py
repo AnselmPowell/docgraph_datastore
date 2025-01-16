@@ -51,8 +51,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'api',
     'document_analysis',
-    'vector_store',
-    'pgvector',
+    # 'vector_store',
+    # 'pgvector',
      'research_assistant',
 ]
 
@@ -94,15 +94,6 @@ WSGI_APPLICATION = 'core.wsgi.application'
 CORS_ALLOW_ALL_ORIGINS = False
 
 
-# Vector store settings
-VECTOR_STORE = {
-    'DIMENSIONS': config('VECTOR_STORE_DIMENSIONS', default=1536, cast=int),
-    'EMBEDDING_MODEL': config('VECTOR_STORE_MODEL', default='text-embedding-3-small'),
-
-    'INDEX_TYPE': 'ivfflat',
-    'SEARCH_THRESHOLD': 0.8,
-}
-
 # Governance-specific settings
 GOVERNANCE_SETTINGS = {
     'MAX_DOCUMENTS': 3,
@@ -137,21 +128,21 @@ PROCESSING_SETTINGS = {
     'ENABLE_IMAGE_ANALYSIS': True
 }
 
-# DATABASES = {
-#     'default': {
-#             'ENGINE': 'django.db.backends.sqlite3',
-#             'NAME': BASE_DIR / 'db.sqlite3',
-#         }
-# }
+DATABASES = {
+    'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-print("--------- DATABASE URL  ",app_config['DATABASE_URL'])
+# print("--------- DATABASE URL  ",app_config['DATABASE_URL'])
 
-DATABASES = {
-    'default': dj_database_url.config(default=app_config['DATABASE_URL'])
-}
+# DATABASES = {
+#     'default': dj_database_url.config(default=app_config['DATABASE_URL'])
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
