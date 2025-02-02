@@ -1,0 +1,61 @@
+projects, which is a common feature in many social media platforms. Take advantage of it as
+much as possible!
+Conclusions
+If you are involved in scientific research and have not used Git and GitHub before, we recom-
+mend that you explore its potential as soon as possible. As with many tools, a learning curve
+lays ahead, but several basic yet powerful features are accessible even to the beginner and may
+be applied to many different use-cases [6]. We anticipate the reward will be worth your effort.
+To conclude, we would like to recommend some examples of bioinformatics repositories in
+GitHub (Table 1) and some useful training materials, including workshops, online courses, and
+manuscripts (Table 2).
+Supporting Information
+S1 File. Supplementary Information including three sections: Git Large File Storage (LFS),
+Testing Levels of the Source Code and Continuous integration, and Source code documen-
+tation.
+(PDF)
+Acknowledgments
+The authors would like to thank C. Titus Brown for mentioning the manuscript on social
+media, leading to additional contributions and further improvements. We also thank Peter
+Cock (peterjc) for helpful suggestions contributed directly through GitHub.
+References
+1.
+Goodman A, Pepe A, Blocker AW, Borgman CL, Cranmer K, Crosas M, et al. Ten simple rules for the
+care and feeding of scientific data. PLoS Comput Biol. 2014; 10(4):e1003542. doi: 10.1371/journal.
+pcbi.1003542 PMID: 24763340
+2.
+Perez-Riverol Y, Alpi E, Wang R, Hermjakob H, Vizcaíno JA. Making proteomics data accessible and
+reusable: current state of proteomics databases and repositories. Proteomics. 2015; 15(5–6):930–49.
+doi: 10.1002/pmic.201400302 PMID: 25158685
+3.
+Osborne JM, Bernabeu MO, Bruna M, Calderhead B, Cooper J, Dalchau N, et al. Ten simple rules for
+effective computational research. PLoS Comput Biol. 2014; 10(3):e1003506. doi: 10.1371/journal.pcbi.
+1003506 PMID: 24675742
+4.
+Vihinen M. No more hidden solutions in bioinformatics. Nature. 2015; 521(7552):261. doi: 10.1038/
+521261a PMID: 25993922
+5.
+Blischak J, Davenport E, Wilson G. A Quick Introduction to Version Control with Git and GitHub. PLoS
+Comput Biol. 2016; 12(1):e1004668. doi: 10.1371/journal.pcbi.1004668 PMID: 26785377
+6.
+Ram K. Git can facilitate greater reproducibility and increased transparency in science. Source code for
+biology and medicine. 2013; 8(1):1.
+7.
+Dabbish L, Stuart C, Tsay J, Herbsleb J. Social Coding in GitHub: Transparency and Collaboration in
+an Open Software Repository. In: Proceedings of the ACM 2012 Conference on Computer Supported
+Cooperative Work. CSCW ‘12. New York, NY, USA: ACM; 2012. p. 1277–1286. Available from: http://
+doi.acm.org/10.1145/2145204.2145396.
+8.
+R Core Team. R: A Language and Environment for Statistical Computing; 2016. Available from: https://
+www.R-project.org/.
+9.
+Noble WS. A quick guide to organizing computational biology projects. PLoS Comput Biol. 2009; 5(7):
+e1000424. doi: 10.1371/journal.pcbi.1000424 PMID: 19649301
+10.
+Leprevost FV, Barbosa VC, Francisco EL, Perez-Riverol Y, Carvalho PC. On best practices in the
+development of bioinformatics software. Front Genet. 2014; 5:199. doi: 10.3389/fgene.2014.00199
+PMID: 25071829
+11.
+Fowler M. Continuous Integration; 2006. http://www.martinfowler.com/articles/continuousIntegration.html.
+PLOS Computational Biology | DOI:10.1371/journal.pcbi.1004947
+July 14, 2016
+10 / 11

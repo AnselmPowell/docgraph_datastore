@@ -1,0 +1,61 @@
+technologies that required the use of specific code to be identified as they are
+libraries embedded in the code (Table 3); and iv) 1 deprecated technology with
+no current documentation that made it impossible to recognize (Table 4).
+Table 1: CI/CD technologies we can identify and analyze.
+Agola
+AppVeyor
+ArgoCD
+Bytebase
+Cartographer
+CircleCI
+Cloud 66 Skycap
+Cloudbees Codeship
+Devtron
+Flipt
+GitLab
+Google Cloud Build
+Helmwave
+Travis
+Jenkins
+JenkinsX
+Keptn
+Liquibase
+Mergify
+OctopusDeploy
+OpenKruise
+OpsMx
+Ortelius
+Screwdriver
+Semaphore
+TeamCity
+werf
+Woodpecker CI
+GitHubActions
+Codefresh
+XL Deploy
+Drone
+Flagger
+Harness.io
+Flux
+GoCD
+Concourse
+Kubernetes
+AWS CodePipeline
+Table 2: CI/CD technologies that we cannot identify due to the lack of clearly
+identifiable artifacts.
+Akuity
+Bamboo
+Buildkite
+Bunnyshell
+CAEPE
+Keploy
+Northflank
+OpenGitOps
+Ozone
+Spacelift
+Table 3: Libraries introducing unnecessary complexity.
+Brigade
+k6
+OpenFeature
+Unleash
+7

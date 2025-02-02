@@ -1,0 +1,166 @@
+TABLE II
+SUMMARY OF EIGHT CONFOUNDING FACTORS ON 2,923 GITHUB
+PROJECTS.
+Confound
+Min
+Median
+Max
+Mean
+St. Dev.
+Forks
+0
+51
+9, 609
+161.7
+426.5
+Watchers
+1
+18
+3, 081
+47.0
+115.9
+Age (years)
+5.0
+6.8
+8.9
+6.9
+0.7
+Size (MB)
+0.1
+2.0
+928.4
+12.4
+42.9
+Total PRs
+1
+32
+4, 418
+91.1
+192.5
+PR comments
+0
+43
+13, 366
+243.8
+767.5
+Issue comments
+0
+95
+13, 248
+439.4
+1, 030.2
+Developers
+3
+15
+690
+29.8
+45.2
+C. Statistical methods
+1) Multiple Linear Regression: Regression models are often
+used to measure the effects of several explanatory variables on
+a response variable. In our study, we use a multiple linear
+regression model [25] to measure the impact of branches
+used on a project’s overall productivity, i.e., the total number
+of commits within a project. While building the regression
+models, we also perform the regression diagnostics with rec-
+ommended criteria [14]. We log transform (i.e., x->log(x))
+the response variable (i.e., the number of commits) to assure
+acceptable normality. We also do the log transformation on
+several explanatory variables as this can make the variance
+more stable and can always improve the model ﬁt [11].
+Variance inﬂation is also controlled within the recommended
+range [25]. All outliers are removed to avoid possible dis-
+turbance to the experimental results. In this paper, we use
+outlierTest function in the “car” package of R to detect
+outliers7. All regression models are conducted within the R
+statistic environment [46].
+2) Cohen’s Effect Size: Based on the results of multiple
+regression models, we further use Cohen’s effect size [25]
+to gauge the effect of branches on the project’s productivity.
+Speciﬁcally, we use Cohen’s f 2 to measure the effect size for
+a linear regression model. Cohen’s f 2 is calculated as
+R2
+AB −R2
+B
+1 −R2
+AB
+Here R2
+B is the variance accounted by variable set B. The R2
+AB
+is the variance accounted by variable set B and A together.
+In this paper, B is the set of eight confounding factors as
+mentioned in Table II and A is the number of branches used.
+A threshold value of 0.02 for f 2 is suggested as a minimum
+value to determine that the effect is small [25]. 0.15 and 0.35
+is suggested as the minimum values for median and large
+effects.
+IV. EXPERIMENTAL RESULTS
+In this section, we present empirical results for the ﬁve RQs.
+A. RQ1: How many branches does a project have and what
+kind of projects are more likely to have more branches?
+Results. In RQ1, we study the general characteristics of
+branches used in GitHub. Speciﬁcally, we investigate how
+many branches are used by developers during development.
+7http://CRAN.R-project.org/package=car.
+0
+200
+400
+600
+2
+4
+6
+8
+10
+12
+14
+16
+18
+20
+22
+24
+26
+28 >=30
+Number of Branches
+Number of Projects
+Fig. 1. General statistics on the number of branches used in 2,923 projects.
+Additionally, we try to identify what kind of projects tend
+to use more branches. We conduct our experiments on 2,923
+GitHub projects. For each project, we ﬁrst retrieve all branches
+created within the project. Then we count how many branches
+each project uses.
+Figure 1 shows the general statistics on the number of
+branches used in 2,923 projects. The horizontal axis is the
+number of branches created within a project. The vertical axis
+represents the number of projects containing a certain number
+of branches during development. Most projects (87.9%) create
+less than ﬁve branches. Only 91 projects create more than
+30 branches, while 534 projects have only one branch. In
+other words, 18.3% (534/2,923) projects do not create other
+branches but directly develop on the master branch.
+Finding 1. Most projects (87.9%) create fewer than ﬁve
+branches during their development. A small number of
+projects (3.1%) create at least 30 branches; 18.3% projects
+only develop on their master branches.
+In Figure 1, we also observe that different projects create
+different numbers of branches during their development. Some
+use only a few branches while some others create many
+branches. To understand what kind of projects tend to use
+more or fewer branches,we divide 2,923 projects into different
+groups by speciﬁc project attributes (such as project’s scale
+and popularity) to examine the branch usage in those projects.
+We consider three project features, namely project size, forks
+number, and owner type.
+Project size measures a project’s scale, which represents
+how much physical space a project needs to store its data
+(KB). The Forks count describes how many times a project is
+forked by others. In GitHub, if a developer wants to contribute
+to a project, he/she generally needs to fork it to his/her own
+account. Thus, forks number can be used as a proxy metric
+of a project’s popularity among developers. Owner type can
+tell us whether a project is owned by a personal user or an
+organization, which is obtained by searching relevant item
+(i.e., “type”) in the details of individual repository by using
+GitHub API (i.e., “GET /repos/:owner/:repo”).
+We divide projects into groups based on each of the above
+309
+Authorized licensed use limited to: Nanjing University. Downloaded on May 20,2020 at 13:25:16 UTC from IEEE Xplore.  Restrictions apply.

@@ -1,5 +1,6 @@
 # src/research_assistant/views/document_management.py
 
+# document_management.py
 from rest_framework import viewsets, status
 from rest_framework.decorators import action 
 from rest_framework.response import Response
@@ -8,13 +9,13 @@ from django.utils.decorators import method_decorator
 from asgiref.sync import sync_to_async, async_to_sync
 import asyncio
 from typing import Dict, List, Optional 
-from rest_framework.decorators import action
 from django.shortcuts import get_object_or_404
+import uuid
 
-from ..models import DocumentMetadata, DocumentSection
+from ..models import DocumentMetadata, DocumentSection, SearchResult, DocumentRelationship, LLMResponseCache
 from ..services.document_processor import DocumentProcessor
 from ..services.document_summarizer import DocumentSummarizer
-from ..services.cache_manager import DocumentCacheManager
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class DocumentManagementViewSet(viewsets.ViewSet):
@@ -22,123 +23,118 @@ class DocumentManagementViewSet(viewsets.ViewSet):
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.cache_manager = DocumentCacheManager()
+       
         print("[DocumentManagementViewSet] Initialized")
 
     async def _process_document(self, file_data: Dict) -> Dict:
         """Process single document and return metadata"""
         print(f"[_process_document] Processing document: {file_data['file_name']}")
 
-        # Check for existing document
-        existing_doc = await sync_to_async(self.cache_manager.check_existing_document)(file_data)
-        if existing_doc:
-            print(f"[_process_document] Found existing document: {existing_doc.id}")
-            cached_data = await sync_to_async(self.cache_manager.get_document_data_sync)(
-                str(existing_doc.id)
-            )
-            if cached_data:
-                return cached_data['document']
-
-        # Create new document if no cache found
-        print(f"[_process_document] Creating new document: {file_data['file_name']}")
-        document = await sync_to_async(DocumentMetadata.objects.create)(
+       # Check for existing document using model query
+        existing_doc = await sync_to_async(DocumentMetadata.objects.filter(
             file_name=file_data['file_name'],
-            url=file_data['file_url'],
-            processing_status='processing',
-            # metadata={'document_hash': self.cache_manager._generate_document_hash(
-            #     file_data['file_name'],
-            # )}
-        )
+            url=file_data['file_url']
+        ).first)()
 
-        # try:
+        if existing_doc:
+            return {
+                'document_id': str(existing_doc.id),
+                'title': existing_doc.title,
+                'authors': existing_doc.authors,
+                'pages': existing_doc.total_pages, 
+                'summary': existing_doc.summary,
+                'references': existing_doc.reference,
+                'processing_status': existing_doc.processing_status,
+                'file_name': existing_doc.file_name,
+                'file_url': existing_doc.url,
+                'created_at': existing_doc.created_at 
+            }
+        
         # Initialize processors
         doc_processor = DocumentProcessor(
-            document_id=str(document.id),
+            document_id=file_data["file_id"],
             document_url=file_data['file_url']
         )
-
-        print(f"[_process_document] Initialized document summarizer")
-        summarizer = DocumentSummarizer()
-       
+        
         # Process document
         print(f"[_process_document] Processing document: {file_data['file_name']}")
         sections, reference_data = await sync_to_async(doc_processor.process_document_from_url)(
             file_data['file_url']
         )
 
-        print(f"[_process_document] Processed {len(sections)} sections")
-
-        # Extract metadata from first page
-        print(f"[_process_document] Extracting metadata from first page for summary")
-        first_page_text = next(
-            (section['content']['text'] for section in sections if section['content']['type'] == 'title'),
-            sections[0]['content']['text']
+        # Create new document
+        print(f"[_process_document] Creating new document: {file_data['file_name']}")
+        document = await sync_to_async(DocumentMetadata.objects.create)(
+            id=file_data['file_id'],
+            file_name=file_data['file_name'],
+            url=file_data['file_url'],
+            processing_status='processing'
         )
+    
 
-        metadata = await sync_to_async(summarizer.generate_summary)(
-            first_page_text,
-            document.id 
-        )
+        try:
+            
+            summarizer = DocumentSummarizer()
+            
+           
+            total_pages = await sync_to_async(doc_processor.get_total_pages)()
+            print(f"[_process_document] Total Pages {total_pages}")
+            print(f"[_process_document] Processed {len(sections)} sections")
 
-        print(f"[_process_document] Extracted metadata: {metadata}")
+            # Get metadata
+            metadata = await sync_to_async(summarizer.generate_summary)(
+                sections[:2],  # Pass first two sections instead of just first page text
+                document.id 
+            )
 
-        # Update document with metadata
-        for field, value in metadata.items():
-            setattr(document, field, value)
+            # Update document metadata
+            for field, value in metadata.items():
+                setattr(document, field, value)
+            document.reference = reference_data
+            document.processing_status = 'completed'
+            await sync_to_async(document.save)()
 
-        document.reference = reference_data
-        print(f"[_process_document] Updated document reference data")
-        document.processing_status = 'completed'
-        print(f"[_process_document] Document processing complete")
-        await sync_to_async(document.save)()
+            # Store sections
+            for section_data in sections:
+                try:
+                    section = await sync_to_async(DocumentSection.objects.create)(
+                        document=document,
+                        section_type=section_data['content'].get('type', 'text'),  # Added default
+                        content=section_data['content'].get('text', ''),  # Added safety
+                        section_start_page_number=int(section_data['section_start_page_number']),  # Ensure int
+                        prev_page_text=section_data.get('prev_page_text'),
+                        next_page_text=section_data.get('next_page_text'),
+                        has_citations=bool(section_data['content'].get('has_citations', False)),
+                        citations=section_data.get('citations', {})  # Added default
+                    )
 
-        print(f"[_process_document] Saved document metadata")
-        
+                    # Handle tables and images
+                    if 'elements' in section_data:
+                        section.set_elements(section_data['elements'])
+                        await sync_to_async(section.save)()
 
-        # Store sections
-        for section_data in sections:
-            try:
-                section = await sync_to_async(DocumentSection.objects.create)(
-                    document=document,
-                    section_type=section_data['content']['type'],
-                    content=section_data['content']['text'],
-                    section_start_page_number=section_data['section_start_page_number'],
-                    position=section_data.get('position', 0),
-                    section_id=section_data['section_id'],
-                    start_text=section_data['pointer']['section_start_text'],
-                    url_fragment=f"page={section_data['section_start_page_number']}",
-                    has_citations=bool(section_data['content']['has_citations']),
-                    citations=section_data['citations'],
-                    table_data={},
-                    title_group_number=section_data['pointer']['title_group_number'],
-                    title_group_text=section_data['pointer']['title_text']
-                )
+                except Exception as e:
+                    print(f"[_process_document] Error creating section: {str(e)}")
+                    continue
 
-                if 'elements' in section_data:
-                    section.set_elements(section_data['elements'])
-                    await sync_to_async(section.save)()
-
-            except Exception as e:
-                print(f"[_process_document] Error creating section: {str(e)}")
-                continue
-
-        return {
-            'document_id': str(document.id),
-            'title': document.title,
-            'authors': document.authors,
-            'summary': document.summary,
-            'references': document.reference,
-            'processing_status': document.processing_status,
-            'file_name': file_data['file_name'],
-            'file_url': file_data['file_url']
-        }
-
-        # except Exception as e:
-        #     print(f"[_process_document] Error: {str(e)}")
-        #     document.processing_status = 'failed'
-        #     document.error_message = str(e)
-        #     await sync_to_async(document.save)()
-        #     raise
+            return {
+                'document_id': str(document.id),
+                'title': document.title,
+                'authors': document.authors,
+                'pages': total_pages,
+                'summary': document.summary,
+                'references': document.reference,
+                'processing_status': document.processing_status,
+                'file_name': file_data['file_name'],
+                'file_url': file_data['file_url'],
+            }
+            
+        except Exception as e:
+            print(f"[_process_document] Error: {str(e)}")
+            document.processing_status = 'failed'
+            document.error_message = str(e)
+            await sync_to_async(document.save)()
+            raise
 
 
     @action(detail=False, methods=['POST'])
@@ -149,6 +145,7 @@ class DocumentManagementViewSet(viewsets.ViewSet):
     async def _upload_documents(self, request):
         """Async implementation of document upload"""
         print("[_upload_documents] Starting document upload")
+        print("[_upload_documents] request data", request.data)
         
         data = request.data
         if not isinstance(data, list):
@@ -211,7 +208,7 @@ class DocumentManagementViewSet(viewsets.ViewSet):
         """Retrieve all documents"""
         try:
             documents = DocumentMetadata.objects.all().order_by('-created_at')
-            
+            # here--
             return Response({
                 'status': 'success',
                 'documents': [{
@@ -239,20 +236,57 @@ class DocumentManagementViewSet(viewsets.ViewSet):
  
     @action(detail=False, methods=['DELETE'])
     def delete_documents(self, request):
-        """Delete multiple documents"""
-        print("DELETE request received. Data:", request.data)
-        """Delete a specific document"""
+        """Delete document and all related data"""
+        print("[DELETE] Starting document deletion")
         try:
-            document_id = request.data['document_ids']
-            document = get_object_or_404(DocumentMetadata, id=document_id)
+            document_id = request.data.get('document_id')
+            print(f"[DELETE] Attempting to delete document: {document_id}")
+
+            if not document_id:
+                return Response(
+                    {"error": "No document ID provided"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # Get the document
+            try:
+                document = DocumentMetadata.objects.get(id=document_id)
+            except DocumentMetadata.DoesNotExist:
+                return Response(
+                    {"error": "Document not found"},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            # Delete related data (Django will handle cascade deletion for ForeignKey relationships)
+            # But we'll be explicit about some relationships
+            
+            # Delete document sections
+            DocumentSection.objects.filter(document=document).delete()
+            
+            # Delete search results
+            SearchResult.objects.filter(document=document).delete()
+            
+            # Delete LLM cache responses
+            LLMResponseCache.objects.filter(document=document).delete()
+            
+            # Delete document relationships
+            DocumentRelationship.objects.filter(
+                source_document=document
+            ).delete()
+            DocumentRelationship.objects.filter(
+                target_document=document
+            ).delete()
+            
+            # Finally delete the document itself
             document.delete()
             
             return Response({
                 'status': 'success',
-                'message': 'Document deleted successfully'
+                'message': 'Document and related data deleted successfully'
             })
-            
+                
         except Exception as e:
+            print(f"[DELETE] Error deleting document: {str(e)}")
             return Response(
                 {
                     'status': 'error',
@@ -260,5 +294,5 @@ class DocumentManagementViewSet(viewsets.ViewSet):
                 },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-
-
+        
+        

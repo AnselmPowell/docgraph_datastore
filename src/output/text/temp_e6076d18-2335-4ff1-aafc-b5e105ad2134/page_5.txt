@@ -1,0 +1,170 @@
+0
+200
+400
+600
+2
+4
+6
+8
+10
+12
+14
+16
+18
+20
+22
+24
+26
+28 >=30
+Number of Branches
+Number of Projects
+Size_Level
+High
+Median
+Low
+(a) branches used in projects grouped by size
+0
+200
+400
+600
+2
+4
+6
+8
+10
+12
+14
+16
+18
+20
+22
+24
+26
+28 >=30
+Number of Branches
+Number of Projects
+Forks_Level
+High
+Median
+Low
+(b) branches used in projects grouped by forks
+number
+0
+100
+200
+300
+400
+2
+4
+6
+8
+10
+12
+14
+16
+18
+20
+22
+24
+26
+28 >=30
+Number of Branches
+Number of Projects
+Owner_Type
+Organization
+User
+(c) branches used in projects grouped by owner
+type
+Fig. 2. Branches used in projects grouped by owner type, forks number and size.
+three project attributes. Unlike owner type, which has only
+two enumeration values (“personal user” and “organization”),
+project size and forks number are numeric values. For each of
+the numeric project attributes, we divide the numeric values
+into three groups: small, median, and large. For project size
+and forks number, we ﬁrst compute the 1st quartile, the
+median, and the 3rd quartile of all values. Projects with the
+measure smaller than the 1st quartile are assigned to the
+small group. If the value is larger than the 3rd quartile, the
+project is assigned to the large group. The remaining projects
+are assigned to the median group. Figure 2(a)-2(c) presents
+branches used in projects grouped by size, forks number and
+owner type respectively. The horizontal axis is the number of
+branches used in a project. The vertical axis is the number of
+projects which have a certain number of branches. Different
+colours represent different groups.
+In Figure 2(a), when the number of branches is no more
+than three, the numbers of projects with small size, median
+size, and large size are similar. When the number of branches
+increases above 3, large scale projects tend to represent a much
+larger proportion compared to small and median projects.
+This means large-scale projects are more likely to use more
+branches during development. A similar phenomenon can also
+be observed in Figure 2(b). Thus, a more popular project
+tends to use more branches during development. As shown in
+Figure 2(c), when there are less than eight branches, personal
+projects occupy a larger proportion than organization-owned
+projects. As the branch count increases, the difference between
+two types of projects becomes small. For projects with more
+than 30 branches, organization-based projects are the majority.
+This suggests that projects created by personal users are
+more likely to use fewer branches; while projects created by
+organizations are more likely to use more branches during their
+development.
+Next, we apply Wilcoxon Rank Sum test with Bonferroni
+correction [2] and Cliff Delta Effect Size [10] to check
+the statistical signiﬁcance of the above-observed differences
+between different groups, i.e., user vs. organization, high
+vs. median, median vs. low, and high vs. low. We apply
+Bonferroni
+correction
+to
+adjust
+p-values
+from
+multiple
+comparisons. We ﬁnd that the differences in branch usage
+between
+different
+groups
+are
+all
+statistical
+signiﬁcant
+(p-value<0.05): for project size or owner type, all
+p-values<2.2e−16; for forks number, the p-values for high
+vs. median, median vs. low and high vs. low are 0.024,
+2.68e−13 and < 2.2e−16 respectively. However, all differences
+except two are small evaluated by the Cliff Delta effect size
+(|d|<0.147 "negligible", |d|<0.33 "small",
+|d|<0.474 "medium", otherwise "large"):
+for
+project size, the difference between high and low groups is
+large, with effect size value being 0.543 (>0.474); for forks
+number, the difference between median and low groups is
+negligible, with effect size value being 0.067 (<0.147); all
+other differences are small with their effect size values being
+larger than 0.147 but smaller than 0.33.
+Finding 2. Large scale projects tend to use signiﬁcantly
+more branches than small scale projects; popular projects or
+projects owned by organizations tend to use slightly more
+branches during software development.
+Implications. In Finding 1, we note that most (87.9%) projects
+use no more than ﬁve branches during their development.
+However, it also can be observed that either some projects
+(18.3%) only work on the master branch or some projects
+(3.1%) use many branches (>30 branches). For these projects,
+in-depth analysis is desired. For example, we are not clear on
+why some projects create a lot of branches, what problems
+they face when they try to manage many branches. Moreover,
+why do some projects, including organizational projects which
+may involve many developers, only develop on master branch?
+In Finding 2, we ﬁnd that more popular, larger or organiza-
+tional projects tend to use more branches than others, which
+propose more research questions to investigate, e.g., whether
+these projects might face more challenges when managing
+more branches, and what problems they exactly face and how
+do they try to address them. The answers of these research
+questions can 1) provide some guidance for other practitioners
+who face similar problems, and 2) inspire more researchers or
+310
+Authorized licensed use limited to: Nanjing University. Downloaded on May 20,2020 at 13:25:16 UTC from IEEE Xplore.  Restrictions apply.

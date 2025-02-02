@@ -1,0 +1,122 @@
+www.ijcrt.org                                                                 © 2017 IJCRT | Volume 5, Issue 3 August 2017 | ISSN: 2320-2882 
+IJCRT1133441 
+International Journal of Creative Research Thoughts (IJCRT) www.ijcrt.org 
+948 
+ 
+B. Similarities 
+ The concepts of both are centered upon how quickly 
+software can be developed without harming customers nor 
+operations. They both believe in quick software development. 
+Both approaches emphasize speed and consistency [14]. Both are 
+sufficiently malleable and therefore can be integrated into 
+any business models and industries. Both DevOps and Agile are 
+mutually complementary. Agile helps teams to prioritize the 
+versatility, rapidity, and high quality of providing business value 
+to customers [15]. DevOps offers from a technological point of 
+view the underlying organizational culture and infrastructure. The 
+complementary relationship is seen in this light. Well-informed 
+project stakeholders and sprints will mean nothing if the 
+underlying facilities collapse because of the differences in both 
+development and production contexts [16]. The opposite is true, 
+too. 
+understanding 
+of 
+the 
+two 
+methodologies. 
+ 
+Fig ii: Differences between Agile and DevOps methodologies [17]. 
+Agile use implementation in large projects 
+Agile was developed to assist businesses in meeting existing 
+needs in the world of business and a positive and creative working 
+climate. In the literature on how Agile strategies interact with 
+progress, there has been very little documentation of the 
+Organizational Process Improvement Program [18].  Further 
+improvements in technological innovation can be shaped, for 
+example, by corporate business models, concurrent design, 
+multisectoral management, and proactive development [19]. 
+Experts asked on what they felt were the major research issue in 
+their disciplines at the 2010 XP meeting in Trondheim, 
+Norway mentioned that the location of agile as well as large 
+ventures has been the top of the list.  
+IV. 
+CHALLENGES: AGILE APPROACH 
+Even though agile technology seems suitable for small 
+teams with direct involvement, multiple barriers exist in large 
+multi-site, multi-customer, and multi-project partnerships to 
+incorporate these practices [20].  As a result, there was a list of 
+transitional challenges and a list of almost forty clear barriers to 
+agile use in large groups. Many of these problems have been 
+identified by the degree of complexity, but others have been 
+identified by the friction between agile and traditional societies; 
+for example, contradictions between design processes, changes in 
+subsystems that cannot be affected, complex life cycles, and 
+difficulties in using agile heritage frames. Agile design 
+approaches must be tailored to existing procedures in the 
+enterprise [21]. 
+V. 
+AGILE AND DEVOPS CULTURE 
+Although Agile doesn't always lead to DevOps, the 
+culture changes in an organization are profound. An agile 
+approach will encourage a change in development thinking[22]. 
+Agile thinking encourages tiny, easy-to-use transitions that lead 
+to big improvements over time, rather than thinking of growth as 
+cumbersome [23]. Businesses of all sizes have studied how many 
+units can increase their work in an agile way. Currently, some 
+companies are Agile. DevOps can however bring about its 
+cultural changes, such as improved communications and stable 
+balance with transformation and flexibility [24]. The choice to use 
+both concepts is an active decision, which many analysts think 
+could lead to good decision making and therefore to a better 
+culture of the business. 
+VI. 
+CONCLUSION 
+Agile and DevOps are different, even though their correlations 
+cause people to assume that they are the same. This is a disservice 
+to both agile or DevOps. Both help teams to work faster and more 
+efficiently, where quality work is delivered and contented 
+customers. DevOps is a collaboration-building framework for the 
+Technology and Operations team. This allows the consumers to 
+quickly and automatedly deploy code for production. It helps to 
+speed up the delivery of products and services through an 
+organization. With these insights in mind, it is clear that both 
+Agile and DevOps strive for a more efficient way to bring the end-
+users' value— but from various angles. It can be defined as 
+aligning development and IT operation. Agile seeks to improve 
+efficiency for developers and release schedules, while DevOps 
+brings together the operations team to allow continuous 
+implementation and continuous delivery [25]. It has also helped 
+to promote innovative thoughts beyond agile development and 
+multi-functional (DevOps) as well as end-to-end processes that 
+affect software companies and customers. Several organizations 
+have effectively adopted agile techniques to speed up the 
+development of applications. The days of waterfall strategies are 
+long gone. Agile has started to grow slowly into other 
+downstream sectors, including IT and operations, in the 
+technology organization. Teams, simplified processes, improved 
+feedback loops, and driven IT departments become much faster 
+with an innovation that has a profound impact on the whole 
+organization. To build on this performance, DevOps, and 
+Continuous License (CD) have been built to support and improve 
+agility, reactivity, and fast times for marketing over the entire life 
+cycle of software delivery. However, software teams must have a 
+high level of understanding of how to deploy and implement these 
+methodologies. Agile and DevOps are by no means adversaries 
+(or at least they are not intended). Throughout the agile revolution, 
+they are much more allies than enemies. Both Agile and DevOps 
+easily work in the same space either Inclusively or exclusively. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Electronic copy available at: https://ssrn.com/abstract=3655581

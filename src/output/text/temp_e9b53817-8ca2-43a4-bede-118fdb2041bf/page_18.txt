@@ -1,0 +1,9 @@
+5.
+Noble W. A quick guide to organizing computational biology projects. PLoS Comput Biol. 2009 Jul; 5:
+e1000424. doi: 10.1371/journal.pcbi.1000424 PMID: 19649301
+6.
+Morin A, Urban J, Sliz P. A quick guide to software licensing for the scientist-programmer. PLoS Com-
+put Biol. 2012 null; 8:e1002598. doi: 10.1371/journal.pcbi.1002598 PMID: 22844236
+PLOS Computational Biology | DOI:10.1371/journal.pcbi.1004668
+January 19, 2016
+18 / 18

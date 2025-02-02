@@ -1,0 +1,89 @@
+Future Internet 2022, 14, 63
+13 of 14
+24.
+Stahl, D.; Mårtensson, T.; Bosch, J. Continuous Practices and Devops: Beyond the Buzz, What Does it All Mean? In Proceedings of
+the 43rd Euromicro Conference on Software Engineering and Advanced Applications (SEAA), Vienna, Austria, 30–31 August 2017.
+[CrossRef]
+25.
+Larman, C.; Basili, V.R. Iterative and Incremental Development: A Brief History. Computer 2003, 36, 47–56. [CrossRef]
+26.
+Tozzi, C. 5 Problems with DevOps [Web Log Message]. 12 January 2021. Available online: https://www.itprotoday.com/devops-
+and-software-development/5-problems-devops (accessed on 28 December 2021).
+27.
+Lwakatare, L.E.; Kuvaja, P.; Oivo, M. Relationship of DevOps to Agile, Lean and Continuous Deployment. In Product-Focused
+Software Process Improvement; Abrahamsson, P., Jedlitschka, A., Nguyen Duc, A., Felderer, M., Amasaki, S., Mikkonen, T., Eds.;
+Lecture Notes in Computer Science; Springer International Publishing: Cham, Switzerland, 2016; pp. 399–415. [CrossRef]
+28.
+Wang, C.; Liu, C. Adopting DevOps in Agile: Challenges and Solutions. Adopting DevOps in Agile: Challenges and Solutions.
+29 June 2018. Available online: http://www.diva-portal.org/smash/record.jsf?pid=diva2%3A1228684&dswid=5071 (accessed on
+2 January 2022).
+29.
+Galup, S.; Dattero, R.; Quan, J. What Do Agile, Lean, and ITIL Mean to DevOps? Com. ACM 2020, 63, 48–53. [CrossRef]
+30.
+Hema, V.; Thota, S.; Kumar, S.N.; Padmaja, C.; Krishna, C.B.; Mahender, K. Scrum: An Effective Software Development Agile
+Tool. IOP Conf. Ser. Mater. Sci. Eng. 2020, 981, 022060. [CrossRef]
+31.
+Santos, P.S.; Beltrão, A.C.; Souza, B.P.; Travassos, G.H. On the beneﬁts and challenges of using kanban in software engineering: A
+structured synthesis study. J. Soft Eng. Res. Dev. 2018, 6, 13. [CrossRef]
+32.
+Fojtik, R. Extreme Programming in development of speciﬁc software. Procedia Comput. Sci. 2011, 3, 1464–1468. [CrossRef]
+33.
+Sani, A.; Arbain, A.F.; Jeong, S.R.; Ghani, I. A Review on Software Development Security Engineering using Dynamic System
+Method (DSDM). Int. J. Comp. Applic 2013, 69, 33–44. [CrossRef]
+34.
+Mousaei, M.; Gandomani, T.J. DevOps Approach and Lean Thinking in Agile Software Development: Opportunities, Advantages,
+and Challenges. J. Soft Eng. Int. Syst. 2020, 5, 1–10.
+35.
+Hamunen, J. Challenges in Adopting a Devops Approach to Software Development and Operations. 23 July 2016. Available
+online: https://aaltodoc.aalto.ﬁ/handle/123456789/20766 (accessed on 2 January 2022).
+36.
+Marnewick, C.; Langerman, J. DevOps and Organizational Performance: The Fallacy of Chasing Maturity. IEEE Soft 2021, 38,
+48–55. [CrossRef]
+37.
+Subramanian, A.; Krishnamachariar, P.K.; Gupta, M.; Sharman, R. Auditing an Agile Development Operations Ecosystem. In
+Research Anthology on Agile Software, Software Development, and Testing; International Management Association, Ed.; IGI Global:
+Hershey, PA, USA, 2022; pp. 1154–1176. [CrossRef]
+38.
+Faustino, J.; Pereira, R.; Alturas, B.; Silva, M.M.D. Agile Information Technology Service Management with DevOps: An Incident
+Management Case Study. Int. J. Agile Syst. Manag. 2020, 13, 339–389. [CrossRef]
+39.
+Dörnenburg, E. The Path to DevOps. IEEE Soft 2018, 35, 71–75. [CrossRef]
+40.
+Céspedes, D.; Angeleri, P.; Melendez, K.; Dávila, A. Software Product Quality in DevOps Contexts: A Systematic Literature
+Review. In Trends and Applications in Software Engineering; Mejia, J., Muñoz, M., Rocha, Á., Calvo-Manzano, J.A., Eds.; Advances in
+Intelligent Systems and Computing; Springer International Publishing: Cham, Switzerland, 2020; pp. 51–64. [CrossRef]
+41.
+Nybom, K.; Smeds, J.; Porres, I. On the Impact of Mixing Responsibilities Between Devs and Ops. In Agile Processes, in Software
+Engineering, and Extreme Programming; Sharp, H., Hall, T., Eds.; Lecture Notes in Business Information Processing; Springer
+International Publishing: Cham, Switzerland, 2016; pp. 131–143. [CrossRef]
+42.
+Merriam, S.B.; Tisdell, E.J. Qualitative Research: A Guide to Design and Implementation; John Wiley & Sons: Hoboken, NJ, USA, 2015.
+43.
+Dyba, T.; Prikladnicki, R.; Rönkkö, K.; Seaman, C.; Sillito, J. Qualitative research in software engineering. Emp. Soft Eng. 2011, 16,
+425–429. [CrossRef]
+44.
+Braun, V.; Clarke, V. Thematic Analysis: A Practical Guide; SAGE Publications: Thousand Oaks, CA, USA, 2021.
+45.
+Danesh, A.S.; Saybani, M.R.; Danesh, S.Y. Software release management challenges in industry: An exploratory study. Afri. J. Bus.
+Manag. 2011, 5, 8050–8056. [CrossRef]
+46.
+Ogheneovo, E. Software Dysfunction: Why Do Software Fail? J. Comp. Commun. 2014, 2, 25–35. [CrossRef]
+47.
+Fabro, V. The Uniﬁed Value of Agile and DevOps. 14 December 2020. Available online: https://www.insight.com/en_US/
+content-and-resources/tech-journal/winter-2020/the-uniﬁed-value-of-agile-and-devops.html (accessed on 5 January 2022).
+48.
+Hemon-Hildgen, A.; Rowe, F.; Monnier-Senicourt, L. Orchestrating automation and sharing in DevOps teams: A revelatory case
+of job satisfaction factors, risk and work conditions. Eur. J. Inf. Syst. 2020, 29, 474–499. [CrossRef]
+49.
+Ali, N.; Daneth, H.; Hong, J.E. A hybrid DevOps process supporting software reuse: A pilot project. J. Soft Evol. Proc. 2020,
+32, e2248. [CrossRef]
+50.
+DeFranco, J.F.; Laplante, P.A. Review and Analysis of Software Development Team Communication Research. IEEE Trans. Prof.
+Commun. 2017, 60, 165–182. [CrossRef]
+51.
+Schmutz, J.B.; Meier, L.L.; Manser, T. How effective is teamwork really? The relationship between teamwork and performance in
+healthcare teams: A systematic review and meta-analysis. BMJ Open 2019, 9, e028280. [CrossRef] [PubMed]
+52.
+Cois, C.A.; Yankel, J.; Connell, A. Modern DevOps: Optimizing software development through effective system interactions. In
+Proceedings of the IEEE International Professional Communication Conference (IPCC), Pittsburgh, PA, USA, 13–15 October 2014.
+[CrossRef]

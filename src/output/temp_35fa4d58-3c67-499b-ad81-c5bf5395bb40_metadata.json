@@ -1,0 +1,341 @@
+{
+  "metadata": {
+    "filename": "temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40",
+    "extraction_date": "2025-01-28T00:13:24.450375",
+    "path": "research_assistant\\data\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40.pdf"
+  },
+  "pages": {
+    "1": "Unit Test Automation with Jenkins-CI tool \nAhmed, Anastasia \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n2015 Leppävaara UAS",
+    "2": "Laurea University of Applied Sciences \nLeppävaara UAS \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \nUnit Test Automation with Jenkins CI-tool \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \nAhmed Anastasia \n \n \n \n \nBusiness Information Technology \n \n \n \n \nBachelor’s Thesis \n \n \n \n \nJune, 2015",
+    "3": "Laurea University of Applied Sciences \n \nAbstract \nLaurea UAS \nBusiness Information Technology \n \n \n \n \nAhmed Anastasia \n \nUnit test automation with Jenkins-CI tool \n \nYear \n2015  \n \n \nPages  \n 32                      \n \nContinuous Integration (CI) the process that is performing tasks continuously itself. Software \ndevelopment and its testing started a new era, which allows making the process productive \nand faster. \n \nIt has been one of the fast growing industries in many parts of businesses. By the years devel-\nopment techniques has been improving and produced a quality product to the client in a \nshorter period. The competition raised, but expense of the production got smaller. \n \nAutomation testing is a testing model that allows performing test automatically. As a part of \nthe continuous integration, it gives great benefits and opportunities. \nThe main task of this thesis was to build an environment for continuous Integration test au-\ntomation. It allows execute the unit tests automatically using Jenkins as a tool. \n \nSecondly write several Unit tests for testing only one particular part of the code for correct \noutput and start running these tests in the new automated environment. \nAs a result of this project, stable automated CI environment for the execution of unit tests. \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \nKeywords, Test Automation, Unit Testing, Code, Commit, Subversion SVN Version Control Sys-\ntem, CI-tool, CI – Continuous Integration",
+    "4": "Table of contents \n \n1 \nIntroduction ......................................................................................... 6 \n2 \nSoftware testing .................................................................................... 6 \n2.1 \nTesting Types ............................................................................... 7 \n2.1.1 Module/Unit Testing ............................................................... 7 \n2.1.2 Integration testing ................................................................. 8 \n2.1.3 Regression Testing ................................................................. 8 \n2.1.4 Functional Testing ................................................................. 8 \n2.1.5 System testing ...................................................................... 8 \n2.1.6 Acceptance Testing ................................................................ 8 \n2.1.7 Beta testing ......................................................................... 8 \n3 \nAgile .................................................................................................. 8 \n3.1 \nScrum framework .......................................................................... 9 \n3.2 \nScrum development cycle sprint ........................................................ 9 \n4 \nCI-Continuous Integration ...................................................................... 10 \n4.1 \nPerformance cycle of CI ................................................................ 10 \n4.2 \nVersion Control ........................................................................... 12 \n4.3 \nVersion control tool Subversion ........................................................ 12 \n5 \nProject overview ................................................................................. 13 \n6 \nJenkins CI-server ................................................................................. 13 \n6.1 \nJenkins build .............................................................................. 14 \n7 \nRobot Framework ................................................................................ 14 \n8 \nSetting a working environment ................................................................ 15 \n8.1 \nJava ......................................................................................... 15 \n8.2 \nApache Tomcat ........................................................................... 15 \n8.3 \nPutty ........................................................................................ 15 \n8.4 \nEclipse environment ..................................................................... 16 \n8.4.1 PyDev plug for Eclipse ........................................................... 16 \n9 \nInstalling Jenkins server ........................................................................ 16 \n9.1 \nJenkins Plugins for Python Scripting languade ...................................... 18 \n9.1.1 Virtual NV .......................................................................... 18 \n9.1.2 Pip-installer ....................................................................... 18 \n9.1.3 Nose-framework .................................................................. 19 \n9.2 \nManage Jenkins/ Jenkins system configuration ..................................... 19 \n9.3 \nJenkins Plugins for Python Scripting languade ...................................... 20 \n9.3.1 Virtual NV .......................................................................... 20 \n9.3.2 Pip-installer ....................................................................... 20 \n9.3.3 Nose-framework .................................................................. 21",
+    "5": "9.4 \nConfiguring New Job in Jenkins........................................................ 21 \n10 \nJenkins Result analysis .......................................................................... 24 \n11 \nResult analysis, work summary and future suggestions ................................... 27 \n12 \nFuture suggestions ............................................................................... 28 \nReferences ................................................................................................ 29 \nFigures ..................................................................................................... 31 \nAppendixes ................................................................................................ 32",
+    "6": "1 \nIntroduction\n \nThe work presented in this thesis was done based on requirements of Nokia Networks Network \nCompany that is concentrating on providing fast and height standard network connections and \nsolutions all over the world. Telecommunications is the core business since 1990’s this day’s \nconcentrate on Network, location, and Nokia technologies.  \n \nThis work is happening in agile working environment focusing on integrating automation test-\ning. Apply new Continuous Integration (CI) environment for unit tests automation using Jen-\nkins as a tool. To be able to compose this project, lots of issues needed to be solved and \nlearned.  \n \nThis thesis is divided it two parts; first is background information and second the practical \nwork. In theory part chapters 2,3,4,5 and 6 will be described shortly software testing itself \nand automation testing, second moving into Agile and Scrum frameworks that have been \nintegrated at the same time. Third continuous integration and Jenkins as a continuous inte-\ngration tool that used in this project for unit test automation. Robot Framework that is the \nactual software that was under testing. Finally chapter 7,8,9,10 setup of the integration envi-\nronment.  \n \nThe final goal of this project is an independently working CI environment for automated unit \ntests. \n \n2 \nSoftware testing \n \nDuring the software development process, different tests in different stages of product de-\nvelopment are used. However, it does not mean that written code is a bed, it is because most \napplications are complex, and it is very difficult to see all possible problems in it. \nTests are written based on the user needs and specification requirements. (Mathur A.P. 2008) \n \nSoftware development is a complex and long process, and it requires the use of different \nsoftware testing types and tools. Testing methods change with time. As the field of software \ntesting is growing, and it is becoming more complex. Automated testing increases develop-\nment speed as it allows short development cycle, saves time, human resources, and money. \nThese days of software engineering automated testing is taking an important part in many \ndevelopment environments in software engineering. (Dustin. E., Rashka. J., Paul, J. 2008)",
+    "7": "7 \n \n2.1 \nTesting Types \n \nDifferent software testing types and methods are used to help software testing to identify \ncompleteness, accuracy, quality and security. The phases of software testing done for the \ncustomer. It helps the client follow the quality of the product in every development stage. \n(Satalkar, B. 2011) \n \nThe next figure shows different development stages and tests required for particular devel-\nopment phases. \n \n \n \n \nFigure 1: Development stages and needed tests \n \n1 \nProduct development  \n \nModule and Unit testing \n2 \nArchitectural design \n \nSystem, functional and integration testing \n3 \nEnd product \n \nAcceptance testing \n \n2.1.1 \nModule/Unit Testing \n \nUnit testing ensures correct behavior, specific action or logic of software unit. The unit is \nseparate software component. Its success or failure authenticates or rejects a single unit, \nindividual hardware, software unit, or group of related units. It very first partial test as soon \nas some feature is developed. Unit tests have to be written through all development process. \nIt is essential to unit test the feather before combining it with other software additionally \nafter combination failure is hard to find. Can be executed two different ways manually and \nautomatically. \n  \nModule \nTesting \nUnit \nTesting \nSystem \nTesting \nIntegration \nTesting \nFunctional \nTesting \nAcceptance \nTesting",
+    "8": "8 \n \n2.1.2 \nIntegration testing  \n \nIntegration tests are the interaction between software and hardware components. \nTesting happens between multiple units. Verify functionality of combined units together. \n \n2.1.3 \nRegression Testing \n \nRetesting of component or system to ensure that updates or changes have not made any prob-\nlems and still works with its requirements.(Williams. L., 2006) \nIt focuses on retesting the product. Checks that there are no new defects after same prob-\nlems have been fixed; mostly done automatically sometimes manually.  \n \n2.1.4 \nFunctional Testing \n \nPerformed manually or automatically based on the specification, special functionality of the \nsoftware or its part. Mostly done using these five points; suitability, security, accuracy and \nfulfillment. \n \n2.1.5 \nSystem testing \nProduct based testing of the entire complete combined system, which tests based on re-\nquirements of all system parts. \n \n2.1.6 \nAcceptance Testing \nAcceptance testing is the final phase of testing.  The purpose is to ensure that the product \nmeets the standards of quality to be accepted by the client. Made from combination of tests; \nensure that the product has right output from the production phase. It also focuses on things \nother than functionality that includes documentation and other items related to the product. \nThe test verifies, does the product meet the customers demand and ensure correct delivery \nand shows the success of all solution.  \n \n2.1.7 \nBeta testing \nBeta testing is testing by potential users. All errors found, have to be reported to the \ndevelopment team. (Jenkins, N. 2008) \n \n3 \nAgile  \n \nAgile model concentrate more on interaction with the customer value. The main goal is to \nmake flexible and efficient product by interacting with the client all the time while develop-\ning the process. \nThe top priority of the agile manifesto is customer satisfaction based on early continuous de-\nlivery. The timescale is from two weeks to two months. The idea is that business people and",
+    "9": "9 \n \ndevelopers working together through all projects. Business side gives developers support to go \nthrough the job by motivating them and providing all they need to succeed in the job. \n \n3.1 \nScrum framework \n \nIt is a framework that can be used to develop the different process. It organizes workload, \nestimates product workload: sprint, planning phase, clarify requirements. Estimate all tasks, \nmakes work more collaborative during the sprint. Sprint helps to follow the progress, finish \nwork on time, and review challenges. \n \n3.2 \nScrum development cycle sprint \n \n \n \nAppendix 1:Scrum development process",
+    "10": "10 \n \nScrum cycle main work and questions  \n \nIn these two pictures is shown the sprint cycle and the main steps to consider in every phase \nof the cycle. The Scrum cycle has seven main phases in the development process and respon-\nsible roles for each stage. \n \nSprint is a unit of development. Estimated Timeline Last between 24 hours and one month. In \nthe Sprint Backlog, development team estimates timeline for every feature they have to de-\nliver during the Sprint. Divides features on separate units, one feature as one unit. The 24h \nScrum starts with short 15 min stand-up meeting. The team first talk, what is done and what \nwill do during 24hour sprint, and what are the problems. During 24 hours, Sprint development \nteam deliver features based on the feature priorities defined on 24h scrum meetings and de-\nlivering the features. One’s feature has met its requirements it has the definition as done. \n \nOnes in 30 days or in a week team demos done features, which also shows how successful was \niteration(sprint), how well development process is progressing and how successful the estima-\ntion. Work has to be accepted by the Product Owner. After that, it can be delivered as a \nproduct. Every Sprint and every done delivery of the feature is a deliverable piece of ready \nsoftware. All possible bugs (problems in code) and small changes always joined to the next \nsprint.  \n \nThe other bigger issues and requests added to the Product Backlog. At the start of product \ndevelopment process, after checking and improvement of the Sprint, the development team \nhave a review discussion about what went well and badly during the sprint, and what they \nstill have to improve.  \n \n4 \nCI-Continuous Integration \n \n“Continuous Integration is a software development practice where members of a team inte-\ngrate their work frequently; usually each person integrates at least daily - leading to multiple \nintegrations per day. Each integration is verified by an automated build (including test) to \ndetect integration errors as quickly as possible” – Martin Fowler \n \n4.1 \nPerformance cycle of CI \n \nCI (Contentious Integration) Set of processes to automate and integrate new builds. Every-\nthing in CI starts from developers and other members same as database, build and other \nteams who make changes to the program source code.",
+    "11": "11 \n \nWhen teams are working on the same code risk of breaking the software is large. CI auto-\nmates the building of the packages. Continuous integration checks packages which keeps the \nsystem up and running as a quality control. \n \n“Build acts as a process of putting source code together and verifying that software works as \na cohesive unit”-Duvall Paul- continuous integration  \n \nIn the picture is CI system performance process and how they are working together. \n \n \n \nAppendix 2: The system components of a CI \n \n1) The CI process starts with the developer committing source code to the repository \n(database to store the code). After that, the CI server is polling this repository for \nchanges in the integration build machine. The polling time definded by the developer or \ntester.  \n \n2) After committing to the repository, CI server uses the latest copy of the code and then \nexecutes the build script.  \n \n3) Than CI server send the results to the specified members of the team, this feature can be \nalso modified separately.  \n \nCI requires four features. CI-server continuously polls for changes in repository \n• connection to a version control repository  \n• automated build script  \n• some feedback mechanism (such as e-mail)  \n• the process for integrating the source code changes (manual/automated)",
+    "12": "12 \n \n4.2 \nVersion Control \n \nThe version control repository is one of the important parts of CI system because it is simply \nused to be able to handle changes in the source code and other software issues.   \n \n4.3 \nVersion control tool Subversion \n \nThe version control system provides a track to all changes that are happening in the files. \nProviding a detailed history of changes that have been (happen) during the development \nphase. It provides ability to change, edit, rename or delete files. It keeps all the history of \nmade changes in it. Every developer can get the old version of the code anytime they want \nand see how the code has been developed up to this day. \n \nSource control repository. Makes it easy to share the files in the team. Tracks all changes. If \nsome of the team members breaks code, previous version of the code can be found from \nversion control history. (Collins-Sussman, B., W. Fitzpatrick, and C. Pilato, M.2011) \n \n \n \nAppendix 3: Suversion basic work cycle \n \nUpdate your working copy \no \nupdate \n \nMake changes \no \nadd \no \ndelete \no \ncopy \no \nmove \n \nExamine your changes \no \nstatus \no \ndiff \no \nrevert \n \nMake others' changes into your working copy \no \nupdate",
+    "13": "13 \n \no \nresolved \n \nCommit your changes \n5 \nProject overview \n \nUnit testing is actual on all levels of software development, and it usually is developed along \nwith the production code, but not builds in a final software product. It tests concrete object \nof the code on its performance. (Paul Hamill 2005) Continuous integration testing, set of \ndifferent tools to execute unit test automatically as soon as developer adds new features to \nit. The framework helps developers avoid the broken software.  \n \nThis work took place at Nokia Networks Espoo office in Karaportti.  The main requirement \nwas to set up the Continuous Integration automation testing environment using Jenkins as \nexecution unit test tool on the main company server and Python due to the test cases will be \nwritten in Python scripting language. Connect to the version control, assemble the job and \ntest the system functionality by running unit tests. \n \nProject objectives  \n \nPreparing environment \n \nDownload needed plugins \n \nConnecting all pieces together \n \nDefine test parameters \n \nSetting new job parameters \n \nRunning test cases \n \nResult analysis \n \n6 \nJenkins CI-server \n \nJenkins is Java- based open source Java-based continues integration (CI) server or continuous \nbuild monitoring tool for execution jobs repeatedly, also known as a test automation testing \ntool. It continuously tracks development errors in the early stage of software development. \n  \nJenkins concentrates on two main tasks: first is to perform testing and second is building pro-\njects continuously. \nJenkins is one of the largest open source CI build system. Because of its flexibility, hundreds \nof plugins and resilience with different types of systems. It allowing various environments and \nwork with multiple process stakeholders involved.",
+    "14": "14 \n \n6.1 \n Jenkins build \n \nCombined group of test cases in the performance log. In the build properties defined perfor-\nmance details and special requirements.  \n \nWhen creating a Jenkins build all performance details into the performance log have to be \noutlined. Also, name and library where from the source code will be taken. \n \nProject Name is the name of the project, also the name of the build. \n \nThe amount of days in the timeline box has to be specified. Thise will keep build information \nand history as long as needed. (Christopher, O., 2015) \n \n7 \nRobot Framework \n \nRobot Framework is open source test automation framework written in Python scripting lan-\nguage. It is used to write acceptance tests using keyword concept. Keywords are short com-\nmands, which are provided by different libraries. (Turnquist, G., L. 2011) \nTest data represents using different formats, like THML (Hypertext Markup Language), \nTSV(Tab-Separated Values), plain text or rest (Restructured Text). \nAfter defining custom keywords, robot framework maps keywords to Python code.  \nOn the figure is robot framework structure \n \n \n \nAppendix 4:Robot Framework Structure  \n \nRobot Framework process data as shown in the figure. First it takes test data, a process into \nthe appropriate format, receive data from ready form and at the end report it. (N.S.N., 2008-\n2014) for this particular robot framework tool, unit tests will be set using Jenkins.",
+    "15": "15 \n \n8 \nSetting a working environment \n \nAll software was installed on Windows XP using official websites of each software. \n \n8.1 \nJava \nDownloaded latest Java and installing latest Java Runtime Environment (JRE) from Java in-\nstaller website. Jenkins is Java-based web application, and Java Runtime Environment is-ness \nashery to run it. \n \n8.2 \nApache Tomcat \nUsing Java application server, Tomcat will open Jenkins in the web-browser. Installed using \nofficial website tomcat.apache.org. \n \n8.3 \nPutty \nIs open source program of Telnet and Secure Shell (SSH), It is used to be able to access data \nfrom one computer to another computer over a network. It creates the connection between \nWindows operating system computers to others operating system for example Linux, using \nhost key of an IP address. It requires some internet connection.  \n \nSecure Shell (SSH) is designed to protect your computer from network attacks. Putty is re-\ncording every host key in the Windows registry of servers which is connected earlier. Every \ntime while connecting to the server SSH checks that the same host key is used, if not it send \nthe notification. \n(Tatham, S., 2001-2015.) \n \nPutty.exe file is downloaded from official website chi-\nark.greenend.org.uk/~sgtatham/putty/download.html based on the instruction given.  \n \nUsed in this work, for easy access to Jenkins server from working computer, because Jenkins \nwas running on the companies official private servers.  \n \nVersion control/Subversion \nOpen source file management system Subversion was downloaded from official web site \nsubversion.apache.org/download/",
+    "16": "16 \n \n8.4 \nEclipse environment \n \nEclipse is plug in base software development platform. The integrated development \nenvironment (IDE) which is combination of different features. Combined editor, translator \nand a lot of different possible plug-ins for software development and testing. Can be used for \ndifferent programming languages as C++ or Python or graphical environment Framework \n(GEF), Visual Editor (VE), Eclipse Modelling Framework(EMF). Used as a part of the personal \nworking environment. \n \n8.4.1 \nPyDev plugin for Eclipse \nIt is providing Python scripting language integrated development environment (IDE) Used \nfor programming, code navigation, debugging and many more development features. (Vo-\ngel, L., 2013) In the project used as a part of the personal development environment. \nDownloaded from official website eclipse.org \n \n9 \nInstalling Jenkins server \n \nJenkins can be installed several ways one is from official website jenkins-ci.org and download \nthe war. File using the direct link, alternatively, using mirrors.jenkins-ci.org/windows/latest  \nWindows native package. Can be found by googling Jenkins windows installer. \nJenkins can be installed several ways one is from official website jenkins-ci.org and download \nthe war. File using the direct link, alternatively, using mirrors.jenkins-ci.org/windows/latest  \nWindows native package. Can be found by googling Jenkins windows installer. \n \n \n \nDownloading and saving compressed file.",
+    "17": "17 \n \n \n \n \n \nUnzipping zip file into the default folder extracting and saving all the files.  \n \n \n \nTo all computer, warning dialogs say ok. Run the program by clicking on setup file in the \nextracted folder. When Jenkins installation wizard appears pressing next, file location same; \nnext on the next window. installing.",
+    "18": "18 \n \n \n \nAt the end finish button. Jenkins server starts automatically. \n \n \nFigure 2: Jenkins starting Page \n \n9.1 \nJenkins Plugins for Python Scripting languade \n \n9.1.1 \nVirtual NV  \n \nDownloaded from official website pypi.python.org/pypi/virtualenv. Creates isolated or \nprivate working environment; can be used for testing before committing ready code into \nthe real-time environment. (Virtualenv., 2015) \n \n9.1.2 \nPip-installer \n   \nIs used for installing easily python, the installer for Python packages. It helps to install \nsoftware easily. pip.pypa.io/en/stable/ (Pypa., 2015) \nIn this project used as a part of Jenkins Testing environment.",
+    "19": "19 \n \n9.1.3 \nNose-framework  \n \nNose is the light framework for unit testing, which gives speed to the unit test execution. \npypi.python.org/pypi/nose/1.3.6 (Parkin, T., 2014) \nIn this work generates XML-reports. \n \n9.2 \nManage Jenkins/ Jenkins system configuration \n \nAt the firts page starting Manage Jenkins. \n \n \nFigure 3: Jenkins system configuration \n \nConfiguring default settings",
+    "20": "20 \n \n \n \nFigure 4: System configuration \n \nSetting up Java Development Kit by adding a right path to Java Home. \n \n9.3 \nJenkins Plugins for Python Scripting languade \n \nJenkins plugins are needed to be able to extend usability of the tool. Adding plugins by going \nto the Manage JenkinsManage Plugins, after all plugins are installed restarting Jenkins. \n \n9.3.1 \nVirtual NV  \n \nDownloaded from official website pypi.python.org/pypi/virtualenv. Creates isolated or \nprivate working environment; can be used for testing before committing ready code into \nthe real-time environment. (Virtualenv., 2015) \n \n9.3.2 \nPip-installer \n \nIs used for installing easily python, the installer for Python packages. It helps to install \nsoftware easily. pip.pypa.io/en/stable/ (Pypa., 2015) \nIn this project used as a part of Jenkins Testing environment.",
+    "21": "21 \n \n9.3.3 \nNose-framework  \n \nNose is the light framework for unit testing, which gives speed to the unit test execution. \npypi.python.org/pypi/nose/1.3.6 (Parkin, T., 2014) \nIn this work generates XML-reports. \n \n9.4 \nConfiguring New Job in Jenkins \n \nFrom the starting page choosing New Job \n \n \n \nFirst starting establishing job parameters, which is used throughout all the tests. Assembling \nenvironment based on the client requirements. \n \n \n \nSetting up a project name \n \n \n \nJDK as default",
+    "22": "22 \n \n \n \nFigure 5: Build configuration, connecting to the version control  \n \nDefined parameters of the build history the amount of days 181 days. \nJenkins data from the sources we defined in the subversion through URL. Any update in the \ncode of origin defined the update, as much as possible",
+    "23": "23 \n \n \nFigure 6: Build configuration \n \nSpecifying Trigger when build should be triggered, in my case it will be triggered every 1 min \nand checking if something has changed in the repository.Polling means when automated build \nstart to run the tests after the code is modified and saved and committed in the Subversion \n(SVN), in this project its takes one minute. As environment variable, in the build execution \nshell path of Virtual NV has been modified. That means that it creates virtual environment \nautomatically for the builds that run under this job. \n \nAfter every update, Jenkins runs the built as many changes made as many times new build \ncreated. \nIn source code management, needed files can be chosen. From the picture above the \nsourcecode, management tool is subversion (SVN). \nIn the execution shell, the proxy root is defined in the highly protected network proxy is al-\nways required, to be able to take any information from the outside world.",
+    "24": "24 \n \n \nFigure 7: Execution shell and and repository path \n \nIn another execution shell, the root for the directory is represented. Result report in post \nbuild actions determined in Extensible Mark-up Language (XML); the job is set and ready to \nrun builds. \n \n10 \nJenkins Result analysis \n \nOn figure 13 is Graphical User Interface (GUI) of Jenkins environment after build execution. \nThere are several builds completed. Every Jenkins job has as many builds as many modifica-\ntions we make to the tests. After every modification, new build is created and performed \nautomatically as soon as the source code has been updated. \nThere are three jobs at the moment, and two of the jobs have blue bullets and last one is \nred. The first one has thunder, next is cloudy, and the final one is red and thunder. All this \nweather signs describe the performance of the jobs. \n \nBlue means successful run and thunder, failed builds inside the job. The job is still successful, \nbut it has many failed builds in it, it means that the test is passing but has some concerns \nthat what thunder sign demonstrates. The weather symbol changes from sunny to cloudy and \nat the end of thunder. Sunny is successful build no fails. Cloudy means that there are few \nfailed builds in the job.  Thunder shows up whenever jobs build fails. While bullet sign is \nblue, there is no worries. Red means unsuccessful performance of the job; that job has lots of \nfailed builds, and the test has failed.",
+    "25": "25 \n \n \n \nFigure 8: Build History \n \nThis graph shows how many builds failed for this product. On the left side are executed builds \nand amount of builds in the job. Colours would mean the result of build run if build run was \nred it means failed, blue successful run.  \n \n \n \nFigure 9: Result analysis graph \n \nOn the graph on the right side as well shown all results of performed builds as red and blue.",
+    "26": "26 \n \nEvery build also means, how many times sours code has been changed and how successful. On \nthe graph, some amount of builds has passed, and some were broken. Based on the picture \nbelove we based on a pass or failed build results software quality can be analyzed. \n \n \n \nFigure 10: Result analysis graph zoomed \n \nOn this picture, we can see that build 87 is under the progress, so it means that the developer \nmade some changes into the source code and committed it into the Subversion version control \nsystem. Jenkins has tracked the change and started to build new build based on the changes \nin SVN.  \n \nIt uses the same script that runs all builds. Less than one Job name can be as many builds as \nchanges in source code that were committed to the version control. \n \n \n \n \nFigure 11: Result print",
+    "27": "27 \n \nOn this picture, we can see the result of the performing build in the console result print. All \nfiles passed and failed. And how long took the last run. \n \n \n \nThat bigger shot from the previous picture console shows that ninth build successfully \nexecuted.in 0,031 seconds \n \n11 \nResult analysis, work summary and future suggestions \n \nThis work started by learning and understanding about required and needed software to be \nable to perform work successufully. \n \nThrough this work was important to learn understand Python scripting language and write a \nfirst unit test for existing robot framework libraries to be able to run tests in new Jenkins \nserver on its correct performance.  \n \nDuring this project, the difficulties faced were with the connecting all pieces together, where \nscripting of routes and paths were important to write correctly, that source code would be \nimported from the right place. That work took several weeks to figure out the right scripts for \nmaking connections. Learning to understand the source code and its performance was im-\nportant, because othervise unit test writing would be impossible. \n \nBy the end of the project, all pieces were combined, and the finally system starts to run and \nreact to the changes in the source code. Unit test starts to run automatically. Work \nsuccessfully completed.  \n \nIntegrated Scrum cycle, which was taken in use in the same time, while this project took \nplace was challenging. Many times happened that some work due to some issues had to be \ncontinued next day, sometimes several days.  \n \nOverall work was successful and was performed based on the client requirements.",
+    "28": "28 \n \n12 \nFuture suggestions \n \nIn the future, client could add more features into system by adding more plugins, for example \nin the result prints. Another suggestion to write unit tests for the rest of robot framework \nsource code, that all possible fails would be easy to track on the early stage of development. \nAlso, continue write unit tests, during development phase; when creating new keyword, or \nadding a new features to old data.",
+    "29": "29 \n \nReferences \n \nAmbler, W.S. 2002. Agile Modeling. New York: John Wiley and Sons Publisher \nAmmann P., Offutt.J. 2008. Introduction to Software Testing: Cambridge Univer Press \nAlsmadi, I., 2012. Advanced Automated Software Testing Framework: Pressed in USA \nBennis, W. 1999. The Leadership Advantage.  \nhttp://www.leadertoleader.org/ leader books/l2l/spring99/bennis.html \nChillarege. R, 1999. Software Testing Best Practices. Technical Report \nhttp://www.chillarege.com/authwork/TestingBestPractice.pdf \nCollins-Sussman, B., Brian W. Fitzpatrick, C. Michael Pilato. Version Control with Subversion \n(for Subversion 1.6) \nCollins-Sussman. B., Brian W., Fitzpatrick. C., Pilato, M. 2002-2011. Version Control with Sub-\nversion For Subversion 1.7 \nDuvall, P.M 2007. Continues Integration. Boston: Pearson Education \nDustin, E., Rashka,J,. Paul, J. 2008. Automated Software Testing: United states of Hamilton \nFewster, M., Graham, D. 1999. Software Test Automation. New York: ACM Press \nFowler Martin  \nJenkins, N. 2008. A Software Testing Primer \nhttp://www.nickjenkins.net/prose/testingPrimer.pdf \nKoskela, L. 2008. Test Driven: TDD and Acceptance TDD For Java Developers. Greenwich:  \nManning Publications \nMathur, A.P. 2008. Foundations of Software Testing: Sanat Printers India  \nNiklaus Wirth. 2008. A Brief History of Software Engineering \nNokia Networks official website \nhttp://company.nokia.com/en/about-us/our-company/our-story \nNSN 2008-2014. Robot Framework User Guide \nhttp://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html \nParking., T., 1990-2014 \nhttps://pypi.python.org/pypi/nose/1.3.6 \nPypa, 2008-2015 \nhttps://pip.pypa.io//en/latest/index.html \nSatalkar. B., 201. Software Testing Types \nhttp://www.ibuzzle.com/articles/software-testing-types.html \nTatham, S. 2001-2015.  PuTTY User Manual \nhttp://the.earth.li/~sgtatham/putty/0.64/puttydoc.txt \nVogel, L. 2013. Python Development with PyDev and Eclipse - Tutorial  \nhttp://www.vogella.com/tutorials/Python/article.html#installation_eclipse \nVogel, L. 2013. Eclipse IDE - Tutorial  \nhttp://www.vogella.com/tutorials/Eclipse/article.html#eclipseideoverview",
+    "30": "30 \n \nVirtualenv 12. 1.1 2015 \nhttps://pypi.python.org/pypi/virtualenv \nWilliams. L.,2006., http://agile.csc.ncsu.edu/SEMaterials/BlackBox.pdf",
+    "31": "31 \n \nFigures  \n \nFigure 1: Development stages and needed tests ..................................................... 7 \nFigure 2: Jenkins starting Page ........................................................................ 18 \nFigure 3: Jenkins system configuration .............................................................. 19 \nFigure 4: System configuration ........................................................................ 20 \nFigure 5: Build configuration, connecting to the version control ............................... 22 \nFigure 6: Build configuration .......................................................................... 23 \nFigure 7: Execution shell and and repository path ................................................. 24 \nFigure 8: Build History .................................................................................. 25 \nFigure 9: Result analysis graph ........................................................................ 25 \nFigure 10: Result analysis graph zoomed ............................................................ 26 \nFigure 11: Result print .................................................................................. 26",
+    "32": "32 \n \nAppendix 1 \nAppendixes \n \nAppendix 1:Scrum development process .............................................................. 9 \nAppendix 2: The system components of a CI ........................................................ 11 \nAppendix 3: Suversion basic work cycle ............................................................. 12 \nAppendix 4:Robot Framework Structure ............................................................. 14"
+  },
+  "tables": {},
+  "images": {
+    "1": [
+      {
+        "filename": "page_1_image_1.jpeg",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_1_image_1.jpeg",
+        "extraction_date": "2025-01-28T00:13:27.003285",
+        "page_number": 1,
+        "image_index": 1,
+        "width": 369,
+        "height": 383
+      },
+      {
+        "filename": "page_1_image_2.jpeg",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_1_image_2.jpeg",
+        "extraction_date": "2025-01-28T00:13:27.004600",
+        "page_number": 1,
+        "image_index": 2,
+        "width": 859,
+        "height": 17
+      }
+    ],
+    "7": [
+      {
+        "filename": "page_7_image_1.png",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_7_image_1.png",
+        "extraction_date": "2025-01-28T00:13:27.015705",
+        "page_number": 7,
+        "image_index": 1,
+        "width": 200,
+        "height": 339
+      }
+    ],
+    "9": [
+      {
+        "filename": "page_9_image_1.jpeg",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_9_image_1.jpeg",
+        "extraction_date": "2025-01-28T00:13:27.019728",
+        "page_number": 9,
+        "image_index": 1,
+        "width": 634,
+        "height": 410
+      },
+      {
+        "filename": "page_9_image_2.jpeg",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_9_image_2.jpeg",
+        "extraction_date": "2025-01-28T00:13:27.021355",
+        "page_number": 9,
+        "image_index": 2,
+        "width": 711,
+        "height": 522
+      }
+    ],
+    "11": [
+      {
+        "filename": "page_11_image_1.png",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_11_image_1.png",
+        "extraction_date": "2025-01-28T00:13:27.031847",
+        "page_number": 11,
+        "image_index": 1,
+        "width": 591,
+        "height": 353
+      }
+    ],
+    "12": [
+      {
+        "filename": "page_12_image_1.jpeg",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_12_image_1.jpeg",
+        "extraction_date": "2025-01-28T00:13:27.034705",
+        "page_number": 12,
+        "image_index": 1,
+        "width": 540,
+        "height": 405
+      }
+    ],
+    "14": [
+      {
+        "filename": "page_14_image_1.png",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_14_image_1.png",
+        "extraction_date": "2025-01-28T00:13:27.042853",
+        "page_number": 14,
+        "image_index": 1,
+        "width": 311,
+        "height": 218
+      }
+    ],
+    "16": [
+      {
+        "filename": "page_16_image_1.png",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_16_image_1.png",
+        "extraction_date": "2025-01-28T00:13:27.077559",
+        "page_number": 16,
+        "image_index": 1,
+        "width": 758,
+        "height": 467
+      }
+    ],
+    "17": [
+      {
+        "filename": "page_17_image_1.png",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_17_image_1.png",
+        "extraction_date": "2025-01-28T00:13:27.114424",
+        "page_number": 17,
+        "image_index": 1,
+        "width": 703,
+        "height": 399
+      },
+      {
+        "filename": "page_17_image_2.png",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_17_image_2.png",
+        "extraction_date": "2025-01-28T00:13:27.158303",
+        "page_number": 17,
+        "image_index": 2,
+        "width": 674,
+        "height": 486
+      },
+      {
+        "filename": "page_17_image_3.png",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_17_image_3.png",
+        "extraction_date": "2025-01-28T00:13:27.187138",
+        "page_number": 17,
+        "image_index": 3,
+        "width": 810,
+        "height": 412
+      }
+    ],
+    "18": [
+      {
+        "filename": "page_18_image_1.png",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_18_image_1.png",
+        "extraction_date": "2025-01-28T00:13:27.215772",
+        "page_number": 18,
+        "image_index": 1,
+        "width": 836,
+        "height": 388
+      },
+      {
+        "filename": "page_18_image_2.png",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_18_image_2.png",
+        "extraction_date": "2025-01-28T00:13:27.268077",
+        "page_number": 18,
+        "image_index": 2,
+        "width": 1043,
+        "height": 642
+      }
+    ],
+    "19": [
+      {
+        "filename": "page_19_image_1.png",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_19_image_1.png",
+        "extraction_date": "2025-01-28T00:13:27.288480",
+        "page_number": 19,
+        "image_index": 1,
+        "width": 567,
+        "height": 407
+      }
+    ],
+    "20": [
+      {
+        "filename": "page_20_image_1.png",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_20_image_1.png",
+        "extraction_date": "2025-01-28T00:13:27.307818",
+        "page_number": 20,
+        "image_index": 1,
+        "width": 739,
+        "height": 699
+      }
+    ],
+    "21": [
+      {
+        "filename": "page_21_image_1.png",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_21_image_1.png",
+        "extraction_date": "2025-01-28T00:13:27.323399",
+        "page_number": 21,
+        "image_index": 1,
+        "width": 567,
+        "height": 407
+      },
+      {
+        "filename": "page_21_image_2.png",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_21_image_2.png",
+        "extraction_date": "2025-01-28T00:13:27.326768",
+        "page_number": 21,
+        "image_index": 2,
+        "width": 175,
+        "height": 186
+      },
+      {
+        "filename": "page_21_image_3.png",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_21_image_3.png",
+        "extraction_date": "2025-01-28T00:13:27.332155",
+        "page_number": 21,
+        "image_index": 3,
+        "width": 708,
+        "height": 152
+      }
+    ],
+    "22": [
+      {
+        "filename": "page_22_image_1.png",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_22_image_1.png",
+        "extraction_date": "2025-01-28T00:13:27.377041",
+        "page_number": 22,
+        "image_index": 1,
+        "width": 716,
+        "height": 1010
+      }
+    ],
+    "23": [
+      {
+        "filename": "page_23_image_1.png",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_23_image_1.png",
+        "extraction_date": "2025-01-28T00:13:27.394253",
+        "page_number": 23,
+        "image_index": 1,
+        "width": 544,
+        "height": 543
+      }
+    ],
+    "24": [
+      {
+        "filename": "page_24_image_1.png",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_24_image_1.png",
+        "extraction_date": "2025-01-28T00:13:27.423482",
+        "page_number": 24,
+        "image_index": 1,
+        "width": 651,
+        "height": 501
+      }
+    ],
+    "25": [
+      {
+        "filename": "page_25_image_1.png",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_25_image_1.png",
+        "extraction_date": "2025-01-28T00:13:27.466898",
+        "page_number": 25,
+        "image_index": 1,
+        "width": 1280,
+        "height": 719
+      },
+      {
+        "filename": "page_25_image_2.jpeg",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_25_image_2.jpeg",
+        "extraction_date": "2025-01-28T00:13:27.468774",
+        "page_number": 25,
+        "image_index": 2,
+        "width": 1224,
+        "height": 765
+      }
+    ],
+    "26": [
+      {
+        "filename": "page_26_image_1.jpeg",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_26_image_1.jpeg",
+        "extraction_date": "2025-01-28T00:13:27.470924",
+        "page_number": 26,
+        "image_index": 1,
+        "width": 145,
+        "height": 243
+      },
+      {
+        "filename": "page_26_image_2.png",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_26_image_2.png",
+        "extraction_date": "2025-01-28T00:13:27.478549",
+        "page_number": 26,
+        "image_index": 2,
+        "width": 389,
+        "height": 226
+      },
+      {
+        "filename": "page_26_image_3.png",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_26_image_3.png",
+        "extraction_date": "2025-01-28T00:13:27.484761",
+        "page_number": 26,
+        "image_index": 3,
+        "width": 611,
+        "height": 68
+      },
+      {
+        "filename": "page_26_image_4.png",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_26_image_4.png",
+        "extraction_date": "2025-01-28T00:13:27.503943",
+        "page_number": 26,
+        "image_index": 4,
+        "width": 1271,
+        "height": 319
+      }
+    ],
+    "27": [
+      {
+        "filename": "page_27_image_1.png",
+        "path": "output\\images\\temp_35fa4d58-3c67-499b-ad81-c5bf5395bb40\\page_27_image_1.png",
+        "extraction_date": "2025-01-28T00:13:27.509051",
+        "page_number": 27,
+        "image_index": 1,
+        "width": 448,
+        "height": 106
+      }
+    ]
+  }
+}

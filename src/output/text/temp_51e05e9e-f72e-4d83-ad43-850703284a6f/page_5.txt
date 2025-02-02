@@ -1,0 +1,48 @@
+creating an image.
+For the next example, please refer to the “PHP Box” Dockerﬁle (Listing 1). Garrick, shrink listing 1.
+Listing 1. PHP Box11600l1.qrk
+ # PHP Box # # VERSION 1.0 # use centos base image FROM centos:6.4 # specify the maintainer MAINTAINER Dirk Merkel, dmerkel@vivantech.com # up
+Let's take a closer look at what's going on in this Dockerﬁle. The syntax of a Dockerﬁle is a command keyword followed by that command's argument(s). By convention,
+command keywords are capitalized. Comments start with a pound character.
+The FROM keyword indicates which image to use as a base. This must be the ﬁrst instruction in the ﬁle. In this case, you will build on top of the latest CentOS base
+image. The MAINTAINER instruction obviously lists the person who maintains the Dockerﬁle. The RUN instruction executes a command and commits the resulting image,
+thus creating a new layer. The RUN commands in the Dockerﬁle fetch conﬁguration ﬁles for additional repositories and then use Yum to install curl, git, wget, unzip, httpd,
+php-mysql and yum-utils. I could have combined the yum install commands into a single RUN instruction to avoid successive commits.
+The EXPOSE instruction then exposes port 80, which is the port on which Apache will be listening when you start the container.
+Finally, the CMD instruction will provide the default command to run when the container is being launched. Associating a single process with the launch of the container
+allows you to treat a container as a command.
+Typing docker build -t php_box . on the command line will now tell Docker to start the build process using the Dockerﬁle in the current working directory. The
+resulting image will be tagged “php_box”, which will make it easier to refer to and identify the image later.
+The build process downloads the base image and then installs Apache httpd along with all dependencies. Upon completion, it returns a hash identifying the newly created
+image. Similar to the MySQL container you launched earlier, you can run the Apache and PHP image using the “php_box” tag with the following command line: docker
+run -d -t php_box.
+Let's ﬁnish with a quick example that illustrates how easy it is to layer on top of an existing image to create a new one:
+ # MyApp # # VERSION  1.0 # use php_box base image FROM php_box # specify the maintainer MAINTAINER Dirk Merkel, dmerkel@vivantech.com # put m
+This second Dockerﬁle is shorter than the ﬁrst and really contains only two interesting instructions. First, you specify the “php_box” image as a starting point using the
+FROM instruction. Second, you copy a local directory to the image with the ADD instruction. In this case, it is a PHP project that is being copied to Apache's
+DOCUMENT_ROOT folder on the images. The result is that the site will be served by default when you launch the image.
+Conclusion
+Docker's prospect of lightweight packaging and deploying of applications and dependencies is an exciting one, and it is quickly being adopted by the Linux community
+and is making its way into production environments. For example, Red Hat announced in December support for Docker in the upcoming Red Hat Enterprise Linux 7.
+However, Docker is still a young project and is growing at breakneck speed. It is going to be exciting to watch as the project approaches its 1.0 release, which is supposed
+to be the ﬁrst version ofﬁcially sanctioned for production environments. Docker relies on established technologies, some of which have been around for more than a
+decade, but that doesn't make it any less revolutionary. Hopefully this article provided you with enough information and inspiration to download Docker and experiment
+with it yourself.
+Docker Update11600s1.qrk
+As this article was being published, the Docker team announced the release of version 0.8. This latest deliverable adds support for Mac OS X consisting of two
+components. While the client runs natively on OS X, the Docker dæmon runs inside a lightweight VirtualBox-based VM that is easily managed with boot2docker, the
+included command-line client. This approach is necessary because the underlying technologies, such as LXC and name spaces, simply are not supported by OS X. I think
+we can expect a similar solution for other platforms, including Windows.
+Version 0.8 also introduces several new builder features and experimental support for BTRFS (B-Tree File System). BTRFS is another copy-on-write ﬁlesystem, and the
+BTRFS storage driver is positioned as an alternative to the AuFS driver.
+Most notably, Docker 0.8 brings with it many bug ﬁxes and performance enhancements. This overall commitment to quality signals an effort by the Docker team to
+produce a version 1.0 that is ready to be used in production environments. With the team committing to a monthly release cycle, we can look forward to the 1.0 release in
+the April to May timeframe.
+Resources11600s2.qrk
+Main Docker Site: https://www.docker.io
+Docker Registry: https://index.docker.io
+Docker Registry API: http://docs.docker.io/en/latest/api/registry_api
+Docker Index API: http://docs.docker.io/en/latest/api/index_api
+Docker Remote API: http://docs.docker.io/en/latest/api/docker_remote_api
+11600s3.qrk
+Send comments or feedback via http://www.linuxjournal.com/contact or to <ljeditor@linuxjournal.com>.

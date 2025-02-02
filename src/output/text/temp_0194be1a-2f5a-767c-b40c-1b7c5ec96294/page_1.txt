@@ -1,0 +1,113 @@
+If Docker Is The Answer, What Is The Question? 
+A Case for Software Engineering Paradigm Shift Towards Service Agent Orientation  
+Hong Zhu and Ian Bayley 
+School of Engineering, Computing and Mathematics 
+Oxford Brookes University, Oxford OX33 1HX, UK 
+Email: hzhu@brookes.ac.uk, ibayley@brookes.ac.uk  
+ 
+Abstract—The recent rise of cloud computing poses serious 
+challenges for software engineering because it adds complexity 
+not only to the platform and infrastructure, but to the software 
+too. The demands on system scalability, performance and 
+reliability are ever increasing. Industry solutions with 
+widespread adoption include the microservices architecture, 
+the container technology and the DevOps methodology. These 
+approaches have changed software engineering practice in 
+such a profound way that we argue that it is becoming a 
+paradigm shift. In this paper, we examine the current support 
+of programming languages for the key concepts behind the 
+change in software engineering practice and argue that a novel 
+programming language is required to support the new 
+paradigm. We report a new programming language CAOPLE 
+and its associated Integrated DevOps Environment CIDE and 
+demonstrate the utility of both.  
+Keywords— Cloud computing, Microservices, DevOps, Service 
+agent orientation, Software engineering paradigms, Parallel and 
+distributed 
+programming 
+models, 
+Software 
+development 
+methodology, Programming languages, Integrated Software 
+Development Environment.   
+I. INTRODUCTION 
+Cloud-based applications are becoming more and more 
+complex, whilst having to meet unprecedented and ever 
+increasing demands on system performance, scalability, 
+reliability and maintainability. Solutions for meeting this 
+demand have been proposed that increase system flexibility 
+by means of greater elasticity and evolvability. These 
+solutions include the microservices architecture [1, 2, 3], 
+container technology [4, 5], DevOps tools and methodology 
+[6], etc. Behind these solutions is a set of novel concepts that 
+have become the basis for a set of new techniques. In this 
+paper we will argue that the changes to practice that they 
+bring about are so fundamental that they are causing a 
+paradigm shift right now. We will recognize the key 
+characteristics of the new paradigm, identify the missing 
+pieces in that emerging paradigm, and propose further 
+research directions. We will also report our own research and 
+demonstrate how the power of new paradigm can be further 
+strengthened.  
+The remainder of this paper is organized as follows. 
+Section II discusses what is meant by a software engineering 
+paradigm and why paradigm shifts become necessary. 
+Section III reviews the current best practice in software 
+engineering of cloud native software to identify the 
+characteristic features of the emerging new paradigm. 
+Section IV examines existing programming models in the 
+light of the new paradigm by comparing our service agent 
+model to actor and reactive programming models. Section V 
+reports our ongoing research into the development of a new 
+programming language called CAOPLE, and an associated 
+DevOps environment called CIDE. Section VI concludes the 
+paper with a summary and a discussion of further research.  
+II. SOFTWARE ENGINEERING PARADIGMS 
+A. What is a paradigm?  
+A paradigm of software engineering is a consistent set of 
+software development techniques and methodologies guided 
+by a philosophical model of computing; this is an abstract 
+model of computer systems and of software systems running 
+on hardware. The model dictates how applications should be 
+constructed and how they should evolve. 
+For structured software engineering, the first well-
+established paradigm, the philosophical model can be 
+summarized as: computing is processing of data stored in the 
+computer. The hardware is assumed to be a stand-alone 
+general-purpose 
+digital 
+mainframe 
+computer 
+with 
+a 
+collection of data storage and input/output devices. A 
+software system is considered to be a collection of 
+procedures, each defining a routine operation in the 
+processing of data, and organized in a hierarchical structure 
+with a top-level “main” procedure for overall control. 
+The philosophical model for object-oriented software 
+engineering, on the other hand, can be summarized as: 
+computing is interactions between objects, which are 
+computational entities that encapsulate data and operations. 
+The hardware can be a network of computers instead of 
+simply a standalone. Data is no longer separated from the 
+code that processes it. 
+Note that the existence of a philosophical model is 
+essential for a paradigm to become well-established. This is 
+even true for the paradigms that have not yet become 
+mainstream. For example, logic programming views 
+computing 
+as 
+logical 
+inference 
+whereas 
+functional 
+programming views it as function application, in the 
+mathematical sense of the symbol manipulation in lambda 
+calculus [7].  
+Three conditions are needed for a paradigm to become 
+mainstream. First of all, the philosophical model must be 
+supported directly by the hardware and enable the power of  
+the hardware to be fully utilized. Secondly, there should be 
+an associated development process such as the waterfall 
+method for structured programming and the use case driven

@@ -1,0 +1,22 @@
+"Now in the template, let us update the form section so that we can use the form from our view & a csrf_token, which is needed"
+"for POST requests in Django. With the form in HTML working, we now want to handle the form data as this comes in[9]. For"
+"that, we’ll write an if block checking for the POST request. We want to add the check for this type of request before we start"
+"grabbing our weather data, so we immediately obtain the data for the city we add."
+""
+the_weather/weather/views.py
+def index(request):
+cities = City.objects.all()
+""
+url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&ap-
+pid=YOUR_APP_KEY'
+""
+if request.method == 'POST':
+form = CityForm(request.POST)
+form.save()
+""
+form = CityForm()
+...
+""
+"By passing request.POST, we will be able to validate our form data. Now you should be able to type in the name of a city, click"
+"add, and see it show up. I will add Mumbai as the next city. When we drop out of the if block, the form will be recreated so we"
+can add another city if we choose.

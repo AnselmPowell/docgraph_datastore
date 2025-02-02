@@ -1,0 +1,35 @@
+2012
+2013
+2014
+2015
+2016
+2017
+2018
+2019
+2020
+2021
+2022
+2023
+Year
+0
+50,000
+100,000
+150,000
+# of repositories
+AppVeyor
+CircleCI
+Codefresh
+Concourse
+Drone
+GitHubActions
+GitLab
+GoCD
+Jenkins
+Kubernetes
+Other (<1.0%)
+Travis
+Technology
+Figure 14: Number of repositories where each technology was detected by year.
+Figure 15: CI CI/CD technology stack transitions from repositories solely using
+Travis CI in 2019.
+21

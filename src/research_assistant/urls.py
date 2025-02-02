@@ -20,8 +20,8 @@ urlpatterns = [
     path('documents/list/',
          DocumentManagementViewSet.as_view({'get': 'get_documents'}),
          name='list-documents'),
-     path('documents/delete',  # Correct URL
+     path('documents/delete', 
          DocumentManagementViewSet.as_view({'delete': 'delete_documents'}),
-         name='delete-documents'),
+         name='delete-documents-no-slash'),
      ]
 

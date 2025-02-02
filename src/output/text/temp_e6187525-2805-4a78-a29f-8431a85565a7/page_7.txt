@@ -1,0 +1,208 @@
+CREATE Chatter(“Peter”) @ "192.168.1.71"; 
+Other deployment-related operations for changing a caste’s 
+membership can be seen in Section V.A.  
+Table 1 summarises how the concepts and language 
+facilities in the service agent model match the key concepts 
+in the microservices architectural style.   
+Table 1. How Service Agent Model Supports MS 
+Concept of 
+Microservices 
+Meanings 
+Concept in Service 
+Agent Model 
+Service 
+The functionality provided by a 
+computer system and delivered to 
+the users 
+Service 
+The computational entity that 
+provides the services in the above 
+sense 
+Agent 
+Microservice 
+Identical copies of a service, 
+where each copy is a runtime 
+computational entity 
+Agent 
+A template from which instances 
+can be generated and deployed to 
+different servers 
+Caste 
+D. Summary 
+From the summary in Table 2, it appears that the service 
+agent model is the most suitable for programming cloud 
+applications in a microservices architecture. 
+Table 2. Comparison of Programming Models 
+ 
+Actors 
+Reactive  
+Service Agent 
+Runtime 
+element 
+Actors, [objects] Observables, 
+Subscribers, 
+Objects 
+Agents 
+Program unit 
+Actor types, 
+[Classes]  
+Sub-Observables, 
+Sub-Subscribers, 
+Class 
+Castes 
+Reference 
+propagation 
+model 
+Reference 
+capability model 
+Reference 
+capability model 
+Reference 
+capability model + 
+message sender 
+identification 
+Uses of 
+Reference 
+propagation 
+Model 
+Lifecycle 
+management, 
+Communication 
+address 
+Lifecycle 
+management, 
+Subscription for 
+communication 
+Lifecycle 
+management 
+[optional], 
+Communication 
+address [optional] 
+Communication 
+mechanism 
+Asynchronous, 
+Direct addressing  
+Asynchronous,   
+Subscribe-
+publish,  
+Explicit event-
+driven 
+Asynchronous, 
+Implicit event-
+driven,  
+Sender ID 
+identifiable 
+System 
+structure 
+Centrally 
+organised 
+hierarchy 
+Flat,  
+No central 
+organisation 
+No central 
+organisation 
+Location 
+transparency 
+Implicit by 
+reference  
+No 
+Yes 
+V. THE EXPERIMENTS OF CAOPLE AND CIDE 
+The service agent model has been realized with a 
+programming language COAPLE [39] and an integrated 
+DevOps environment called CIDE for editing, compiling, 
+deploying, executing and testing code in a cluster. This 
+section examines each in turn and demonstrates their support 
+for the new paradigm.  
+A. The CAOPLE Programming Language 
+CAOPLE has the following properties. It is:  
+• Purely Agent-Oriented, in contrast to some languages 
+that allow classes alongside agents as an alternative kind 
+of building block. 
+• Caste-Centric, in the sense that agents can only be 
+created by instantiating castes, unlike other languages 
+where agents can be coded directly.  
+• Imperative, so programs take the form of a sequence of 
+commands, in contrast to some AI-inspired languages 
+that define agent behaviors in a logic or rules-based 
+approach, game-theory approaches that employ utility 
+functions and other approaches that are based on an 
+organizational/social model.  
+Network transparency and write-once-run-anywhere was 
+achieved by compiling source code to target a virtual 
+machine CAVM-2. The only configuration required is to 
+install CAVM-2 on every node of a cluster.  
+(1) Example 1: Hello World 
+The following “Hello World” example illustrates the notion 
+of caste, which is not only a compilation unit but also the 
+unit for code deployment and execution. CIDE can be used 
+to create instances of Peer and distribute them to machines 
+on a cluster. Each execution of an agent of the caste Peer will 
+perform an action Say("Hello World!").  
+1: CASTE Peer(){ 
+2:  
+ACTION Say(word: STRING) { } 
+3:  
+INIT{ Say("Hello World!"); } 
+4:  
+BODY{ } 
+5: } 
+To test whether this program behaves as we expect, instead 
+of modifying the code, we can write another caste to observe 
+its behaviour as follows.  
+1: USES Peer;  
+2: CASTE Observer() { 
+3:  
+OBSERVE Peer; 
+4:  
+INIT { } 
+5:  
+BODY { 
+6:  
+ 
+VAR word: STRING; 
+7:  
+ 
+WHEN EXIST x IN Peer: Say(RCV word) { 
+8:  
+ 
+ 
+print "Observer: "+ x.toString + 
+  
+ 
+ 
+ 
+ " said ‘ " + word + “’”; 
+9:  
+ 
+} 
+10:  
+} 
+11:  } 
+Provided that the Observer agent is created before the Peer 
+agent, when it is then executed, it will print the following 
+message.  
+ 
+where “ad846…” is the universally unique identifier of such 
+an agent. The creation of agents can also be done 
+programmatically as in the caste below that creates an 
+Observer and two Peers.  
+1:  USES Peer, Observer; 
+2: CASTE Builder2a(){ 
+3:  
+INIT{ 
+4:  
+ 
+CREATE Observer(); 
+5:  
+ 
+wait 100;  
+6:  
+ 
+CREATE Peer() @ "192.168.1.65"; 
+7:  
+ 
+CREATE Peer() @ "192.168.1.71"; 
+8:  
+}

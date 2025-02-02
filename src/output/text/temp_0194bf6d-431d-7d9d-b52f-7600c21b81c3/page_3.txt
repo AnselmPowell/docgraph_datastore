@@ -1,0 +1,24 @@
+A. Chandiramani et al. 
+ 
+ 
+ISSN (Online) : 2583-1798 
+3 
+Journal of Management and Service Science 
+(JMSS) 
+A2Z Journals 
+ 
+ 
+ 
+The 'env' will be shown in the parenthesis when successfully activated the Virtual Environment. 
+ 
+5.Installing the required package: We can use 'pip install django' to install Django in your specific Virtual Environment. 
+ 
+ 
+ 
+ 
+4. Creating a Django Project 
+1.The first step is creating project by using the 'django-admin startproject project_name' command, where 'project_name' is 
+'django_blog' in our case 
+ 
+ 
+2.Change the directory to the newly created project using 'cd' command and to view the created file using 'ls' command.

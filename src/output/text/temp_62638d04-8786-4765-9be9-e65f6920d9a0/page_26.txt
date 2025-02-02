@@ -1,0 +1,46 @@
+As future work, we plan to extend this work to other repository services such
+as GitLab, or Bitbucket. Another interesting research direction is to replicate
+this work in an industrial setting. We will also extend our work to consider the
+complete DevOps cycle.
+References
+[Anonymous(2023a)] Anonymous. 2023a.
+https://anonymous.4open.
+science/r/DevOps-Repositories-122E
+[Anonymous(2023b)] Anonymous. 2023b.
+https://anonymous.4open.
+science/r/github-devops-mining-C0D7
+[Author(2023a)] Anonymous Author. 2023a. CI/CD repos with tools.
+https:
+//doi.org/10.6084/m9.figshare.24578740.v2
+[Author(2023b)] Anonymous Author. 2023b. CI/CD repositories from GitHub.
+https://doi.org/10.6084/m9.figshare.24578746.v1
+[Author(2023c)] Anonymous Author. 2023c. CI/CD repositories with tool his-
+tory.
+https://doi.org/10.6084/m9.figshare.24578752.v1
+[by Perforce(2023)] Puppet by Perforce. 2023.
+https://www.puppet.com/
+resources/history-of-devops-reports accessed: 16/11/2023.
+[Calefato et al.(2022)] Fabio Calefato, Filippo Lanubile, and Luigi Quaranta.
+2022.
+A Preliminary Investigation of MLOps Practices in GitHub. In
+Proceedings of the 16th ACM / IEEE International Symposium on Em-
+pirical Software Engineering and Measurement (Helsinki, Finland) (ESEM
+’22). Association for Computing Machinery, New York, NY, USA, 283–288.
+https://doi.org/10.1145/3544902.3546636
+[Company(2022)] The Business Research Company. 2022. Information Tech-
+nology Global Market Report 2022, By Type, Organization Size, End User
+Industry.
+https://www.researchandmarkets.com/reports/5561700/
+information-technology-global-market-report-2022
+[Golzadeh et al.(2022)] Mehdi Golzadeh, Alexandre Decan, and Tom Mens.
+2022. On the rise and fall of CI services in GitHub. In 2022 IEEE In-
+ternational Conference on Software Analysis, Evolution and Reengineering
+(SANER) (Honolulu, HI, USA, 2022-03). IEEE, New York, New York,
+United States, 662–672.
+https://doi.org/10.1109/SANER53432.2022.
+00084
+[Haque et al.(2020)] Mubin Ul Haque, Leonardo Horn Iwaya, and M. Ali Babar.
+2020. Challenges in Docker Development: A Large-Scale Study Using Stack
+Overflow. In Proceedings of the 14th ACM / IEEE International Symposium
+on Empirical Software Engineering and Measurement (ESEM) (Bari, Italy)
+26

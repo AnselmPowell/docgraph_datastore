@@ -1,0 +1,139 @@
+C. Suggested Improvements for the Current Situation
+We asked in the survey whether the participants considered 
+that given continuous practices (planning, integration, testing, 
+deployment, or monitoring) would help in resolving certain 
+problems software projects might encounter (merge conflicts, 
+long-running branches, build errors in commits, time-
+consuming tests, or infrequent releases. Of the respondents, 
+46% believed that continuous testing would reduce their 
+challenges with time-consuming tests while 29% believed that 
+continuous deployment would help with infrequent releases 
+which were the two most prevalent challenges for them (fig 1, 
+fig 2). In addition, 25% of the respondents believed that 
+continuous integration would help with merge conflicts and 
+that continuous planning would reduce long running branches.  
+V. DISCUSSION
+The
+study 
+participants 
+saw 
+the
+prevailing 
+siloed
+organisational structure and culture as a major blocker for the 
+adoption of DevOps. Although the idea of DevOps – bringing
+development and operations together by enabling a cultural 
+shift from siloed groups to cross-functional teams [3] – is 
+beautiful, it is difficult to realise in large companies. Bass [1]
+suggests that in such cases, the cultural change can be started 
+from individual level: “even if the adoption focuses on a single 
+development team and a few operators, it is important that the 
+DevOps culture is adopted by all people involved”. Following 
+this guideline, the company could bring together a bunch of 
+interested people and start learning and experimenting, 
+changing the culture together in a cross-functional team.
+However, the interviewees mentioned that the organization can 
+become a barrier even for such small efforts with its rules and 
+bureaucracy. They told about tasks that could be shared 
+between roles in practice but that it cannot be done because it is 
+against company policies.
+Chen [2] states that their biggest challenge in adopting 
+continuous delivery was organizational. They found it helpful 
+when the leadership team restructured the organisation to break 
+down barriers between teams and promoted a collaborative 
+culture. Gregory et al. [4] studied agile practitioners’ challenges 
+and determined that organisation and culture are vast sources of 
+challenges. Laukkanen et al. [5] mention organisational 
+structure as a potential problem source in adopting continuous 
+delivery. However, they conclude that there is too little 
+research evidence available on the phenomenon to discuss it 
+further in their literature review. Also, Chen [2] acknowledges 
+the lack of research on introducing continuous delivery into an 
+organisation. Thus, the topic obviously should be studied more 
+to find ways to mitigate these challenges in large companies.
+On development level, the participants felt that their most 
+prevalent problems were related to infrequent releases and 
+lengthy tests. They also saw that continuous practices could 
+help them in overcoming these issues. The major barrier for 
+taking DevOps tools and automation into use was that the 
+participants worked with legacy systems and the only feasible 
+solution in sight was to gradually replace those with new 
+systems with proper architecture. This is also what Leppänen et 
+al. [7] suggest. Several companies they interviewed saw legacy 
+code as an obstacle that must be removed before adopting 
+continuous deployment.
+VI. CONCLUSION
+This paper presented an insight into the journey of a large 
+software service company towards continuous software 
+engineering practices and DevOps. Many of the faced 
+challenges were related to the siloed organizational structure 
+and legacy software. However, some of the presented 
+challenges could be mitigated by using continuous software 
+engineering practices that should be implementable without 
+changing the organizational structure. However, as DevOps is 
+largely a cultural phenomenon, the organization must change 
+significantly to gain its benefits. Adopting DevOps necessitates 
+organizational learning, tearing down the siloes, automating the 
+deployment pipeline and tight coupling of development and 
+operations. Essentially it is a major cultural change for a large 
+company. 
+ACKNOWLEDGMENT
+We want to express our gratitude to the company contact 
+person and all the interviewees and survey respondents in the 
+company for their dedication and time.
+REFERENCES
+[1]
+Bass, L., Weber, I., & Zhu, L. (2015). DevOps: A Software Architect's 
+Perspective. Addison-Wesley Professional.
+[2]
+Chen L. 2015. Continuous Delivery: Huge Benefits, but Challenges Too. 
+IEEE Software 32, 2 (Mar 2015), 50–54. 
+[3]
+Ebert, C., Gallardo, G., Hernantes, J., & Serrano, N. (2016). DevOps. 
+IEEE Software, 33(3), 94-100.
+[4]
+Gregory, P., Barroca, L., Sharp, H., Deshpande, A., & Taylor, K. (2016). 
+The challenges that challenge: Engaging with agile practitioners’ 
+concerns. Information and Software Technology, 77, 92-104.
+[5]
+Laukkanen, E. Itkonen, J. and Lassenius,  C. 2017. Problems, causes and 
+solutions when adopting continuous delivery - A systematic literature 
+review. Information and Software Technology 82, Supplement C (2017), 
+55 – 79. https: //doi.org/10.1016/j.infsof.2016.10.001
+[6]
+Laukkarinen, T., Kuusinen, K., & Mikkonen, T. (2018). Regulated 
+software meets DevOps. Information and Software Technology, 97, 176-
+178.
+[7]
+Leppänen, M., Mäkinen, S., Pagels, M., Eloranta, V. P., Itkonen, J., 
+Mäntylä, M. V., & Männistö, T. (2015). The highways and country roads
+to continuous deployment. IEEE software, 32(2), 64-72.
+[8]
+Lwakatare, L. E., Kuvaja, P., & Oivo, M. (2015). Dimensions of devops. 
+In International Conference on Agile Software Development (pp. 212-
+217). Springer, Cham.
+[9]
+Olsson, H. H., Alahyari, H., & Bosch, J. (2012, September). Climbing 
+the" Stairway to Heaven"--A Mulitiple-Case Study Exploring Barriers in 
+the 
+Transition 
+from 
+Agile
+Development 
+towards 
+Continuous 
+Deployment of Software. In Software Engineering and Advanced 
+Applications (SEAA), 2012 38th EUROMICRO Conference on (pp. 392-
+399). IEEE.. 
+[10] 3D]XU $QLþLü . 'LYMDN % 	 $UEDQDV .  3UHSDULQJ ,&7
+Graduates for Real-World Challenges: Results of a Meta-Analysis. IEEE 
+Transactions on Education, 60(3), 191-197.
+[11] Smeds, J., Nybom, K., & Porres, I. (2015, May). DevOps: a definition 
+and perceived adoption impediments. In International Conference on 
+Agile Software Development (pp. 166-177). Springer, Cham.
+[12] Virmani, M. (2015). Understanding DevOps & bridging the gap from 
+continuous integration to continuous delivery. In Innovative Computing 
+Technology (INTECH), 2015 Fifth International Conference on (pp. 78-
+82). IEEE.  
+63
+View publication stats

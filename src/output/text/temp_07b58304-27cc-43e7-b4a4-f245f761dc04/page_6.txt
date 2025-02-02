@@ -1,0 +1,22 @@
+A. Chandiramani et al.  
+ 
+ 
+ISSN (Online) : 2583-1798 
+6 
+Journal of Management and Service Science 
+(JMSS) 
+A2Z Journals 
+ 
+ 
+4.3. Making Migrations 
+'python manage.py make migrations' is a first step process which reads the 'models.py' after its creation. 
+ 
+ 
+ 
+Migrating to the database: This is the 2nd step where 'python manage.py migrate' read the newly created folder 'migrations' 
+thus creating the database. 
+ 
+ 
+ 
+Registering to the admin: Let's go to 'blog/admin.py' and do a import of a models called 'Post' by make use of 'from models 
+import Post'. For registering models to the admin, command as follows 'admin.site.register(Post)'.

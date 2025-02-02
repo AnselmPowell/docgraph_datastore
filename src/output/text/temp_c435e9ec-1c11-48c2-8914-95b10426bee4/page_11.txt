@@ -1,0 +1,26 @@
+users, with less emphasis on system development. Additionally, Jupyter Note-
+books appear on our list, albeit not reaching that popularity compared to IEEE
+Spectrum’s rankings.
+Figure 3: Programming languages in repositories containing CI/CD (logarithmic
+scale).
+The fact that projects using languages such as R, a language so popular
+among users without a computer science (CS) background (e.g., researchers,
+mathematicians), do not usually include CI/CD technologies, seems to indicate
+CI/CD is of difficult adoption by users without a technical (CS) background.
+Fig. 4 displays the prevalence of languages in CI/CD repositories, high-
+lighting the percentage of sample repositories utilizing each language with and
+without CI/CD technologies. The figure indicates that languages like Go, Rust,
+and TypeScript exhibit the highest prevalence of CI/CD use within their reposi-
+tories. Notably, despite Python and JavaScript having a substantial presence in
+CI/CD repositories, as illustrated in Fig. 3, they show a lower overall percentage
+of repositories utilizing CI/CD technologies.
+This data seems to indicate more recent languages (e.g., Go, Kotlin, Rust,
+TypeScript) tend to include CI/CD in their projects, in some cases having
+more than 60% of all projects some technology. On the other hand, more classic
+languages (e.g., C, C#, HTML, Shell) seem to have less support from CI/CD
+technologies. From this, a possible conclusion is that CI/CD technologies find
+a better fit in modern languages and not so much in pre-existing ones.
+Fig. 5 reveals that GitHub Actions and Travis stand out as the predominant
+technologies utilized across various programming languages.
+Notably, Travis
+11

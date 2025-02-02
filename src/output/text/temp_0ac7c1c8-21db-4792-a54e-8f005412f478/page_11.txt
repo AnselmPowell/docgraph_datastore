@@ -1,0 +1,50 @@
+12.
+Vizcaíno JA, Deutsch EW, Wang R, Csordas A, Reisinger F, Ríos D, et al. ProteomeXchange provides
+globally coordinated proteomics data submission and dissemination. Nat Biotechnol. 2014; 32(3):223–
+6. doi: 10.1038/nbt.2839 PMID: 24727771
+13.
+Ahmadia A, Aiello-Lammens M, Ainsley J, Allen J, Alsheikh-Hussain A, Banaszkiewicz P, et al. Soft-
+ware Carpentry: Programming with R; 2015. http://dx.doi.org/10.5281/zenodo.27353.
+14.
+Credit where credit is overdue. Nat Biotechnol. 2009; 27(7):579. doi: 10.1038/nbt0709-579 PMID:
+19587644
+15.
+FORCE11 Software Citation Working Group. https://www.force11.org/group/software-citation-working-
+group.
+16.
+Europe PMC Consortium. Europe PMC: a full-text literature database for the life sciences and platform
+for innovation. Nucleic Acids Res. 2015; 43(Database issue):D1042–8. doi: 10.1093/nar/gku1061
+PMID: 25378340
+17.
+Buckheit J, Donoho D. WaveLab and Reproducible Research. Springer-Verlag; 1995. p. 55–81.
+18.
+Cock PJ, Antao T, Chang JT, Chapman BA, Cox CJ, Dalke A, et al. Biopython: freely available Python
+tools for computational molecular biology and bioinformatics. Bioinformatics. 2009; 25(11):1422–3. doi:
+10.1093/bioinformatics/btp163 PMID: 19304878
+19.
+Goecks J, Nekrutenko A, Taylor J, Galaxy Team. Galaxy: a comprehensive approach for supporting
+accessible, reproducible, and transparent computational research in the life sciences. Genome Biol.
+2010; 11(8):R86. doi: 10.1186/gb-2010-11-8-r86 PMID: 20738864
+20.
+Gatto L, Lilley KS. MSnbase-an R/Bioconductor package for isobaric tagged mass spectrometry data
+visualization, processing and quantitation. Bioinformatics. 2012; 28(2):288–289. doi: 10.1093/
+bioinformatics/btr645 PMID: 22113085
+21.
+Sturm M, Bertsch A, Gröpl C, Hildebrandt A, Hussong R, Lange E, et al. OpenMS—an open-source
+software framework for mass spectrometry. BMC bioinformatics. 2008; 9(1):163.
+22.
+Perez-Riverol Y, Xu QW, Wang R, Uszkoreit J, Griss J, Sanchez A, et al. PRIDE Inspector Toolsuite:
+Moving Toward a Universal Visualization Tool for Proteomics Data Standard Formats and Quality
+Assessment of ProteomeXchange Datasets. Molecular & Cellular Proteomics. 2016; 15(1):305–317.
+doi: 10.1074/mcp.O115.050229
+23.
+Eglen SJ, Weeks M, Jessop M, Simonotto J, Jackson T, Sernagor E. A data repository and analysis
+framework for spontaneous neural activity recordings in developing retina. Gigascience. 2014; 3(1):3.
+doi: 10.1186/2047-217X-3-3 PMID: 24666584
+24.
+Li H, Handsaker B, Wysoker A, Fennell T, Ruan J, Homer N, et al. The Sequence Alignment/Map for-
+mat and SAMtools. Bioinformatics. 2009; 25(16):2078–9. doi: 10.1093/bioinformatics/btp352 PMID:
+19505943
+PLOS Computational Biology | DOI:10.1371/journal.pcbi.1004947
+July 14, 2016
+11 / 11

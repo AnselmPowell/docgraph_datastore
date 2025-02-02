@@ -1,0 +1,24 @@
+Figure 12: The usage of CI/CD per year.
+usage stops being considered. This methodology applies to all charts showing
+technology usage over time.
+Fig. 14 shows two significant trends in CI/CD, Travis and GitHub Actions.
+Travis usage steadily increased from 2012 until it peaked in 2019 with 73284
+repositories (36.6%). Since 2019, Travis’s usage has been declining. This coin-
+cides with the rapid adoption of GitHub Actions; from 2019 to 2020, there was
+a 502.8% growth in the number of repositories using GitHub Actions, and from
+2020 to 2021, there was an 86.6% growth. Of the 36587 repositories that used
+Travis in 2019 and were still active in 2023, 59.7% were using GitHub Actions
+and not Travis in 2023, 21.1% used Travis and not GitHub Actions, and 16.9%
+used both. Of the 87582 repositories using GitHub Actions in 2023, 45.4% had
+no snapshots from before 2020. The exodus from Travis and the influx from
+newer repositories have been the main drivers for GitHub Actions growth.
+From this data, we can see a shift in the CI/CD technologies used over the
+years. This could mean developers tend to change their technologies and may
+need support for doing so. We thus investigate this shift further on.
+Fig. 15 shows the top 10 CI/CD stack transitions from repositories that
+solely used Travis in 2019. While many stop being active, 22.9% moved from
+Travis to GitHub Actions. If we consider only the ones active, this 53.7% of all
+active Travis projects moved to GitHub Actions while.
+From this information, we can conclude that developers actually change
+CI/CD technologies. However, there is little support for this kind of change.
+19

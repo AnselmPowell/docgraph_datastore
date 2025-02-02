@@ -1,0 +1,109 @@
+• We conduct a large-scale empirical analysis on branch
+usage on OSS communities. In total, we investigate
+2,923 projects on GitHub. Our study sheds light into the
+practice of branching, and the large number of projects
+can improve the generalizability of our results.
+• We investigate several aspects of branch usage practice
+on GitHub, including the number of branches used,
+branching purpose, the roles of branches in coping with
+contributions by others, the commit ﬂow, and the impact
+of using branches on the overall productivity of projects.
+Our ﬁndings increase the understanding of branching in
+practice.
+II. RESEARCH QUESTIONS
+In this paper, we aim to understand how branches are used
+in real OSS communities. Speciﬁcally, we seek to understand
+the characteristics of branch usage and its potential impact on
+project productivity. In order to achieve these goals, we study
+the following ﬁve research questions.
+RQ1. How many branches does a project have and what
+kind of projects are more likely to have more branches?
+Although some researchers have conducted a series of
+studies on branching [5], [43], to the best of our knowledge,
+there are no broad investigations into the branching practices
+of OSS communities. In this RQ, we try to gain some insights
+into how prevalently branches are used in GitHub. We further
+try to ﬁnd out what kind of projects tend to use branches
+more than others. The answer of RQ1 helps to gain a better
+understanding of current situation of branch usage in large-
+scale OSS communities.
+RQ2. What are branches used for?
+Philips et al. [39] studied the purposes of branching in
+industry by surveying 140 practitioners. They found that
+branching for release and feature implementation are the most
+two most popular branch use types. Survey results represent
+the belief of participants, which are primarily formed based on
+personal experience, rather than on evidence found in empir-
+ical research [14]. In this RQ, to complement Philips et al.’s
+study, we try to understand why developers create branches in
+GitHub by analyzing data collected from OSS communities.
+The answer to this RQ can help us gain a better understanding
+about the branching practice in OSS communities. It can also
+provide a good complement to existing industrial studies, thus
+to make people hold a more complete view over branching in
+practice.
+RQ3. How many branches are requested to merge PRs?
+On GitHub, developers can contribute to any project via pull
+requests (PRs) [20]. Developers only need to fork the targeted
+project and modify code in the forked repository. If they ﬁnish
+coding and want to merge their code change into the targeted
+project, they can submit a PR. When submitting a PR, they
+have to specify which branch they want to merge the PR into.
+Although contributors can submit any PR to an arbitrary
+branch as they wish, however, when we read contribution
+documents of projects in GitHub, we found that differ-
+ent projects have different requirements on which branch
+the contributors should push PRs into. For example, some
+projects may allow contributors to submit PRs to master
+branch while some projects forbid this practice. For example,
+project orientechnologies/orientdb 4 explicitly re-
+quires contributors to never submit PRs to their master branch
+because the master branch is only used for releasing 5.
+Considering the arbitrariness of specifying targeted branch
+by contributors and the speciﬁc requirement by projects, it
+is important to get a macro view of the current situation of
+branches that are requested by contributors to merge their PRs.
+In this RQ, we study the role of different branches in terms of
+receiving outside contributions from PRs. Our results can be an
+initial basis for practitioners or researchers to help contributors
+submit their PRs to the right branches more easily.
+RQ4. Do all commits go into the master branch? Generally
+speaking, developers tend to create branches from the master
+branch to complete speciﬁc tasks such as bug ﬁxing or feature
+implementation. When they ﬁnish their work on the branch,
+they may want to merge their work (in the form of commits)
+into the master branch [9]. This inspires us to ﬁgure out
+whether all such commits ﬂow into the master branch. In cases
+where this does not happen, we study how many commits are
+left alone on the unmerged branch itself.
+The answer of RQ4 can gain a high-level view of the
+current commit ﬂow of non-master branches in the whole
+OSS community. Besides, for developers of a project, knowing
+detailed commit ﬂow of non-master branches can also help
+them understand what is going on within their project, which
+can help better manage work on their branches. For example,
+they may timely merge useful commits from non-master
+branches into their master branches.
+RQ5. Does branch usage affect the overall productivity
+of a project?
+Branching is proposed to help developers
+focus on their own work to avoid unnecessary interruptions
+by others [9]. In intuition, branching can facilitate the process
+of developing software. Nevertheless, little work has been
+done to check the potential impact of branching on software
+development in OSS communities. In this RQ, we investigate
+the effect of branch usage on project productivity. Speciﬁcally,
+we aim to determine whether the number of branches used has
+an impact on a project’s productivity. The answer of this RQ
+can help better identify the functionality of branch use.
+III. METHODOLOGY
+In this section, we describe three aspects of our methodol-
+ogy: project selection, RQ design, and RQ statistical method
+selection.
+A. Studied Projects
+Our experimental subjects are selected from projects in
+GitHub. We select projects that have been existed on for at
+4http://github.com/orientechnologies/orientdb
+5http://orientdb.com/docs/last/Contribute-to-OrientDB.html
+307
+Authorized licensed use limited to: Nanjing University. Downloaded on May 20,2020 at 13:25:16 UTC from IEEE Xplore.  Restrictions apply.

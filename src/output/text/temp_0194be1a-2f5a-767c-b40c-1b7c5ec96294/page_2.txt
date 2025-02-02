@@ -1,0 +1,121 @@
+and agile process models for the object-oriented paradigm. 
+Finally, there should be an associated programming language 
+based on the philosophical model. Examples include the 
+languages Fortran, Basic, Pascal and C for structured 
+programming and the languages Smalltalk, Eiffel, C++ and 
+Java for object-orientation.   
+B. What drives paradigm shifts?  
+Paradigms guide, but also impose constraints, on how we 
+develop, operate, maintain and evolve computer applications. 
+When hardware advances make new kinds of application 
+possible, these constraints can become a development 
+bottleneck. When that happens, the philosophical model of 
+computing needs to change, in order to improve productivity 
+and software quality. This is called a paradigm shift, a 
+concept due to the American physicist and philosopher 
+Thomas Kuhn who defined it as a fundamental change in the 
+basic concepts and experimental practices of a scientific 
+discipline [8]. 
+The two major paradigm shifts in software engineering 
+over the last few decades have been from assembly code to 
+structured software engineering, using procedural high-level 
+programming languages, and from that to object-oriented 
+software engineering. The main driving force behind both 
+paradigm shifts was a desire to improve software 
+productivity and reliability and to make it possible to write 
+more complex and larger-scale software systems.  
+Efficiency, in contrast, has always been a lesser concern. 
+In fact, both paradigm shifts were at the expense of 
+efficiency. The intention in both cases was that the 
+programmer should be able work at a higher level of 
+abstraction, concentrating on the business logic of the 
+application, with the compiler mapping a high-level model of 
+computation used by the programmer to the low-level model 
+of the machine, with some performance penalty.  
+It is the advances in hardware, making computing 
+cheaper, faster and smaller, that prompts the aforementioned 
+desire for more complex and larger-scale systems. The 
+limitations of the old paradigm became a bottleneck that the 
+paradigm shift then overcomes. With this in mind, it is 
+instructive to note that the cheaper/faster/smaller trend has 
+continued, bringing about wireless networks and smart 
+devices. These have led to the development of cloud, mobile, 
+and IoT (Internet of Things) applications.  
+However, the object-oriented paradigm, in which 
+computer systems are viewed as consisting of passive objects 
+waiting for method calls from each another, is a poor fit for 
+such applications, in which the computational entities are 
+autonomous, collaborative and proactive. The programmer 
+must therefore deal with all the technical details of network 
+communication, collaboration protocols and fault tolerance. 
+Even to deploy a software system to a cluster and to monitor 
+its execution is a non-trivial task. These technicalities could 
+instead become only a compiler concern if the move was 
+made to a yet higher level of abstraction with another 
+paradigm shift.  
+III. REVIEW OF THE CURRENT PRACTICE  
+We will now deduce an ideal philosophical model for cloud 
+computing in the proposed new paradigm by reviewing the 
+dominant software architectures and platforms for purpose-
+built or cloud-native applications. We will also in this section 
+review the development process models from a management 
+perspective in order to understand what are the bottlenecks 
+of the existing paradigm. This will lay a foundation for a  
+review in the next section of current programming 
+languages. That review will help to identify a route from the 
+current state-of-the-art to a more mature paradigm for cloud 
+computing that supports the philosophical model.  
+A. Microservices 
+The microservices architecture became widely adopted for 
+cloud-native applications during the 2010s. Santoli [ 9 ] 
+pointed out that all successful IT companies have taken an 
+aggressive approach to adopting it. Well-known examples 
+include NetFlix [10, 11], Amazon [12], EBay [13], Google 
+[13] and Microsoft (with Azure) [14]. A global survey by 
+Smartbear in 2016 [15] found that 73% of organizations 
+provide both internal and external APIs, which is a key 
+technique used to integrate services in the microservices 
+architecture [16].  
+(1) The Concept of Microservices 
+As Martin Fowler [1] puts it, the idea of the microservices 
+architectural style is that an application consists of "a suite of 
+small services, each running in its own process and 
+communicating with lightweight mechanisms, often an 
+HTTP resource API". These services are "independently 
+deployed" 
+with 
+a 
+"bare 
+minimum 
+of 
+centralised 
+management". Nevertheless, the exact definition is still a 
+matter of controversy [17, 18]. 
+Focusing on the software architecture point of view, the 
+microservices 
+architectural 
+style 
+has 
+the 
+following 
+properties:  
+• Components are services.  
+o Each component is autonomous, i.e. running on its 
+own process and managing its own resources.  
+o Each implements a single function and so is of fine 
+granularity.  
+o Each can be independently deployed to different 
+machines over a cluster.  
+• Connectors are service requests and responses.  
+o Communication is only through service requests and 
+responses via a lightweight mechanism.  
+o Connections between a service provider and a service 
+requester can be established dynamically at runtime.  
+• Configuration is dynamic and decentralised.  
+o Services communicate with each other to form a 
+collaborating network, typically without a central 
+controller.  
+o New copies of a service can be created if needed and 
+idle existing copies can be destroyed, both at runtime. 
+o Multiple copies of a service may exist in the system 
+and they can be distributed to multiple machines.

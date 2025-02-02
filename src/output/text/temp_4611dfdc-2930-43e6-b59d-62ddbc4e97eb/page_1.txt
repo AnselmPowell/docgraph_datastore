@@ -1,0 +1,124 @@
+www.ijcrt.org                                                                 © 2017 IJCRT | Volume 5, Issue 3 August 2017 | ISSN: 2320-2882 
+IJCRT1133441 
+International Journal of Creative Research Thoughts (IJCRT) www.ijcrt.org 
+946 
+ 
+DevOps automation and Agile methodology  
+Sikender Mohsienuddin Mohammad 
+Sr. Associate, KPMG LLP, Department of Information Technology, Wilmington University 
+419 V street, Apt D, Sacramento, CA 95818 
+ 
+Abstract 
+In recent times, interest in the collaboration between 
+technology and IT activities which is part of the DevOps 
+phenomenon has been on the rise among, software-engineering, 
+practitioners, and scientists. However, DevOps is also associated 
+with agile as well as continuous software development delivery 
+approaches, given its increasing importance. The study of 
+DevOps follows which are the roots, acceptance, integration, and 
+priorities with agile, lean, and ongoing delivery strategies in 
+software development.   DevOps phenomenon was influenced by 
+the development of agile software, based on lean principles. 
+Successful DevOps deployment needs the agile development of 
+software. DevOps is end-to-end automation in developing and 
+delivering software. No one could approach it with a cookbook-
+like approach, but most developers would benefit from improving 
+connectivity between previously isolated creation and activity 
+silos. Even though agile software development methodologies are 
+more and more common, many organizations have discovered 
+that they have not reached a frequent release rate, largely 
+because of the various departmental features in silos. 
+Organizations have shifted towards DevOps to remove these silos. 
+Companies are increasingly introducing DevOps as digitizations 
+continue. There are three different phases of the agile transition 
+to DevOps: agile, ongoing integration, and constant delivery. 
+Based on a comprehensive case study done in an enterprise with 
+a long background of DevOps, we detect a fundamental 
+disturbance in the soft ability and patterns of communication that 
+software teams are supposed to possess.  
+Keywords: 
+DevOps, 
+Automation, 
+software 
+engineering, 
+configuration management, agile methodology 
+I. 
+ INTRODUCTION 
+The 
+distinctions 
+between 
+DevOps 
+and 
+Agile 
+methodologies are very confusing. That is partly because many 
+marketers define these terms loosely which waters down the exact 
+meaning.  But it is not just marketing ambiguity that leads to the 
+misunderstanding and confusion of concepts. It also adds to the 
+misunderstanding that DevOps and Agile concentrate on 
+principles rather than practical activities [1]. A software project 
+involves the execution of tasks to achieve added value outcomes. 
+The planning, implementation, and monitoring of these tasks 
+would be the main function that project management plays. The 
+business environment nowadays in terms of software & product 
+design has evolved more rapidly. Project planning, evaluation, 
+management of improvements, and quality control are some of 
+the challenges that differentiate successful and failed projects. 
+Agile methods are widely used and implemented worldwide to 
+deal with these issues [1]. More software developers concentrate 
+on agile development, thereby increasing the productivity of their 
+projects and meeting the competitive demands of their customers. 
+Agile methodology has been developed to address the problems 
+faced by the conventional model and to offer project teams 
+multiple possibilities during the development process. The 
+methodologies for software development are changing and thus 
+their application development is handled in short times (sprints) 
+and other involving team members are modified through 
+agile and DevOps methodologies [2]. This study will be focused 
+on 
+a 
+qualitative 
+analysis 
+of DevOps 
+and 
+agile 
+methodology responses.  The main focus will be to conduct a 
+literature review on what other scholars have discovered when it 
+comes to DevOps automation and Agile methodology and its 
+impact on the current information technology industry. With this 
+in mind, DevOps contributes to a greater understanding of the 
+efficiency of information systems. 
+II. 
+LITERATURE REVIEW  
+An analysis was done by Laanti, Salo, and Abrahamsson, 
+Agile and DevOps are buzzing ideas that are commonly used by 
+many organizations, but there is always an often overlap or 
+ambiguity between the two [2]. Only one business model has 
+emerged in software development, but they are implemented 
+beyond software development to the organizational units. These 
+approaches are not the same but are not enemies either. The use 
+of Agile and DevOps in tandem is always the appropriate 
+approach in a team, department, or entity to achieve change. To 
+accept these theories requires being versatile on how they change 
+continuously and to know that no one solution can solve all 
+organizational needs. 
+I. 
+An Agile methodology 
+Laanti, Salo, and Abrahamsson state that as software developers 
+are aware of the immediate limitations of heavy-weight processes 
+such as the Waterfall method, they are searching for a way to 
+simplify and make tweaking of software more agile [2]. They 
+have decided to give end-user input more chances to ensure they 
+are on the right track. In the 1990s a large number of lightweight 
+theories, including the famous Scrum and Kanban methods, were 
+developed for software development. In 2001, the Agile Software 
+Development Manifesto codified many of these concepts and put 
+them within the framework of the advancement of agile software. 
+According to Pedrycz, agile methodologies value the following: 
+a) People-especially the teammates, clients, and their 
+interactions — rather than tools and processes [3]. 
+b) Immediacy-Functional 
+applications instead 
+of comprehensive documentation. 
+c) Flexibility-To responds to and embraces change, rather 
+than to a predetermined plan. 
+Electronic copy available at: https://ssrn.com/abstract=3655581

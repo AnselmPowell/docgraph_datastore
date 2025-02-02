@@ -1,0 +1,110 @@
+An interviewee 3 stated “. . . sometimes, if we have a big issue
+someone else may have it too and we can focus on ﬁxing
+other bugs so, we try to forward as many issues as possible.”.
+This ﬁnding is inline with the ﬁndings of Henkel et al. [9].
+3.3
+Software Testing Challenges in OI
+One of the biggest testing challenges is to have a complete
+coverage as there are many diﬀerent conﬁgurations and setups
+available due to the open plug-in nature of Jenkins. As one
+interviewee 1 stated “. . . Jenkins is composed of so many
+small plugins thereby, every time [company] upgrade core and
+plugins for master services it blows up”. Therefore, running
+the ATH test suites before applying an upgrade gives the
+team an indication about what might fail during the process.
+In addition to this quote, the interviewee further elaborated
+that they have some acceptance tests and the test suite is
+getting bigger, and therefore urges for a need to set up an
+automatic building (ATH) for every patch set. The second
+major challenge is related to the availability of resources, as
+an interviewee 3 stated“. . . the hot shots in the community are
+really busy and do not have enough time to take on some of
+the most daring challenges we face. Therefore, sometimes it is
+frustrating to get an answer from the community quickly.” as
+conﬁrmed by Morgan et al. [10]. This also traces back to our
+comparison (see Table 2) where stakeholders prioritize and ﬁx
+their issues independently, without taking other stakeholders
+into account.
+4.
+CONCLUSIONS
+This case study explored testing activities in Jenkins, using
+ATH and compared the testing activities of ATH with the
+ISO/IEC/IEEE testing standard. We extracted the change
+log data of ATH in order to identify the major contributors
+(RQ1). In the interviews, we found out that although the
+initial idea of ATH came from the community, the major
+Jenkins contributor brought ATH to the community’s at-
+tention at hackathons. Additionally, along with Cloudbees
+and Redhat, Munich university came out as a third biggest
+contributor, which suggests strong ties between the Jenkins
+community and industry. Further, we compare the diﬀerence
+between the ATH testing process and the ISO/IEC/IEEE
+testing standard (see Table 2). The key diﬀerence is that
+the ATH does not have a test plan and therefore, there is
+no test completion criteria that measures the test coverage
+of all Jenkins plugins. The thoroughness of the acceptance
+test cases depends on the subjective judgment of developers
+(RQ2). Finally, we identiﬁed key challenges for the testing
+process in OI (RQ3). For example, due to the huge number
+(1000+) of open Jenkins plugins and its nature with many
+settings, it is a daunting task to have a complete test coverage.
+However, the ATH makes the whole Jenkins defect detection
+process better by pointing to defects in faulty plugins and
+thereby, enables developers to take corrective actions more
+eﬃciently.
+It can be concluded that the ATH testing process does
+not strictly adhere to the ISO/IEC/IEEE testing standard
+because testable features are identiﬁed by software engineers
+independently without any formal test plan. The test cover-
+age is dependent on software engineers subjective judgment
+and hence, it is very diﬃcult to achieve the complete test
+coverage. Furthermore, diﬀerent controllers to run accep-
+tance test cases against many diﬀerent environments is an
+indication that the standard Software Engineering testing
+process needs to be adapted to deal with challenges of OI.
+Finally, it is worth mentioning that Jenkins is a development
+infrastructure and ATH is used to test this infrastructure. In
+eﬀect, ATH may not necessarily a representative of regular
+software example.
+5.
+REFERENCES
+[1] ISO/IEC/IEEE 29119 Software Testing Standard.
+[2] The Jenkins Gerrit trigger plugin open source project
+on Ohloh. Accessed: 2014-07-08.
+[3] T. Abdou, P. Grogono, and P. Kamthan. A conceptual
+framework for open source software test process. In
+36th Annual Computer Software and Applications
+Conference Workshops (COMPSACW), pages 458–463,
+July 2012.
+[4] P. Bourque, R. Dupuis, A. Abran, J. Moore, and
+L. Tripp. The guide to the Software Engineering Body
+of Knowledge. IEEE Software, 16(6):35–44, Nov. 1999.
+[5] H. Chesbrough, W. Vanhaverbeke, and J. West. Open
+innovation: Researching a new paradigm. Oxford
+university press, 2006.
+[6] H. W. Chesbrough. Open innovation: the new
+imperative for creating and proﬁting from technology.
+Harvard Business School Press, Boston, Mass., 2003.
+[7] L. Dahlander and M. W. Wallin. A man on the inside:
+Unlocking communities as complementary assets.
+Research Policy, 35(8):1243–1259, 2006.
+[8] J. Henkel. Selective revealing in open innovation
+processes: The case of embedded linux. Research
+Policy, 35(7):953–969, 2006.
+[9] J. Henkel. Champions of revealing-the role of open
+source developers in commercial ﬁrms. Industrial and
+Corporate Change, 18(3):435–471, Dec. 2008.
+[10] L. Morgan and P. Finnegan. Open innovation in
+secondary software ﬁrms: An exploration of managers
+perceptions of open source software. SIGMIS Database,
+41(1):76–95, 2010.
+[11] H. Munir, K. Wnuk, and P. Runeson. Open innovation
+in software engineering: a systematic mapping study.
+Empirical Software Engineering, 2015.
+[12] S. Reid. BS 7925-2: the software component testing
+standard. In Proceedings First Asia-Paciﬁc Conference
+on Quality Software, pages 139–148, 2000.
+[13] P. Runeson, M. H¨ost, A. Rainer, and B. Regnell. Case
+Study Research in Software Engineering - Guidelines
+and Examples. Wiley, 2012.
+191

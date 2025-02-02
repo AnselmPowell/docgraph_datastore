@@ -1,0 +1,111 @@
+use branches to divide work into tasks and teams [6]. They
+also found some problems related to merging branches in
+Windows [5]. Phillips et al. conducted a survey among indus-
+trial developers and gained insights into the best branching
+strategy in practice [39]. Shihab et al. investigated the effect
+of different branching strategies on software quality [43].
+Hua found that branches are often used during Linux kernel
+development, and cross-branch porting is frequent and error-
+prone in practice [21]. These studies mainly focus on industrial
+branching practice or are limited to a small number of speciﬁc
+OSS projects. To the best of our knowledge, we are the ﬁrst
+to conduct a large-scale empirical study of branch usage on a
+broad collection of OSS communities.
+Researchers also have made several efforts to tackle the
+problems of using branches in practice. Bird et al. proposed
+to remove low beneﬁt but high cost branches to reduce the
+integration delays [5]. Tarvo et al. [45] and Michaud [36]
+proposed to track commits from different branches to improve
+the maintainability of software. Kerzazi proposed to use social
+network to build better branch strategies to facilitate the
+software development [28]. Costa et al. developed TIPMerge
+to recommend developers to merge commits from different
+branches [12]. Kovalenko et al. emphasized that it was im-
+portant to properly cope with branches when calculating ﬁle
+modiﬁcation histories [29]. We studied a different problem and
+our ﬁndings also projected some insights into the best practices
+of branching and potential related problems to be solved.
+Some researchers have also developed some guidelines for
+using branches. Berczuk and Appleton guided people when
+to branch and how to adopt the right branch structure [4].
+Wingerd et al. gave some high-level best practices of using
+branches in software management [55]. Arve studied how to
+use advanced branching strategies to facilitate the development
+in Agile projects [3]. Appleton et al. described some branch
+patterns for parallel software development [1]. Premraj et
+al. discussed the pros and cons of branches and presented
+some guidelines on when and how to branch [40]. There
+also exist some lively discussions or speciﬁc documents on
+branching and merging over Internet. For example, Linus
+Torvalds provided some branching and merging guidance for
+Git users in an email thread [31]. Microsoft documented
+some practical advice on branching strategies in the Team
+Foundation Server branching guide [22]. These studies mainly
+provided some best practices of branching based on personal
+experience. We studied the actual practice of branching in
+2,923 real GitHub projects and investigated different aspects
+of branch usage.
+Studies on GitHub. A great number of studies have been
+conducted on GitHub, with focuses ranging from pull-based
+mechanism, social coding to testing and being productive on
+GitHub [57], [37], [38], [51], [26], [53].
+Zhu et al. investigated the effectiveness of pull-based mech-
+anism compared to patch-based methods [57]. Gousios et
+al. studied the challenges of pull-based development from
+both the contributors’ and integrators’ perspectives [19], [20].
+They further found that 40% PRs do not appear as merged
+even though they have been merged [27]. Some researchers
+explored how social and technical factors may affect the
+evaluation of PRs [47], [18], [56]. Veen et al. proposed to
+rank PRs to help developers better handle PRs [49]. Different
+from above studies, we studied a new aspect of PRs, i.e., the
+destination branches of PRs.
+Vasilescu et al. found that the gender and tenure diversity,
+the adoption of continuous integration, would affect a project’s
+productivity [51], [52]. They also studied how context-switch
+would affect developers’ productivity [52]. Casalnuovo et al.
+found that both social links and language experience have an
+inﬂuence on both developers’ and projects’ outcomes [8]. We
+looked into a new factor, i.e., branch usage, that affects a
+project’s productivity.
+Vendome et al. studied the license changing problem [54].
+Ray et al. measured the naturalness of buggy source code [41]
+and explored how programming languages would affect code
+quality [42]. Silva et al. and Tufang et al. did an exploration
+into the code smells [44] and test smells [48]. Fowkes et al.
+tried to mine APIs across GitHub [16]. Ma et al. explored how
+developers coped with cross-project bugs [33]. Lee et al. found
+that developers used rockstars to better choose and contribute
+to projects in GitHub [30]. Jiang et al. found that creators’
+status affected developers’ forking behavior [23]. Marlow et
+al. studied impression formation in GitHub [35]. Jiang et al.
+studied how projects get disseminated across GitHub [24].
+Unlike them, we considered branch usage in GitHub.
+VII. SUMMARY
+In this paper, we conduct an exploratory study of branch
+usage in 2,923 OSS projects hosted on GitHub. We ﬁrst
+investigate how branches are used in 2,923 projects. We
+ﬁnd that most projects have less than ﬁve branches during
+development and less than 20% projects only develop on
+their own master branches without creating other branches.
+Then, we study the branching purpose in GitHub, we ﬁnd that
+83% branches are created by developers to conduct feature
+implementation, version iteration, and bug ﬁxing. We also
+ﬁnd that almost all master branches of 2,923 projects have
+been requested to merge contributions by developers. When
+studying the commits of branches, we ﬁnd that 75% branches’
+most commits are contained on their master branches. Finally,
+we investigate the impact of branch usage on project’s pro-
+ductivity. We ﬁnd that the more branches a project has, the
+more commits the project has; but the impact is considered
+small measured by Cohen’s effect size. Our ﬁndings provide
+insight into the situation of the current practice of branching in
+OSS communities on GitHub. Our experimental data sets are
+available online: https://github.com/SurfGitHub/branchStudy.
+ACKNOWLEDGMENTS
+The work is supported partly by the National Natural
+Science Foundation of China (61690201) and the Fundamental
+Research Funds for the Central Universities (021714380017,
+021714380018).
+315
+Authorized licensed use limited to: Nanjing University. Downloaded on May 20,2020 at 13:25:16 UTC from IEEE Xplore.  Restrictions apply.

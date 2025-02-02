@@ -1,0 +1,110 @@
+using it and 30% more planning to do so. Figure 3 charts this 
+rapid growth in popularity, counting pulls from GitHub [23]. 
+Docker is also provided as container-as-a-service, as seen in 
+AWS ECS (35%), Azure Container Service (11%), and 
+Google Container Engine (8%). Docker combines two open 
+standards: (a) Docker Image Specification, which defines the 
+format used to package contents into a container and (b) 
+Docker Runtime Specification, which defines the runtime 
+components. 
+ 
+Figure 3. The Growth of Popularity of Docker [23] 
+Because the runtime environment of a service is 
+packaged with the code, there is no need to configure 
+hardware and software, nor versions of languages and tools. 
+The complexity is pushed into containers that are easy to 
+build, share and run.  
+The deployment of applications can be automated with 
+the use of container orchestration engines, which deploy a 
+suite of containers to a cluster of machines in a pre-scripted 
+configuration. Docker has its own built-in orchestration 
+engine called Swarm but alternatives include Kubernetes and 
+Mesos [25].  
+C. DevOps  
+DevOps, a concatenation of (software) development and (IT) 
+operations, is a whole life cycle methodology that stresses 
+the integration of those two tasks, which are traditionally 
+handled by separate teams. This integration requires the 
+removal of communication boundaries and must happen as 
+early as possible for the greatest gains at combating 
+complexity. 
+DevOps 
+requires 
+that 
+the 
+products 
+of 
+development be moved smoothly in a pipeline in turn to 
+platforms for development, testing, stage and operation. 
+Each of these is typically a heterogeneous cluster of 
+computers. Figure 4 shows a typical DevOps pipeline as 
+suggested by Sharma and Coyne [6]. 
+ 
+Figure 4. A Typical DevOps Pipeline [6] 
+Many tools are available for each of these stages, in 
+addition to the traditional phases of software development, 
+but there is no single tool available for them all [26]. 
+DevOps tools fall into the following categories. 
+• Software Package Management: package creation, 
+artifact repositories, and staging prior to deployment. 
+Docker is also referred to as a DevOps tool because it 
+provides software packaging as well as automated 
+container deployment and metrics for monitoring the 
+execution of containers. 
+• Service Release Management: change management, 
+release approval, and release automation.   
+• System Configuration and Deployment Management: 
+Infrastructure and deployment to a cluster, for example, 
+Jenkins, Puppet, Vagrant, Ansible, etc.  
+• System Monitoring: Collecting system state data, 
+statistical analysis of that data and visual display, for 
+example, Nagios/Icinga, Monit, Collectd/Collectl.  
+• Log File Analysis: Used for diagnostic purposes, such as 
+ELK (Elasticsearch, Logstash and Kibana).  
+• Service registration and discovery: Registration of and 
+access to services deployed to a cluster, for example, 
+Consul, Zookeeper, etcd,  
+DevOps applies many of the principles of agile 
+methodology to large-scale clusters and due to its 
+widespread popularity it is often used with microservices and 
+container technology. The overall DevOps adoption rate rose 
+from 66% in 2015 to 74% in 2016 to 78% in 2017. For larger 
+enterprise organizations, the adoption rates are even higher: 
+81% in 2016 and 84% in 2017 [27, 28]. 
+D. Discussion 
+Cloud-native applications are made not from objects and 
+classes 
+but 
+from 
+microservices, 
+which 
+are 
+active 
+computational entities dynamically created from a template 
+(container image) and deployed to a network of computers. 
+The communication links are dynamically bound. Systems 
+evolution is by continuous integration and continuous 
+delivery. A collection of communicating microservices 
+forms an ecosystem. Likewise, the teams working on each 
+microservice also form an ecosystem.  
+These changes have permeated all aspects of software 
+engineering and the new practices and techniques have 
+evolved to replace them. This is why we say a software 
+paradigm shift is taking place right now.  
+IV. SEARCH FOR NEW PROGRAMMING LANGUAGES 
+A crucial aspect of the emerging new paradigm as yet not 
+discussed is the choice of programming languages in which 
+microservices 
+are 
+written. 
+Many 
+new 
+programming 
+languages have arisen in the past few years. Some like 
+ActorScript [ 29 ] are specifically aimed at cloud-based 
+applications while others, like Go [30] and Scala [31], are 
+general purpose languages with an emphasis on network 
+systems. A thorough survey is beyond the scope of this 
+paper, so here, we discuss a few general approaches.  
+A. Actor Model 
+The Actor model, a mathematically-based formalism dating

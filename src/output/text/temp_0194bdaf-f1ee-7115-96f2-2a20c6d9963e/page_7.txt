@@ -1,0 +1,100 @@
+0
+500
+1000
+1500
+1 2 3 4 5 6 7 8 9 10 1112 13 14 1516 17 18 2122 23 25 2630 37
+Number of Branches
+Number of Projects
+Fig. 3. Branches that are requested to merge PRs.
+and maintain lots of branches. Thus, it would be valuable
+if techniques can be developed to automatically provide a
+descriptive summary for a branch, by collecting and analyzing
+different kinds of branching information, e.g., changed code,
+commit logs, and branch names.
+C. RQ3: How many branches are requested to merge PRs?
+In GitHub, developers use PRs to contribute to others’
+projects. A PR contains detailed code change or document
+modiﬁcation to the target project by developers. Developers
+specify the destination branch (i.e., the branch that developers
+want to have their PRs merged into) for the PRs. Since a
+project may have several branches during their development,
+which inspires us to further investigate the prevalence of
+branches within a project that are requested by developers to
+merge their PRs.
+For each project, we download all PRs that were submitted
+by developers. We then retrieve the destination branch of each
+PR with the help of GitHub APIs for PRs8. Finally, we count
+the number of PRs submitted to each destination branch within
+the project.
+After recording each branch’s state of receiving PRs, we
+ﬁnd that only 6,159 out of 19,389 branches have ever been
+requested to merge PRs. For those 6,159 branches, we further
+investigate how many branches have been requested to merge
+PRs in a project. Figure 3 shows the detailed results. In
+Figure 3, the horizontal axis is the number of branches that
+are requested to merge PRs. The vertical axis is the number
+of projects.
+From Figure 3, we can ﬁnd that more than 90% projects
+(2,723/2,923=93.2%) have less than 5 branches that are re-
+quested to merge PRs by contributors, among which more
+than 60% projects (1,756/2,723=64.5%) have only one branch
+having been requested by merging PRs. There are extremely
+few projects (1.9%) that have more than 10 branches re-
+quested by merging PRs. Next, we speciﬁcally study master
+branches and ﬁnd that almost all projects’ master branches
+8https://developer.github.com/v3/pulls/
+(2,909/2,923=99.5%) have been requested to merge PRs by
+contributors.
+After analyzing the overall usage of PRs in each project,
+we further investigate those projects which have more than
+two branches with PR merging requests. We ﬁnd that 1,135
+projects have more than two branches having been asked for
+merging PRs. For those projects, we investigate whether all
+branches weight the same on being requested by merging PRs.
+The data shows that 1,121 out of 1,135 projects always have
+one branch having more than 50% PRs merging requests.
+Finding 4. 90% projects have less than 5 branches that are
+requested to merge PRs in GitHub. There always exists a
+branch that is mainly targeted by contributors to merge PRs
+for each project. About 60% projects have only one branch
+requested to merge PRs. Almost all master branches (99.5%)
+have been requested to merge PRs.
+Implications. In RQ3, we mainly study the current situation
+of branches that are requested to merge PRs by contributors.
+One interesting observation is that almost all projects’ (99.5%)
+master branches are pushed PRs by contributors. However,
+as mentioned previously in Section II, some projects have
+their own requirement in to which branch a PR is supposed
+to submit (e.g., contributors should not submit PRs to the
+targeted project’s master branch). This contrary to some extent
+indicates that not all contributors are aware of such require-
+ments. Those PRs with incorrectly targeted branches may be
+rejected and be asked to re-merge to the right branches, which
+will affect contributors’ passion on further contribution, and
+increase project maintainers’ workload in coping with PRs.
+Thus, an effective way to identify the right targeted branch for
+contributors is very desirable. Researchers or practitioners may
+need to build an automated approach that can help contributors
+more easily ﬁnd the right branch to merge into, such as
+developing recommending tools or providing more explicit and
+indicative information of targeted branches.
+D. RQ4: Do all commits go into the master branch?
+In this RQ, we investigate the prevalence of commits
+ﬂowing into the master branch from other branches. In other
+words, we try to gain some insights into the validity of work
+on other branches. In total, we examined 19,389 branches
+on 2,923 projects (2,923 master branches and 16,466 other
+branches). For each project, we ﬁrst ﬁnd its master branch9
+(M) and other branches (BranchSetA). Then for each branch
+(B) within BranchSetA, we use the commands “git log --
+pretty=oneline B --not M --” and “git log --pretty=oneline M
+--not B --” to retrieve the number of commits which are only
+in the branch B or in the master branch M. Since the projects
+we collected have various number of commits in them, we
+use percentage of total commits that are only in master or
+only in a non-master branch, in order to better observe the
+whole situation of commit ﬂow within GitHub.
+9The master branches are identiﬁed by retrieving the default base branch
+of projects hosted in GitHub.
+312
+Authorized licensed use limited to: Nanjing University. Downloaded on May 20,2020 at 13:25:16 UTC from IEEE Xplore.  Restrictions apply.

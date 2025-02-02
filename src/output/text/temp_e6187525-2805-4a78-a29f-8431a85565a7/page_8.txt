@@ -1,0 +1,174 @@
+9:  
+BODY {} 
+10: } 
+The IP addresses are optional and if they are omitted then the 
+agents can be located anywhere on the network. They need 
+not be literals and can be constructed at run time. Note that 
+the Observer agent can be run on a different machine where 
+the Peer agents run.  
+(2)  “Deployment” Mechanisms in CAOPLE 
+The following caste-membership operation statements form 
+a rich set of “code deployment” operations for distributed 
+programming.  
+AgentCreationStatement ::=  
+  
+create [AgentVar of] casteName ([params])  
+  
+ 
+[@ locationExp] 
+JoinStatement ::= join casteName ([params])  
+ QuitStatement ::= quit [ casteName ] 
+ SuspendStatement ::= suspend casteName  
+ ResumeStatement ::= resume casteName 
+ EvolveStatement::=  
+  
+evolve [casteName] to casteName ([params]) 
+ destroyStatement := destroy [ agentVar ] 
+(3) Event-Driven Programming Facilities 
+CAOPLE has two statements that support event-driven 
+computing: the WHEN-statement and the TILL-statement. 
+Both test for whether the system is in a scenario, which are 
+conditions on whether an action is performed either by a 
+specific agent or an agent of a certain caste. 
+WhenStatement ::= when scenario { statements } ;  
+TillStatement ::= till  scenario ; 
+scenario ::= AgentVar:ActionID([Params]) 
+  
+|exist AgentVar in CasteName:ActionID([Params]) 
+The statements in a WHEN-statement will be executed if 
+the scenario is true and skipped otherwise. The TILL-
+statement will delay the execution until the scenario becomes 
+true.  
+(4) Prevention of Data Races 
+The write-write type of data racing is not possible because 
+the state variables of each agent can only be changed by the 
+agent itself. The write-read type of data racing can be 
+prevented by using the WITH-statement, which has the 
+following syntax:  
+WithStatement::= with var = expr { statements }  
+Here, expr is a variable of a structured data type. When the 
+statement is executed, the value of expr is copied to a new 
+variable var of the same data type, which is then changed by 
+the statements and copied back to expr as an atomic 
+operation. Consider the following example: 
+with date= conf.date { 
+  
+date.day := 29;  
+  
+date.month := 03;  
+  
+date.year := 2016; 
+}; 
+This updates conf.date from a previous value such as 
+28/02/2018 to the new value 30/03/2018 in a single atomic 
+operation making it impossible for other agents to read the 
+data when, for example, only the day has been changed.  
+(5) Example 2: API 
+In the program below, an agent of caste RandomIntGenerator  
+is a service that generates a random integer whenever its 
+requestor asks for it, doing so by performing an observable 
+action that has the random number as a parameter; the details 
+of that action are omitted for the sake of space.  
+uses RandomIntRequestor; 
+caste RandomIntGenerator(req: RandomIntRequestor) { 
+  
+observe RandomIntRequestor; 
+  
+var randomInt: int; 
+  
+var myRequestor: RandomIntRequestor; 
+  
+action RandomIntGenerated(rand: int){ 
+     
+… /* Details omoitted */ 
+  
+ 
+rand := randomInt; 
+  
+} 
+  
+init{ 
+  
+ 
+randomInt := 0;  
+  
+ 
+myRequestor:=req; 
+  
+} 
+  
+body{ 
+  
+ 
+when myRequestor: RequestRandomInt() { 
+  
+  
+ 
+RandomIntGenerated(randomInt); 
+  
+ 
+} 
+  
+} 
+} 
+ 
+uses RandomIntGenerator; 
+caste RandomIntRequestor(){ 
+var myGenerator: RandomIntGenerator;  
+action RequestRandomInt(){} 
+init{  
+ create myGenerator of RandomIntGenerator(self); 
+}  
+body{} 
+} 
+The caste RandomIntRequestor can be considered to be an 
+API for using the service RandomIntGenerator, because it 
+creates an instance of it upon initialisation and defines an 
+action RequestRandomInt, which is taken by the requestor 
+when it requires a random integer. The following caste 
+ServiceRequestor uses the random number generator service 
+by extending the RandomIntRequestor caste.  
+uses RandomIntGenerator, RandomIntRequestor; 
+caste ServiceRequestor() extend RandomIntRequestor { 
+  
+observe RandomIntGenerator; 
+  
+var randomInt: int; 
+  
+action RequestService(){ } 
+  
+init {super();}  
+  
+body{ 
+  
+ 
+RequestRandomInt(); 
+  
+ 
+till myGenerator:  
+  
+ 
+ 
+RandomIntGenerated(rcv randomInt); 
+  
+ 
+var job : Job; 
+  
+ 
+job.content := randomInt; 
+  
+ 
+RequestService(job);  
+  
+} 
+} 
+(6) Example 3: Elastic Load Balancing  
+The caste LoadManager below implements a load balancer, 
+which receives service requests from agents of caste 
+ServiceRequestor and allocates the job to one of its workers 
+(agents of caste Worker), which provide the services. A 
+commonly used way of allocating these jobs is the round 
+robin algorithm, which assigns jobs to the workers in turn. It 
+is implemented below.  
+import LoadBalancorDefs;  
+uses ServiceRequestor, Worker;

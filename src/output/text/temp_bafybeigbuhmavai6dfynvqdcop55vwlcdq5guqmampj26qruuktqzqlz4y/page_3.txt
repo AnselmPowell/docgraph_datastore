@@ -1,0 +1,118 @@
+and the two others are related to human and organisational 
+issues and resource unavailability. Smeds et al. [11] report on 
+DevOps adoption impediments in the industry. They include 
+the lack of clear definition of DevOps which can lead to 
+unclear goals for DevOps adoption and if the goals are unclear, 
+they are also difficult to achieve. Customers might not want 
+DevOps as they can be used to certain deployment and testing 
+procedures and it would mean that they too need to change 
+[11]. Developers themselves might be against DevOps as they 
+need to learn new skills and knowledge and take new 
+responsibilities [11]. Technical impediments include having 
+monolithic architecture, development and testing environments 
+not reflecting production environment which creates a risk of 
+not being able to validate the software before it is deployed to 
+production, and having multiple production environments [11].  
+In other cases, there are external regulations which prohibits 
+rapid releases, for example in the medical software domain, 
+which is heavily regulated to ensure that a system does not
+cause human harm [6].
+III. METHOD
+The study reported in this paper was conducted in a large
+Danish software service house in two student projects 
+supervised by a researcher
+in fall 2017. The students 
+participated a 5 ECTS research methodology course aimed at 
+master level software engineering students at the University of 
+Southern Denmark. The first author was in charge over the 
+course and the rest of the authors were students on the course 
+planning, conducting, analysing and reporting the study in the 
+supervision of the first author. The first author contacted a 
+number of companies with a few topics related to software 
+engineering and the company either picked the topic they were 
+most interested in or refused to participate. The first author then 
+discussed with the company representative to find a relevant 
+research question within the topic to be studied in the company. 
+The companies were selected from a pool of Danish companies 
+that had indicated their interest in working with software 
+engineering students. The first author selected the research 
+approach based on the research question and suitability in the 
+organizational context (both a questionnaire and interview 
+study in this case) and guided the participating companies by 
+email on how to pick suitable research participants among the 
+staff. The incentive for the participating companies was that 
+companies got the student report of the studies they participated 
+in and thus learned more about themselves and perhaps got 
+some suggestions on how to improve from the current state.
+The students working in groups of three to four selected a 
+topic they wanted to investigate as their course project. The 
+students created study plans including short literature reviews, 
+interview guides, and informed consent forms in the 
+supervision of the first author and had to have them approved 
+by her before starting the data gathering. The students handled 
+the communication with the companies in the supervision of 
+the first author from there on. They also chose who they want 
+to interview and agreed on the practicalities directly with the 
+companies.
+The objective of the research presented in this paper was to 
+learn about the challenges and how to overcome those in a 
+company that is in transition from using Scrum and Kanban to 
+manage their agile software development
+to continuous 
+development and DevOps. Our research questions were as 
+follows: 
+1. What should a large company address when transitioning
+towards continuous development and DevOps? 
+2. What challenges can a large company face when 
+transitioning towards continuous development and DevOps
+and how to overcome those?
+Two groups of students ran the research, each providing a 
+detailed research plan before starting the data gathering. One 
+group planned and executed a web survey and the other a series 
+of interviews in the collaborator company. The survey targeted 
+a section of 34 software professionals in the collaborator 
+company. Four of them were picked for interviews based on
+interest; two developers, a business architect and a tester. 
+The students audio recorded the individual interviews, an
+hour each, and transcribed them before analysing them 
+thematically using NVivo. The survey target group consisted of
+developers, testers, test managers, team leads, business 
+specialists and project managers. The survey was realized using 
+SurveyXact. It was piloted with five software engineering 
+students external to the student groups conducting the research
+for improvement and feedback before sending it out to the 
+company. The anonymous survey was available for the 
+respondents for two weeks and one remainder was sent in the 
+middle. The mean completion time was 10 minutes. Ethical 
+procedures were based on WHO recommendations on 
+qualitative research in both substudies.   
+Regarding validity and reliability of our research, we 
+acknowledge that this paper reports a study conducted in only 
+one company with a limited number of participants from a 
+single section of the company. However, based on related 
+literature and our experience we claim that many large software 
+organizations are facing similar issues on their transition 
+towards modern software engineering practices. Therefore, we 
+are confident that our work can be insightful to such 
+companies. The juniority of the research teams can pose a 
+threat to research quality. To improve our research quality, we 
+utilized method and researcher triangulation as the two groups 
+utilized different methods and reviewed each other’s work.
+Moreover, we piloted the data gathering methods and the work 
+was conducted under supervision of a more experienced 
+researcher who also cross-checked both the thematic and 
+descriptive analyses. However, we acknowledge that some 
+nuances and reasons behind the choices the company made 
+remained unanswered
+due to the inexperience of the 
+investigators. The study would have benefited from a validating 
+round of interviews or discussion over the findings with the 
+company representatives. 
+IV. RESULTS
+We got 30 completed responses to the web survey with 
+response rate of 88%. The job roles of the 30 web survey 
+respondents were as follows: 47% were software developers,
+13% testers, 13% business specialists, 7% team leads, 7% 
+project managers, 3% test managers, and 10% did not provide 
+their role. The respondents had the following working 
+61

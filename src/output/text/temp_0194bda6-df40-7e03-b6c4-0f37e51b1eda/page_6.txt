@@ -1,0 +1,148 @@
+practitioners make more efforts to help solve real problems in
+branching practice in OSS communities.
+B. RQ2: What are branches used for?
+In RQ2, we try to gain insights into the problem of why
+branches are created in GitHub. Particularly, considering mas-
+ter branches are used for projects’ main line development by
+default, in this RQ, we only explore the branching purpose
+of non-master branches. Speciﬁcally, we randomly sample
+300 branches from 16,466 non-master branches. This sample
+size is comparable with existing work [18] that 350 out of
+>20,000 unmerged PRs are randomly selected to study why
+PRs are not merged.
+We adopt a three-step process to conduct the branching
+purpose categorization: First, the ﬁrst two authors selected
+the ﬁrst 100 branches and discussed their categories. Specif-
+ically, for each non-master branch, they manually read its
+commit logs, changed code and relevant conversations of
+commits/issues/PRs on GitHub, in order to understand what
+activities (such as bug ﬁxing, testing) developers perform on
+it. Then they took the major activity as the branching purpose
+for each branch. The results contain 6 categories shown in
+Table III (with Dependency Conﬁguration and Others being
+excluded).
+Then they tried to classify the remaining 200 branches
+based on the 6 categories independently. They left the
+branches which cannot be classiﬁed for later discussion.
+Fleiss Kappa [15] was used to measure the overall agreement
+between the two labelers. The Kappa value was 0.78, which
+indicates a substantial agreement between them.
+At last, for those branches that they cannot classify into
+the initial categories or disagree with each other on certain
+branches, they invited another senior developer with 12 years
+development experience in industry to help them make the
+ﬁnal decision. As a result, a new category, i.e., Dependency
+Conﬁguration was added to the original 6 categories. There are
+7 branches being created for other purposes (such as doing
+nothing, experimenting with a framework) or unknown pur-
+pose that we cannot identify after reading relevant data items.
+We placed them into the Others category. Table III shows the
+ﬁnal categories of branching purposes of the sampled 300 non-
+master branches.
+As shown in Table III, we summarized 8 categories of
+reasons for which developers create branches, from bug ﬁxing
+to version iteration. From the table, we can ﬁnd that approx-
+imately 83% branches are created for feature implementation
+(41.7%), version iteration (24.7%) and bug ﬁxing (16.7%).
+The remaining branches (approx. 15%) target at testing, doc-
+umentation, etc. Our ﬁndings are consistent with [39]’s study,
+which also found that feature implementation and version
+iteration are also the most two popular branching types among
+developers.
+Specially, 58.4% branches target at two major activities
+during software development, i.e., bug ﬁxing and feature
+implementation. This to some extent, implies that developers
+may have recognized branches’ potential in helping them
+TABLE III
+CATEGORIES OF BRANCHING PURPOSE.
+Purpose
+Description
+Num.
+%
+Bug Fixing
+A branch aims to ﬁx bugs.
+50
+16.7
+Feature
+Implementation
+A branch aims to implement
+features.
+125
+41.7
+Testing
+A branch aims to test code, de-
+ploy test platform or maintain
+test cases, etc.
+16
+5.3
+Code Structure
+Optimization
+A branch aims to perform code
+refactoring or style formatting.
+12
+4
+Documentation
+A branch aims to maintain a
+project’s documents, such as its
+website, license declaration, etc.
+10
+3.3
+Dependency
+Conﬁguration
+A branch aims to declare a
+project’s plugins or dependent
+libraries’ versions.
+6
+2
+Version
+Iteration
+A branch aims to certain ver-
+sion development, prepare for
+release, and version upgrade. In
+such a branch, bug ﬁxing and
+feature implementation are two
+major activities.
+74
+24.7
+Others
+A branch which cannot be put
+into the above categories goes
+to this category. E.g., a branch
+is created for doing nothing.
+7
+2.3
+better perform independent single task (i.e., bug or feature)
+in practice; After diving into those branches (24.7%) that aim
+at version iteration, we ﬁnd that 1) 25% branches are created
+for version release; 2) 12% branches are created for a single
+version development; 3) others (63%) mainly focus on version
+bumping, i.e., upgrading product to a higher version. This to
+some extent, indicates that branches may play an important
+role in helping developers manage their products’ versions.
+Despite the importance of testing during development, it
+seems that developers are less likely to build speciﬁc branches
+to conduct pure testing tasks, with only 5.3% branches fo-
+cusing on testing. Similarly, other kinds of activities, such as
+documentation, refactoring, are also not reﬂected too much in
+a single particular branch.
+Finding 3. Developers mainly use branches to implement
+features, ﬁx bugs, and conduct version iteration. Very few
+developers would create particular branches for testing,
+documentation, etc.
+Implications. We ﬁnd that branches are mainly still focusing
+on bug ﬁxing and feature implementation (both of these
+two activities play an important role in version iteration). In
+practice, developers can also submit pull requests to perform
+bug ﬁxing and feature implementation activities. Thus, it
+would be interesting to investigate the difference between
+the pull requests and branching in bug ﬁxing and feature
+implementation.
+Besides, during our investigation into branching purpose, we
+ﬁnd that it is prevalent that branches are not fully described
+in an explicit way. For example, we ﬁnd that only 69 out of
+300 sampled branches have easy-to-understand names. One
+may have to spend lots of time on reading changed code and
+commit logs, to infer the branching purpose. This may place
+a great burden on project moderators who need to manage
+311
+Authorized licensed use limited to: Nanjing University. Downloaded on May 20,2020 at 13:25:16 UTC from IEEE Xplore.  Restrictions apply.

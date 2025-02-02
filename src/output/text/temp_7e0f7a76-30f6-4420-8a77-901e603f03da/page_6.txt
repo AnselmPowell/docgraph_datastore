@@ -1,0 +1,52 @@
+Volume 4 Issue 3, July- September 2023 
+Fully Refereed | Open Access | Double Blind Peer Reviewed Journal 
+http://jtipublishing.com/jti 
+ 
+[11] Mikolov, T., Chen, K., Corrado, G., & Dean, J. 
+(2013). Efficient estimation of word representations in 
+vector space. arXiv preprint arXiv:1301.3781. 
+[12] Sutskever, I., Vinyals, O., & Le, Q. V. (2014). 
+Sequence to sequence learning with neural networks. 
+Advances in neural information processing systems, 
+27. 
+[13] Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, 
+J., Jones, L., Gomez, A. N., ... & Polosukhin, I. (2017). 
+Attention is all you need. Advances in neural 
+information processing systems, 30. 
+[14] Brown, T. B., Mann, B., Ryder, N., Subbiah, M., 
+Kaplan, J., Dhariwal, P., ... & Amodei, D. (2020). 
+Language models are few-shot learners. arXiv preprint 
+arXiv:2005.14165. 
+[15] Dhariwal, P., Jun, H., Payne, C., Kim, J. W., 
+Radford, A., & Sutskever, I. (2021). Jukebox: A 
+generative 
+model 
+for 
+music. 
+arXiv 
+preprint 
+arXiv:2112.04919. 
+[16] Radford, A., Kim, J. W., Hallacy, C., Ramesh, A., 
+Goh, G., Agarwal, S., ... & Chen, M. (2021). Learning 
+transferable visual models from natural language 
+supervision. arXiv preprint arXiv:2103.00020. 
+[17] Saharia, C., Chan, W., Saxena, S., Lopes, L., 
+Misra, D., Lewis, M., & Le, Q. V. (2022). 
+Photorealistic Text-to-Image Diffusion Models with 
+Deep Language Understanding. arXiv preprint 
+arXiv:2205.11487. 
+[18] de Masson d'Autume, C., Ruderman, A., Yan, L., 
+Kharitonov, E., Lee, K., Cholia, S., ... & Brown, T. B. 
+(2022). Episodic Deep Generative Models Using 
+Memory Augmented Neural Networks. arXiv preprint 
+arXiv:2202.04722 
+[19] Hashimoto, T. B., Srivastava, M., Kidwai, H., 
+Oxholm, J., Zhu, Y., & Eirikur, H. (2022). Generative 
+Modeling for the Frontend: Building Blocks, Best 
+Practices, and Societal Implications. arXiv preprint 
+arXiv:2206.05404. 
+[20] Creswell, J. W., & Clark, V. L. P. (2017). 
+Designing and conducting mixed methods research. 
+Sage publications. 
+[21] Bazeley, P. (2018). Integrating analyses in mixed 
+methods research. Sage.

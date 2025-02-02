@@ -1,0 +1,46 @@
+The really cool thing is that AuFS allows Docker to use certain images as the basis for containers. For example, you might have a CentOS Linux image that can be used
+as the basis for many different containers. Thanks to AuFS, only one copy of the CentOS image is required, which results in savings of storage and memory, as well as
+faster deployments of containers.
+An added beneﬁt of using AuFS is Docker's ability to version container images. Each new version is simply a diff of changes from the previous version, effectively
+keeping image ﬁles to a minimum. But, it also means that you always have a complete audit trail of what has changed from one version of a container to another.
+Traditionally, Docker has depended on AuFS to provide a copy-on-write storage mechanism. However, the recent addition of a storage driver API is likely to lessen that
+dependence. Initially, there are three storage drivers available: AuFS, VFS and Device-Mapper, which is the result of a collaboration with Red Hat.
+As of version 0.7, Docker works with all Linux distributions. However, it does not work with most non-Linux operating systems, such as Windows and OS X. The
+recommended way of using Docker on those OSes is to provision a virtual machine on VirtualBox using Vagrant.
+Containers vs. Other Types of Virtualization
+So what exactly is a container and how is it different from hypervisor-based virtualization? To put it simply, containers virtualize at the operating system level, whereas
+hypervisor-based solutions virtualize at the hardware level. While the effect is similar, the differences are important and signiﬁcant, which is why I'll spend a little time
+exploring the differences and the resulting differences and trade-offs.
+Virtualization:
+Both containers and VMs are virtualization tools. On the VM side, a hypervisor makes siloed slices of hardware available. There are generally two types of hypervisors:
+“Type 1” runs directly on the bare metal of the hardware, while “Type 2” runs as an additional layer of software within a guest OS. While the open-source Xen and
+VMware's ESX are examples of Type 1 hypervisors, examples of Type 2 include Oracle's open-source VirtualBox and VMware Server. Although Type 1 is a better
+candidate for comparison to Docker containers, I don't make a distinction between the two types for the rest of this article.
+Containers, in contrast, make available protected portions of the operating system—they effectively virtualize the operating system. Two containers running on the same
+operating system don't know that they are sharing resources because each has its own abstracted networking layer, processes and so on.
+Operating Systems and Resources:
+Since hypervisor-based virtualization provides access to hardware only, you still need to install an operating system. As a result, there are multiple full-ﬂedged operating
+systems running, one in each VM, which quickly gobbles up resources on the server, such as RAM, CPU and bandwidth.
+Containers piggyback on an already running operating system as their host environment. They merely execute in spaces that are isolated from each other and from certain
+parts of the host OS. This has two signiﬁcant beneﬁts. First, resource utilization is much more efﬁcient. If a container is not executing anything, it is not using up
+resources, and containers can call upon their host OS to satisfy some or all of their dependencies. Second, containers are cheap and therefore fast to create and destroy.
+There is no need to boot and shut down a whole OS. Instead, a container merely has to terminate the processes running in its isolated space. Consequently, starting and
+stopping a container is more akin to starting and quitting an application, and is just as fast.
+Both types of virtualization and containers are illustrated in Figure 2.
+Figure 2. VMs vs. Containers
+Isolation for Performance and Security:
+Processes executing in a Docker container are isolated from processes running on the host OS or in other Docker containers. Nevertheless, all processes are executing in
+the same kernel. Docker leverages LXC to provide separate namespaces for containers, a technology that has been present in Linux kernels for 5+ years and is considered
+fairly mature. It also uses Control Groups, which have been in the Linux kernel even longer, to implement resource auditing and limiting.
+The Docker dæmon itself also poses a potential attack vector because it currently runs with root privileges. Improvements to both LXC and Docker should allow
+containers to run without root privileges and to execute the Docker dæmon under a different system user.
+Although the type of isolation provided is overall quite strong, it is arguably not as strong as what can be enforced by virtual machines at the hypervisor level. If the kernel
+goes down, so do all the containers. The other area where VMs have the advantage is their maturity and widespread adoption in production environments. VMs have been
+hardened and proven themselves in many different high-availability environments. In comparison, Docker and its supporting technologies have not seen nearly as much
+action. Docker in particular is undergoing massive changes every day, and we all know that change is the enemy of security.
+Docker and VMs—Frenemies:
+Now that I've spent all this time comparing Docker and VMs, it's time to acknowledge that these two technologies can actually complement each other. Docker runs just
+ﬁne on already-virtualized environments. You obviously don't want to incur the cost of encapsulating each application or component in a separate VM, but given a Linux
+VM, you can easily deploy Docker containers on it. That is why it should not come as a surprise that the ofﬁcially supported way of using Docker on non-Linux systems,
+such as OS X and Windows, is to install a Precise64 base Ubuntu virtual machine with the help of Vagrant. Simple detailed instructions are provided on the
+http://www.docker.io site.

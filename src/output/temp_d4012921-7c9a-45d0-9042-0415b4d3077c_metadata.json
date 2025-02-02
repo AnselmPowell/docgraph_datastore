@@ -1,0 +1,335 @@
+{
+  "metadata": {
+    "filename": "temp_d4012921-7c9a-45d0-9042-0415b4d3077c",
+    "extraction_date": "2025-01-21T01:08:45.548535",
+    "path": "research_assistant\\data\\temp_d4012921-7c9a-45d0-9042-0415b4d3077c.pdf"
+  },
+  "pages": {
+    "1": "EDUCATION\nA Quick Introduction to Version Control with\nGit and GitHub\nJohn D. Blischak1*, Emily R. Davenport2, Greg Wilson3\n1 Committee on Genetics, Genomics, and Systems Biology, University of Chicago, Chicago, Illinois, United\nStates of America, 2 Department of Molecular Biology and Genetics, Cornell University, Ithaca, New York,\nUnited States of America, 3 Software Carpentry Foundation, Toronto, Ontario, Canada\n* jdblischak@gmail.com\n“This is part of the PLOS Computational Biology Education collection.”\nIntroduction to Version Control\nMany scientists write code as part of their research. Just as experiments are logged in laboratory\nnotebooks, it is important to document the code you use for analysis. However, a few key prob-\nlems can arise when iteratively developing code that make it difficult to document and track\nwhich code version was used to create each result. First, you often need to experiment with\nnew ideas, such as adding new features to a script or increasing the speed of a slow step, but\nyou do not want to risk breaking the currently working code. One often-utilized solution is to\nmake a copy of the script before making new edits. However, this can quickly become a prob-\nlem because it clutters your file system with uninformative filenames, e.g., analysis.sh,\nanalysis_02.sh, analysis_03.sh, etc. It is difficult to remember the differences\nbetween the versions of the files and, more importantly, which version you used to produce\nspecific results, especially if you return to the code months later. Second, you will likely share\nyour code with multiple lab mates or collaborators, and they may have suggestions on how to\nimprove it. If you email the code to multiple people, you will have to manually incorporate all\nthe changes each of them sends.\nFortunately, software engineers have already developed software to manage these issues:\nversion control. A version control system (VCS) allows you to track the iterative changes you\nmake to your code. Thus, you can experiment with new ideas but always have the option to\nrevert to a specific past version of the code you used to generate particular results. Furthermore,\nyou can record messages as you save each successive version so that you (or anyone else)\nreviewing the development history of the code is able to understand the rationale for the given\nedits. It also facilitates collaboration. Using a VCS, your collaborators can make and save\nchanges to the code, and you can automatically incorporate these changes to the main code\nbase. The collaborative aspect is enhanced with the emergence of websites that host version-\ncontrolled code.\nIn this quick guide, we introduce you to one VCS, Git (https://git-scm.com), and one online\nhosting site, GitHub (https://github.com), both of which are currently popular among scientists\nand programmers in general. More importantly, we hope to convince you that although mas-\ntering a given VCS takes time, you can already achieve great benefits by getting started using a\nfew simple commands. Furthermore, not only does using a VCS solve many common problems\nwhen writing code, it can also improve the scientific process. By tracking your code\nPLOS Computational Biology | DOI:10.1371/journal.pcbi.1004668\nJanuary 19, 2016\n1 / 18\nOPEN ACCESS\nCitation: Blischak JD, Davenport ER, Wilson G\n(2016) A Quick Introduction to Version Control with\nGit and GitHub. PLoS Comput Biol 12(1): e1004668.\ndoi:10.1371/journal.pcbi.1004668\nEditor: Francis Ouellette, Ontario Institute for Cancer\nResearch, CANADA\nPublished: January 19, 2016\nCopyright: © 2016 Blischak et al. This is an open\naccess article distributed under the terms of the\nCreative Commons Attribution License, which permits\nunrestricted use, distribution, and reproduction in any\nmedium, provided the original author and source are\ncredited.\nFunding: JDB is supported by National Institutes of\nHealth grant AI087658 awarded to Yoav Gilad. The\nfunders had no role in study design, data collection\nand analysis, decision to publish, or preparation of\nthe manuscript.\nCompeting Interests: The authors have declared\nthat no competing interests exist.",
+    "2": "development with a VCS and hosting it online, you are performing science that is more trans-\nparent, reproducible, and open to collaboration [1,2]. There is no reason this framework needs\nto be limited only to code; a VCS is well-suited for tracking any plain-text files: manuscripts,\nelectronic lab notebooks, protocols, etc.\nVersion Your Code\nThe first step is to learn how to version your own code. In this tutorial, we will run Git from the\ncommand line of the Unix shell. Thus, we expect readers are already comfortable with navigating\na filesystem and running basic commands in such an environment. You can find directions for\ninstalling Git for the operating system running on your computer by following one of the links\nprovided in Table 1. There are many graphical user interfaces (GUIs) available for running Git\n(Table 1), which we encourage you to explore, but learning to use Git on the command line is\nnecessary for performing more advanced operations and using Git on a remote machine.\nTo follow along, first create a folder in your home directory named thesis. Next, down-\nload the three files provided in Supporting Information and place them in the thesis direc-\ntory. Imagine that, as part of your thesis, you are studying the transcription factor CTCF, and\nyou want to identify high-confidence binding sites in kidney epithelial cells. To do this, you\nwill utilize publicly available ChIP-seq data produced by the ENCODE consortium [3]. ChIP-\nseq is a method for finding the sites in the genome where a transcription factor is bound, and\nthese sites are referred to as peaks [4]. process.sh downloads the ENCODE CTCF ChIP-\nseq data from multiple types of kidney samples and calls peaks (S1 Data); clean.py filters\npeaks with a fold change cutoff and merges peaks from the different kidney samples (S2 Data);\nand analyze.R creates diagnostic plots on the length of the peaks and their distribution\nacross the genome (S3 Data).\nIf you have just installed Git, the first thing you need to do is provide some information\nabout yourself, since it records who makes each change to the file(s). Set your name and email\nby running the following lines, but replacing “First Last” and “user@domain” with your full\nname and email address, respectively.\n$ git config --global user.name \"First Last\"\n$ git config --global user.email \"user@domain\"\nTo start versioning your code with Git, navigate to your newly created directory, ~/thesis.\nRun the command git init to initialize the current folder as a Git repository (Figs 1 and 2A). A\nTable 1. Resources.\nResource\nOptions\nDistributed VCS\nGit (https://git-scm.com)\nMercurial (https://mercurial.selenic.com)\nBazaar (http://bazaar.canonical.com)\nOnline hosting site\nGitHub (https://github.com)\nBitbucket (https://bitbucket.org)\nGitLab (https://about.gitlab.com)\nSource Forge (http://sourceforge.net)\nGit installation\nhttps://git-scm.com/downloads\nGit tutorials\nSoftware Carpentry (https://swcarpentry.github.io/git-novice)\nPro Git (https://git-scm.com/book)\nA Visual Git Reference (https://marklodato.github.io/visual-git-guide)\ntryGit (https://try.github.io)\nGraphical User Interface for Git\nhttps://git-scm.com/downloads/guis\ndoi:10.1371/journal.pcbi.1004668.t001\nPLOS Computational Biology | DOI:10.1371/journal.pcbi.1004668\nJanuary 19, 2016\n2 / 18",
+    "3": "repository (or repo, for short) refers to the current version of the tracked files as well as all the\npreviously saved versions (Box 1). Only files that are located within this directory (and any sub-\ndirectories) have the potential to be version controlled, i.e., Git ignores all files outside of the ini-\ntialized directory. For this reason, projects under version control tend to be stored within a single\ndirectory to correspond with a single Git repository. For strategies on how to best organize your\nown projects, see Noble, 2009 [5].\n$ cd ~/thesis\n$ ls\nanalyze.R clean.py process.sh\n$ git init\nInitialized empty Git repository in ~/thesis/.git/\nNow you are ready to start versioning your code (Fig 1). Conceptually, Git saves snapshots\nof the changes you make to your files whenever you instruct it to. For instance, after you edit a\nscript in your text editor, you save the updated script to your thesis folder. If you tell Git to save\na shapshot of the updated document, then you will have a permanent record of the file in that\nexact version even if you make subsequent edits to the file. In the Git framework, any changes\nyou have made to a script but have not yet recorded as a snapshot with Git reside in the work-\ning directory only (Fig 1). To follow what Git is doing as you record the initial version of your\nfiles, use the informative command git status.\nFig 1. The git add/commit process. To store a snapshot of changes in your repository, first git add any files to the staging area you wish to commit (for\nexample, you’ve updated the process.sh file). Second, type git commit with a message. Only files added to the staging area will be committed. All past\ncommits are located in the hidden .git directory in your repository.\ndoi:10.1371/journal.pcbi.1004668.g001\nPLOS Computational Biology | DOI:10.1371/journal.pcbi.1004668\nJanuary 19, 2016\n3 / 18",
+    "4": "$ git status\nOn branch master\nInitial commit\nUntracked files:\n(use \"git add <file>. . .\" to include in what will be committed)\nanalyze.R\nclean.py\nprocess.sh\nnothing added to commit but untracked files present (use \"git add\"\nto track)\nFig 2. Working with a local repository. (A) To designate a directory on your computer as a Git repo, type\nthe command git init. This initializes the repository and will allow you to track the files located within that\ndirectory. (B) Once you have added a file, follow the git add/commit cycle to place the new file first into the\nstaging area by typing git add to designate it to be committed, and then git commit to take the shapshot of\nthat file. The commit is assigned a commit identifier (d75es) that can be used in the future to pull up this\nversion or to compare different committed versions of this file. (C) As you continue to add and change files,\nyou should regularly add and commit those changes. Here, an additional commit was done, and the commit\nlog now shows two commit identifiers: d75es (from step B) and f658t (the new commit). Each commit will\ngenerate a unique identifier, which can be examined in reverse chronological order using git log.\ndoi:10.1371/journal.pcbi.1004668.g002\nPLOS Computational Biology | DOI:10.1371/journal.pcbi.1004668\nJanuary 19, 2016\n4 / 18",
+    "5": "There are a few key things to notice from this output. First, the three scripts are recognized\nas untracked files because you have not told Git to start tracking anything yet. Second, the\nword “commit” is Git terminology for a snapshot. As a noun, it means “a version of the code,”\ne.g., “the figure was generated using the commit from yesterday” (Box 1). This word can also\nbe used as a verb, meaning “to save,” e.g., “to commit a change.” Lastly, the output explains\nhow you can track your files using git add. Start tracking the file process.sh.\n$ git add process.sh\nAnd check its new status.\n$ git status\nOn branch master\nInitial commit\nChanges to be committed:\nBox 1. Definitions\n• Version Control System (VCS): (noun) a program that tracks changes to specified\nfiles over time and maintains a library of all past versions of those files\n• Git: (noun) a version control system\n• repository (repo): (noun) folder containing all tracked files as well as the version con-\ntrol history\n• commit: (noun) a snapshot of changes made to the staged file(s); (verb) to save a snap-\nshot of changes made to the staged file(s)\n• stage: (noun) the staging area holds the files to be included in the next commit; (verb)\nto mark a file to be included in the next commit\n• track: (noun) a tracked file is one that is recognized by the Git repository\n• branch: (noun) a parallel version of the files in a repository (Box 7)\n• local: (noun) the version of your repository that is stored on your personal computer\n• remote: (noun) the version of your repository that is stored on a remote server; for\ninstance, on GitHub\n• clone: (verb) to create a local copy of a remote repository on your personal computer\n• fork: (noun) a copy of another user’s repository on GitHub; (verb) to copy a repository;\nfor instance, from one user’s GitHub account to your own\n• merge: (verb) to update files by incorporating the changes introduced in new commits\n• pull: (verb) to retrieve commits from a remote repository and merge them into a local\nrepository\n• push: (verb) to send commits from a local repository to a remote repository\n• pull request: (noun) a message sent by one GitHub user to merge the commits in their\nremote repository into another user’s remote repository\nPLOS Computational Biology | DOI:10.1371/journal.pcbi.1004668\nJanuary 19, 2016\n5 / 18",
+    "6": "(use \"git rm --cached <file>. . .\" to unstage)\nnew file: process.sh\nUntracked files:\n(use \"git add <file>. . .\" to include in what will be committed)\nanalyze.R\nclean.py\nSince this is the first time that you have told Git about the file process.sh, two key things\nhave happened. First, this file is now being tracked, which means Git recognizes it as a file you\nwish to be version controlled (Box 1). Second, the changes made to the file (in this case the\nentire file, because it is the first commit) have been added to the staging area (Fig 1). Adding a\nfile to the staging area will result in the changes to that file being included in the next commit,\nor snapshot, of the code (Box 1). As an analogy, adding files to the staging area is like putting\nthings in a box to mail off, and committing is like putting the box in the mail.\nSince this will be the first commit, or first version, of the code, use git add to begin tracking\nthe other two files and add their changes to the staging area as well. Then create the first com-\nmit using the command git commit.\n$ git add clean.py analyze.R\n$ git commit -m \"Add initial version of thesis code.\"\n[master (root-commit) 660213b] Add initial version of thesis code.\n3 files changed, 154 insertions(+)\ncreate mode 100644 analyze.R\ncreate mode 100644 clean.py\ncreate mode 100644 process.sh\nNotice the flag -m was used to pass a message for the commit. This message describes the\nchanges that have been made to the code and is required. If you do not pass a message at the\ncommand line, the default text editor for your system will open so you can enter the message.\nYou have just performed the typical development cycle with Git: make some changes, add\nupdated files to the staging area, and commit the changes as a snapshot once you are satisfied\nwith them (Fig 2).\nSince Git records all of the commits, you can always look through the complete history of a\nproject. To view the record of your commits, use the command git log. For each commit, it\nlists the unique identifier for that revision, author, date, and commit message.\n$ git log\nPLOS Computational Biology | DOI:10.1371/journal.pcbi.1004668\nJanuary 19, 2016\n6 / 18",
+    "7": "commit 660213b91af167d992885e45ab19f585f02d4661\nAuthor: First Last <user@domain>\nDate: Fri Aug 21 14:52:05 2015–0500\nAdd initial version of thesis code.\nThe commit identifier can be used to compare two different versions of a file, restore a file\nto a previous version from a past commit, and even retrieve tracked files if you accidentally\ndelete them.\nNow you are free to make changes to the files knowing that you can always revert them to the\nstate of this commit by referencing its identifier. As an example, edit clean.py so that the fold\nchange cutoff for filtering peaks is more stringent. Here is the current bottom of the file.\n$ tail clean.py\n# Filter based on fold-change over control sample\nfc_cutoff = 10\nepithelial = epithelial.filter(filter_fold_change,\nfc = fc_cutoff).saveas()\nproximal_tube = proximal_tube.filter(filter_fold_change,\nfc = fc_cutoff).saveas()\nkidney = kidney.filter(filter_fold_change, fc = fc_cutoff).\nsaveas()\n# Identify only those sites that are peaks in all three tissue types\ncombined = pybedtools.BedTool().multi_intersect(\ni = [epithelial.fn, proximal_tube.fn, kidney.fn])\nunion = combined.filter(lambda x: int(x[3]) = = 3).saveas()\nunion.cut(range(3)).saveas(data + \"/sites-union.bed\")\nUsing a text editor, increase the fold change cutoff from 10 to 20.\n$ tail clean.py\n# Filter based on fold-change over control sample\nfc_cutoff = 20\nepithelial = epithelial.filter(filter_fold_change,\nfc = fc_cutoff).saveas()\nPLOS Computational Biology | DOI:10.1371/journal.pcbi.1004668\nJanuary 19, 2016\n7 / 18",
+    "8": "proximal_tube = proximal_tube.filter(filter_fold_change,\nfc = fc_cutoff).saveas()\nkidney = kidney.filter(filter_fold_change, fc = fc_cutoff).saveas()\n# Identify only those sites that are peaks in all three tissue types\ncombined = pybedtools.BedTool().multi_intersect(\ni = [epithelial.fn, proximal_tube.fn, kidney.fn])\nunion = combined.filter(lambda x: int(x[3]) = = 3).saveas()\nunion.cut(range(3)).saveas(data + \"/sites-union.bed\")\nBecause Git is tracking clean.py, it recognizes that the file has been changed since the\nlast commit.\n$ git status\n# On branch master\n# Changes not staged for commit:\n#\n(use \"git add <file>. . .\" to update what will be committed)\n#\n(use \"git checkout --<file>. . .\" to discard changes in working\ndirectory)\n#\n#\nmodified: clean.py\n#\nno changes added to commit (use \"git add\" and/or \"git commit -a\")\nThe report from git status indicates that the changes to clean.py are not staged, i.e.,\nthey are in the working directory (Fig 1). To view the unstaged changes, run the command\ngit diff.\n$ git diff\ndiff --git a/clean.py b/clean.py\nindex 7b8c058.76d84ce 100644\n-– a/clean.py\n+++ b/clean.py\nPLOS Computational Biology | DOI:10.1371/journal.pcbi.1004668\nJanuary 19, 2016\n8 / 18",
+    "9": "@@ -28,7 +28,7 @@ def filter_fold_change(feature, fc = 1):\nreturn False\n# Filter based on fold-change over control sample\n-fc_cutoff = 10\n+fc_cutoff = 20\nepithelial = epithelial.filter(filter_fold_change,\nfc = fc_cutoff).saveas()\nproximal_tube = proximal_tube.filter(filter_fold_change,\nfc = fc_cutoff).saveas()\nkidney = kidney.filter(filter_fold_change, fc = fc_cutoff).saveas()\nAny lines of text that have been added to the script are indicated with a +, and any lines\nthat have been removed with a -. Here, we altered the line of code that sets the value of\nfc_cutoff. git diff displays this change as the previous line being removed and a new\nline being added with our update incorporated. You can ignore the first five lines of output,\nbecause they are directions for other software programs that can merge changes to files. If you\nwanted to keep this edit, you could add clean.py to the staging area using git add and\nthen commit the change using git commit, as you did above. Instead, this time undo the edit\nby following the directions from the output of git status to “discard changes in the work-\ning directory” using the command git checkout.\n$ git checkout -- clean.py\n$ git diff\nNow git diff returns no output, because git checkout undid the unstaged edit you\nhad made to clean.py. This ability to undo past edits to a file is not limited to unstaged\nchanges in the working directory. If you had committed multiple changes to the file\nclean.py and then decided you wanted the original version from the initial commit, you\ncould replace the argument -- with the commit identifier of the first commit you made above\n(your commit identifier will be different; use git log to find it). The -- used above was simply\na placeholder for the first argument because, by default, git checkout restores the most\nrecent version of the file from the staging area (if you haven’t staged any changes to this file, as\nis the case here, the version of the file in the staging area is identical to the version in the last\ncommit). Instead of using the entire commit identifier, use only the first seven characters,\nwhich is simply a convention, since this is usually long enough for it to be unique.\n$ git checkout 660213b clean.py\nAt this point, you have learned the commands needed to version your code with Git. Thus,\nyou already have the benefits of being able to make edits to files without copying them first, to\ncreate a record of your changes with accompanying messages, and to revert to previous versions\nPLOS Computational Biology | DOI:10.1371/journal.pcbi.1004668\nJanuary 19, 2016\n9 / 18",
+    "10": "of the files if needed. Now you will always be able to recreate past results that were generated\nwith previous versions of the code (see the command git tag for a method to facilitate finding spe-\ncific past versions) and see the exact changes you have made over the course of a project.\nShare Your Code\nOnce you have your files saved in a Git repository, you can share it with your collaborators and\nthe wider scientific community by putting your code online (Fig 3). This also has the added bene-\nfit of creating a backup of your scripts and provides a mechanism for transferring your files\nacross multiple computers. Sharing a repository is made easier if you use one of the many online\nservices that host Git repositories (Table 1), e.g., GitHub. Note, however, that any files that have\nFig 3. Working with both a local and remote repository as a single user. (A) On your computer, you\ncommit to a Git repository (commit d75es). (B) On GitHub, you create a new repository called thesis. This\nrepository is currently empty and not linked to the repo on your local machine. (C) The command\ngit remote add connects your local repository to your remote repository. The remote repository is still\nempty, however, because you have not pushed any content to it. (D) You send all the local commits to the\nremote repository using the command git push. Only files that have been committed will appear in the\nremote repository. (E) You repeat several more rounds of updating scripts and committing on your local\ncomputer (commit f658t and then commit xv871). You have not yet pushed these commits to the remote\nrepository, so only the previously pushed commit is in the remote repo (commit d75es). (F) To bring the\nremote repository up to date with your local repository, you git push the two new commits to the remote\nrepository. The local and remote repositories now contain the same files and commit histories.\ndoi:10.1371/journal.pcbi.1004668.g003\nPLOS Computational Biology | DOI:10.1371/journal.pcbi.1004668\nJanuary 19, 2016\n10 / 18",
+    "11": "not been tracked with at least one commit are not included in the Git repository, even if they are\nlocated within the same directory on your local computer (see Box 2 for advice on the types of\nfiles that should not be versioned with Git and Box 3 for advice on managing large files).\nBelow, we focus on the technical aspects of sharing your code. However, there are also other\nissues to consider when deciding if and how you are going to make your code available to oth-\ners. For quick advice on these subjects, see Box 4 on how to license your code, Box 5 on con-\ncerns about being scooped, and Box 6 on the increasing trend of journals to institute sharing\npolicies that require authors to deposit code in a public archive upon publication.\nTo begin using GitHub, you will first need to sign up for an account. For the code examples\nin this tutorial, you will need to replace username with the username of your account. Next,\nchoose the option to “Create a new repository” (Fig 3B, see https://help.github.com/articles/\ncreate-a-repo/). Call it “thesis,” because that is the directory name containing the files on your\ncomputer, but note that you can give it a different name on GitHub if you wish. Also, now that\nthe code will exist in multiple places, you need to learn some more terminology (Box 1). A\nlocal repository refers to code that is stored on the machine you are using, e.g., your laptop;\nwhereas a remote repository refers to the code that is hosted online. Thus, you have just created\na remote repository.\nNow you need to send the code on your computer to GitHub. The key to this is the URL\nthat GitHub assigns your newly created remote repository. It will have the form https://github.\ncom/username/thesis.git (see https://help.github.com/articles/cloning-a-repository/). Notice\nthat this URL is using the HTTPS protocol, which is the quickest to begin using. However, it\nrequires you to enter your username and password when communicating with GitHub, so\nyou’ll want to consider switching to the SSH protocol once you are regularly using Git and\nBox 2. What Not to Version Control\nYou can version control any file that you put in a Git repository, whether it is text-based,\nan image, or a giant data file. However, just because you can version control something,\ndoes not mean you should. Git works best for plain, text-based documents such as your\nscripts or your manuscript if written in LaTeX or Markdown. This is because for text\nfiles, Git saves the entire file only the first time you commit it and then saves just your\nchanges with each commit. This takes up very little space, and Git has the capability to\ncompare between versions (using git diff). You can commit a non-text file, but a full\ncopy of the file will be saved in each commit that modifies it. Over time, you may find\nthe size of your repository growing very quickly. A good rule of thumb is to version con-\ntrol anything text-based: your scripts or manuscripts if they are written in plain text.\nThings not to version control are large data files that never change, binary files (including\nWord and Excel documents), and the output of your code.\nIn addition to the type of file, you need to consider the content of the file. If you plan\non sharing your commits publicly using GitHub, ensure you are not committing any files\nthat contain sensitive information, such as human subject data or passwords.\nTo prevent accidentally committing files you do not wish to track, and to remove\nthem from the output of git status, you can create a file called .gitignore. In\nthis file, you can list subdirectories and/or file patterns that Git should ignore. For exam-\nple, if your code produced log files with the file extension .log, you could instruct Git\nto ignore these files by adding \u0001.log to .gitignore. In order for these settings to be\napplied to all instances of the repository, e.g., if you clone it onto another computer, you\nneed to add and commit this file.\nPLOS Computational Biology | DOI:10.1371/journal.pcbi.1004668\nJanuary 19, 2016\n11 / 18",
+    "12": "GitHub (see https://help.github.com/articles/generating-ssh-keys/ for directions). In order to\nlink the local thesis repository on your computer to the remote repository you just created, in\nyour local repository, you need to tell Git the URL of the remote repository using the command\ngit remote add (Fig 3C).\n$ git remote add origin https://github.com/username/thesis.git\nThe name “origin” is a bookmark for the remote repository so that you do not have to type\nout the full URL every time you transfer your changes (this is the default name for a remote\nrepository, but you could use another name if you like).\nSend your code to GitHub using the command git push (Fig 3D).\n$ git push origin master\nBox 3. Managing Large Files\nMany biological applications require handling large data files. While Git is best suited for\ncollaboratively writing small text files, nonetheless, collaboratively working on projects\nin the biological sciences necessitates managing this data.\nThe example analysis pipeline in this tutorial starts by downloading data files in BAM\nformat that contain the alignments of short reads from a ChIP-seq experiment to the\nhuman genome. Since these large, binary files are not going to change, there is no reason\nto version them with Git. Thus, hosting them on a remote http (as ENCODE has done in\nthis case) or ftp site allows each collaborator to download it to her machine as needed,\ne.g., using wget, curl, or rsync. If the data files for your project are smaller, you\ncould also share them via services like Dropbox (www.dropbox.com) or Google Drive\n(https://www.google.com/drive/).\nHowever, some intermediate data files may change over time, and the practical neces-\nsity to ensure all collaborators are using the same data set may override the advice to not\nput code output under version control, as described in Box 2. Again, returning to the\nChIP-seq example, the first step calling the peaks is the most difficult computationally\nbecause it requires access to a Unix-like environment and sufficient computational\nresources. Thus, for collaborators that want to experiment with clean.py and\nanalyze.R without having to run process.sh, you could version the data files con-\ntaining the ChIP-seq peaks (which are in BED format). But since these files are larger\nthan those typically used with Git, you can instead use one of the solutions for versioning\nlarge files within a Git repository without actually saving the file with Git, e.g., git-annex\n(https://git-annex.branchable.com/) or git-fat (https://github.com/jedbrown/git-fat/).\nRecently, GitHub has created their own solution for managing large files called Git Large\nFile Storage (LFS) (https://git-lfs.github.com/). Instead of committing the entire large file\nto Git, which quickly becomes unmanageable, it commits a text pointer. This text pointer\nrefers to a specific file saved on a remote GitHub server. Thus, when you clone a reposi-\ntory, it only downloads the latest version of the large file. If you check out an older ver-\nsion of the repository, it automatically downloads the old version of the large file from\nthe remote server. After installing Git LFS, you can manage all the BED files with one\ncommand: git lfs track \"\u0001.bed\". Then you can commit the BED files just like\nyour scripts, and they will automatically be handled with Git LFS. Now, if you were to\nchange the parameters of the peak calling algorithm and re-run process.sh, you\ncould commit the updated BED files, and your collaborators could pull the new versions\nof the files directly to their local Git repositories.\nPLOS Computational Biology | DOI:10.1371/journal.pcbi.1004668\nJanuary 19, 2016\n12 / 18",
+    "13": "You first specify the remote repository, “origin.” Second, you tell Git to push to the “master”\ncopy of the repository—we will not go into other options in this tutorial, but Box 7 discusses\nthem briefly.\nPushing to GitHub also has the added benefit of backing up your code in case anything\nwere to happen to your computer. Also, it can be used to manually transfer your code across\nmultiple machines, similar to a service like Dropbox (www.dropbox.com) but with the added\ncapabilities and control of Git. For example, what if you wanted to work on your code on your\ncomputer at home? You can download the Git repository using the command git clone.\n$ git clone https://github.com/username/thesis.git\nBy default, this will download the Git repository into a local directory named “thesis.” Fur-\nthermore, the remote “origin” will automatically be added so that you can easily push your\nchanges back to GitHub. You now have copies of your repository on your work computer,\nyour GitHub account online, and your home computer. You can make changes, commit them\non your home computer, and send those commits to the remote repository with git push,\njust as you did on your work computer.\nThen the next day back at your work computer, you could update the code with the changes\nyou made the previous evening using the command git pull.\n$ git pull origin master\nThis pulls in all the commits that you had previously pushed to the GitHub remote reposi-\ntory from your home computer. In this workflow, you are essentially collaborating with\nBox 4. Choosing a License\nPutting software and other material in a public place is not the same as making it publicly\nusable. In order to do that, the authors must also add a license, since copyright laws in\nsome jurisdictions require people to treat anything that isn’t explicitly open as being\nproprietary.\nWhile dozens of open licenses have been created, the two most widely used are the\nGNU Public License (GPL) and the MIT/BSD family of licenses. Of these, the MIT/BSD-\nstyle licenses put the fewest requirements on re-use, and thereby make it easier for people\nto integrate your software into their projects.\nFor an excellent short discussion of these issues, and links to more information, see\nJake Vanderplas’s blog post from March 2014 at http://www.astrobetter.com/blog/2014/\n03/10/the-whys-and-hows-of-licensing-scientific-code/. For a more in-depth discussion\nof the legal implications of different licenses, see Morin et al., 2012 [6].\nBox 5. Being Scooped\nOne concern scientists frequently have about putting work in progress online is that they\nwill be scooped, e.g., that someone will analyze their data and publish a result that they\nthemselves would have, but hadn’t yet. In practice, though, this happens rarely, if at all:\nin fact, the authors are not aware of a single case in which this has actually happened,\nand would welcome pointers to specific instances. In practice, it seems more likely that\nmaking work public early in something like a version control repository, which automat-\nically adds timestamps to content, will help researchers establish their priority.\nPLOS Computational Biology | DOI:10.1371/journal.pcbi.1004668\nJanuary 19, 2016\n13 / 18",
+    "14": "yourself as you work from multiple computers. If you are working on a project with just one or\ntwo other collaborators, you could extend this workflow so that they could edit the code in the\nsame way. You can do this by adding them as Collaborators on your repository (Settings ->\nCollaborators -> Add collaborator; see https://help.github.com/articles/adding-collaborators-\nto-a-personal-repository/). However, with projects with lots of contributors, GitHub provides\na workflow for finer-grained control of the code development.\nBox 6. Journal Policies\nSharing data, code, and other materials is quickly moving from “desired” to “required.”\nFor example, PLOS’s sharing policy (http://journals.plos.org/plosone/s/materials-and-\nsoftware-sharing) already says, “We expect that all researchers submitting to PLOS will\nmake all relevant materials that may be reasonably requested by others available without\nrestrictions upon publication of the work.” Its policy on software is more specific:\nWe expect that all researchers submitting to PLOS submissions in which software is\nthe central part of the manuscript will make all relevant software available without\nrestrictions upon publication of the work. Authors must ensure that software remains\nusable over time regardless of versions or upgrades. . .\nIt then goes on to specify that software must be based on open source standards, and\nthat it must be put in an archive which is large or long-lived. Granting agencies, philan-\nthropic foundations, and other major sponsors of scientific research are all moving in the\nsame direction, and, to our knowledge, none has relaxed or reduced sharing require-\nments in the last decade.\nBox 7. Branching\nDo you ever make changes to your code, but are not sure you will want to keep those\nchanges for your final analysis? Or do you need to implement new features while still\nproviding a stable version of the code for others to use? Using Git, you can maintain par-\nallel versions of your code that you can easily bounce between while you are working on\nyour changes. You can think of it like making a copy of the folder you keep your scripts\nin, so that you have your original scripts intact but also have the new folder where you\nmake changes. Using Git, this is called branching, and it is better than separate folders\nbecause (1) it uses a fraction of the space on your computer, (2) it keeps a record of when\nyou made the parallel copy (branch) and what you have done on the branch, and (3)\nthere is a way to incorporate those changes back into your main code if you decide to\nkeep your changes (and a way to deal with conflicts). By default, your repository will\nstart with one branch, usually called “master.” To create a new branch in your repository,\ntype git branch new_branch_name. You can see what branches a current reposi-\ntory has by typing git branch, with the branch you are currently in being marked by a\nstar. To move between branches, type git checkout branch_to_move_to. You\ncan edit files and commit them on each branch separately. If you want to combine the\nchanges in your new branch with the master branch, you can merge the branches by typ-\ning git merge new_branch_name while in the master branch.\nPLOS Computational Biology | DOI:10.1371/journal.pcbi.1004668\nJanuary 19, 2016\n14 / 18",
+    "15": "Fig 4. Contributing to open source projects. We would like you to add an empty file that is named after your GitHub username to the repo used to write this\nmanuscript. (A) Using your internet browser, navigate to https://github.com/jdblischak/git-for-science. (B) Click on the “Fork” button to create a copy of this\nrepo on GitHub under your username. (C) On your computer, type git clone https://github.com/username/git-for-science.git, which will create a copy of git-\nfor-science on your local machine. (D) Navigate to the readers directory by typing cd git-for-science/readers/. Create an empty file that is titled with\nyour GitHub username by typing touch username.txt. Commit that new file by adding it to the staging area (git add username.txt) and committing\nwith a message (git commit -m \"Add username to directory of readers.\"). Note that your commit identifier will be different than what is shown\nhere. (E) You have committed your new file locally, and the next step is to push that new commit up to the git-for-science repo under your username on\nGitHub. To do so, type git push origin master. (F) To request to add your commits to the original git-for-science repo, issue a pull request from the git-\nfor-science repo under your username on GitHub. Once your Pull Request is reviewed and accepted, you will be able to see the file you committed with your\nusername in the original git-for-science repository.\ndoi:10.1371/journal.pcbi.1004668.g004\nPLOS Computational Biology | DOI:10.1371/journal.pcbi.1004668\nJanuary 19, 2016\n15 / 18",
+    "16": "With the addition of a GitHub account and a few commands for sending and receiving\ncode, you can now share your code with others, transfer your code across multiple machines,\nand set up simple collaborative workflows.\nContribute to Other Projects\nLots of scientific software is hosted online in Git repositories. Now that you know the basics of\nGit, you can directly contribute to developing the scientific software you use for your research\n(Fig 4). From a small contribution like fixing a typo in the documentation to a larger change\nsuch as fixing a bug, it is empowering to be able to improve the software used by yourself and\nmany other scientists.\nWhen contributing to a larger project with many contributors, you will not be able to push\nyour changes with git push directly to the project’s remote repository. Instead, you will first\nneed to create your own remote copy of the repository, which on GitHub is called a fork\n(Box 1). You can fork any repository on GitHub by clicking the button “Fork” on the top right\nof the page (see https://help.github.com/articles/fork-a-repo/).\nOnce you have a fork of a project’s repository, you can clone it to your computer and make\nchanges just like a repository you created yourself. As an exercise, you will add a file to the\nrepository that we used to write this paper. First, go to https://github.com/jdblischak/git-for-\nscience and choose the “Fork” option to create a git-for-science repository under your GitHub\naccount (Fig 4B). In order to make changes, download it to your computer with the command\ngit clone from the directory you wish the repo to appear in (Fig 4C).\n$ git clone https://github.com/username/git-for-science.git\nNow that you have a local version, navigate to the subdirectory readers and create a text file\nnamed as your GitHub username (Fig 4D).\n$ cd git-for-science/readers\n$ touch username.txt\nAdd and commit this new file (Fig 4D), and then push the changes back to your remote\nrepository on GitHub (Fig 4E).\n$ git add username.txt\n$ git commit -m \"Add username to directory of readers.\"\n$ git push origin master\nCurrently, the new file you created, readers/username.txt, only exists in your fork\nof git-for-science. To merge this file into the main repository, send a pull request using the\nGitHub interface (Pull request -> New pull request -> Create pull request; Fig 4F; see https://\nhelp.github.com/articles/using-pull-requests/). After the pull request is created, we can review\nyour change and then merge it into the main repository. Although this process of forking a\nproject’s repository and issuing a pull request seems like a lot of work to contribute changes,\nthis workflow gives the owner of a project control over what changes get incorporated into the\ncode. You can have others contribute to your projects using the same workflow.\nPLOS Computational Biology | DOI:10.1371/journal.pcbi.1004668\nJanuary 19, 2016\n16 / 18",
+    "17": "The ability to use Git to contribute changes is very powerful because it allows you to\nimprove the software that is used by many other scientists and also potentially shape the future\ndirection of its development.\nConclusion\nGit, albeit complicated at first, is a powerful tool that can improve code development and docu-\nmentation. Ultimately, the complexity of a VCS not only gives users a well-documented\n“undo” button for their analyses, but it also allows for collaboration and sharing of code on a\nmassive scale. Furthermore, it does not need to be learned in its entirety to be useful. Instead,\nyou can derive tangible benefits from adopting version control in stages. With a few commands\n(git init, git add, git commit), you can start tracking your code development and\navoid a file system full of copied files (Fig 2). Adding a few additional commands (git push,\ngit clone, git pull) and a GitHub account, you can share your code online, transfer your\nchanges across machines, and collaborate in small groups (Fig 3). Lastly, by forking public\nrepositories and sending pull requests, you can directly improve scientific software (Fig 4).\nMethods\nWe collaboratively wrote the article in LaTeX (http://www.latex-project.org/) using the online\nauthoring platform Authorea (https://www.authorea.com). Furthermore, we tracked the devel-\nopment of the document using Git and GitHub. The Git repo is available at https://github.\ncom/jdblischak/git-for-science, and the rendered LaTeX article is available at https://www.\nauthorea.com/users/5990/articles/17489.\nSupporting Information\nS1 Data. process.sh. This Bash script downloads the ENCODE CTCF ChIP-seq data from\nmultiple types of kidney samples and calls peaks. See https://github.com/jdblischak/git-for-\nscience/tree/master/code for instructions on running it.\n(SH)\nS2 Data. clean.py. This Python script filters peaks with a fold change cutoff and merges peaks\nfrom the different kidney samples. See https://github.com/jdblischak/git-for-science/tree/\nmaster/code for instructions on running it.\n(PY)\nS3 Data. analyze.R. This R script creates diagnostic plots on the length of the peaks and their\ndistribution across the genome. See https://github.com/jdblischak/git-for-science/tree/master/\ncode for instructions on running it.\n(R)\nReferences\n1.\nRam K. Git can facilitate greater reproducibility and increased transparency in science. Source Code\nBiol Med. 2013 Feb; 8:7. doi: 10.1186/1751-0473-8-7 PMID: 23448176\n2.\nWilson G, Aruliah D, Brown C, Chue HN, Davis M, Guy R, et al. Best practices for scientific computing.\nPLoS Biol. 2014 Jan; 12:e1001745. doi: 10.1371/journal.pbio.1001745 PMID: 24415924\n3.\nENCODE Project Consortium, Bernstein B, Birney E, Dunham I, Green E, Gunter C, et al. An integrated\nencyclopedia of DNA elements in the human genome. Nature. 2012 Sep; 489:57–74. doi: 10.1038/\nnature11247 PMID: 22955616\n4.\nBailey T, Krajewski P, Ladunga I, Lefebvre C, Li Q, Liu T, et al. Practical guidelines for the comprehen-\nsive analysis of ChIP-seq data. PLoS Comput Biol. 2013 null; 9:e1003326. doi: 10.1371/journal.pcbi.\n1003326 PMID: 24244136\nPLOS Computational Biology | DOI:10.1371/journal.pcbi.1004668\nJanuary 19, 2016\n17 / 18",
+    "18": "5.\nNoble W. A quick guide to organizing computational biology projects. PLoS Comput Biol. 2009 Jul; 5:\ne1000424. doi: 10.1371/journal.pcbi.1000424 PMID: 19649301\n6.\nMorin A, Urban J, Sliz P. A quick guide to software licensing for the scientist-programmer. PLoS Com-\nput Biol. 2012 null; 8:e1002598. doi: 10.1371/journal.pcbi.1002598 PMID: 22844236\nPLOS Computational Biology | DOI:10.1371/journal.pcbi.1004668\nJanuary 19, 2016\n18 / 18"
+  },
+  "tables": {
+    "2": [
+      [
+        [
+          "DistributedVCS Git(https://git-scm.com)"
+        ],
+        [
+          "Mercurial(https://mercurial.selenic.com)"
+        ],
+        [
+          "Bazaar(http://bazaar.canonical.com)"
+        ],
+        [
+          "Onlinehostingsite GitHub(https://github.com)"
+        ],
+        [
+          "Bitbucket(https://bitbucket.org)"
+        ],
+        [
+          "GitLab(https://about.gitlab.com)"
+        ],
+        [
+          "SourceForge(http://sourceforge.net)"
+        ],
+        [
+          "Gitinstallation https://git-scm.com/downloads"
+        ],
+        [
+          "Gittutorials SoftwareCarpentry(https://swcarpentry.github.io/git-novice)"
+        ],
+        [
+          "ProGit(https://git-scm.com/book)"
+        ],
+        [
+          "AVisualGitReference(https://marklodato.github.io/visual-git-guide)"
+        ],
+        [
+          "tryGit(https://try.github.io)"
+        ],
+        [
+          "GraphicalUserInterfaceforGit https://git-scm.com/downloads/guis"
+        ]
+      ]
+    ]
+  },
+  "images": {
+    "1": [
+      {
+        "filename": "page_1_image_1.png",
+        "path": "output\\images\\temp_d4012921-7c9a-45d0-9042-0415b4d3077c\\page_1_image_1.png",
+        "extraction_date": "2025-01-21T01:08:47.846394",
+        "page_number": 1,
+        "image_index": 1,
+        "width": 705,
+        "height": 99
+      },
+      {
+        "filename": "page_1_image_2.png",
+        "path": "output\\images\\temp_d4012921-7c9a-45d0-9042-0415b4d3077c\\page_1_image_2.png",
+        "extraction_date": "2025-01-21T01:08:47.849301",
+        "page_number": 1,
+        "image_index": 2,
+        "width": 80,
+        "height": 80
+      },
+      {
+        "filename": "page_1_image_3.jpeg",
+        "path": "output\\images\\temp_d4012921-7c9a-45d0-9042-0415b4d3077c\\page_1_image_3.jpeg",
+        "extraction_date": "2025-01-21T01:08:47.854106",
+        "page_number": 1,
+        "image_index": 3,
+        "width": 136,
+        "height": 135
+      },
+      {
+        "filename": "page_1_image_4.png",
+        "path": "output\\images\\temp_d4012921-7c9a-45d0-9042-0415b4d3077c\\page_1_image_4.png",
+        "extraction_date": "2025-01-21T01:08:47.856675",
+        "page_number": 1,
+        "image_index": 4,
+        "width": 38,
+        "height": 49
+      }
+    ],
+    "2": [
+      {
+        "filename": "page_2_image_1.png",
+        "path": "output\\images\\temp_d4012921-7c9a-45d0-9042-0415b4d3077c\\page_2_image_1.png",
+        "extraction_date": "2025-01-21T01:08:47.862133",
+        "page_number": 2,
+        "image_index": 1,
+        "width": 705,
+        "height": 99
+      }
+    ],
+    "3": [
+      {
+        "filename": "page_3_image_1.png",
+        "path": "output\\images\\temp_d4012921-7c9a-45d0-9042-0415b4d3077c\\page_3_image_1.png",
+        "extraction_date": "2025-01-21T01:08:47.869780",
+        "page_number": 3,
+        "image_index": 1,
+        "width": 705,
+        "height": 99
+      },
+      {
+        "filename": "page_3_image_2.jpeg",
+        "path": "output\\images\\temp_d4012921-7c9a-45d0-9042-0415b4d3077c\\page_3_image_2.jpeg",
+        "extraction_date": "2025-01-21T01:08:47.872433",
+        "page_number": 3,
+        "image_index": 2,
+        "width": 2100,
+        "height": 900
+      }
+    ],
+    "4": [
+      {
+        "filename": "page_4_image_1.png",
+        "path": "output\\images\\temp_d4012921-7c9a-45d0-9042-0415b4d3077c\\page_4_image_1.png",
+        "extraction_date": "2025-01-21T01:08:47.880174",
+        "page_number": 4,
+        "image_index": 1,
+        "width": 705,
+        "height": 99
+      },
+      {
+        "filename": "page_4_image_2.jpeg",
+        "path": "output\\images\\temp_d4012921-7c9a-45d0-9042-0415b4d3077c\\page_4_image_2.jpeg",
+        "extraction_date": "2025-01-21T01:08:47.883422",
+        "page_number": 4,
+        "image_index": 2,
+        "width": 1351,
+        "height": 1235
+      }
+    ],
+    "5": [
+      {
+        "filename": "page_5_image_1.png",
+        "path": "output\\images\\temp_d4012921-7c9a-45d0-9042-0415b4d3077c\\page_5_image_1.png",
+        "extraction_date": "2025-01-21T01:08:47.891252",
+        "page_number": 5,
+        "image_index": 1,
+        "width": 705,
+        "height": 99
+      }
+    ],
+    "6": [
+      {
+        "filename": "page_6_image_1.png",
+        "path": "output\\images\\temp_d4012921-7c9a-45d0-9042-0415b4d3077c\\page_6_image_1.png",
+        "extraction_date": "2025-01-21T01:08:47.899647",
+        "page_number": 6,
+        "image_index": 1,
+        "width": 705,
+        "height": 99
+      }
+    ],
+    "7": [
+      {
+        "filename": "page_7_image_1.png",
+        "path": "output\\images\\temp_d4012921-7c9a-45d0-9042-0415b4d3077c\\page_7_image_1.png",
+        "extraction_date": "2025-01-21T01:08:47.907116",
+        "page_number": 7,
+        "image_index": 1,
+        "width": 705,
+        "height": 99
+      }
+    ],
+    "8": [
+      {
+        "filename": "page_8_image_1.png",
+        "path": "output\\images\\temp_d4012921-7c9a-45d0-9042-0415b4d3077c\\page_8_image_1.png",
+        "extraction_date": "2025-01-21T01:08:47.915523",
+        "page_number": 8,
+        "image_index": 1,
+        "width": 705,
+        "height": 99
+      }
+    ],
+    "9": [
+      {
+        "filename": "page_9_image_1.png",
+        "path": "output\\images\\temp_d4012921-7c9a-45d0-9042-0415b4d3077c\\page_9_image_1.png",
+        "extraction_date": "2025-01-21T01:08:47.924623",
+        "page_number": 9,
+        "image_index": 1,
+        "width": 705,
+        "height": 99
+      }
+    ],
+    "10": [
+      {
+        "filename": "page_10_image_1.png",
+        "path": "output\\images\\temp_d4012921-7c9a-45d0-9042-0415b4d3077c\\page_10_image_1.png",
+        "extraction_date": "2025-01-21T01:08:47.932063",
+        "page_number": 10,
+        "image_index": 1,
+        "width": 705,
+        "height": 99
+      },
+      {
+        "filename": "page_10_image_2.jpeg",
+        "path": "output\\images\\temp_d4012921-7c9a-45d0-9042-0415b4d3077c\\page_10_image_2.jpeg",
+        "extraction_date": "2025-01-21T01:08:47.937392",
+        "page_number": 10,
+        "image_index": 2,
+        "width": 1180,
+        "height": 1520
+      }
+    ],
+    "11": [
+      {
+        "filename": "page_11_image_1.png",
+        "path": "output\\images\\temp_d4012921-7c9a-45d0-9042-0415b4d3077c\\page_11_image_1.png",
+        "extraction_date": "2025-01-21T01:08:47.945235",
+        "page_number": 11,
+        "image_index": 1,
+        "width": 705,
+        "height": 99
+      }
+    ],
+    "12": [
+      {
+        "filename": "page_12_image_1.png",
+        "path": "output\\images\\temp_d4012921-7c9a-45d0-9042-0415b4d3077c\\page_12_image_1.png",
+        "extraction_date": "2025-01-21T01:08:47.952959",
+        "page_number": 12,
+        "image_index": 1,
+        "width": 705,
+        "height": 99
+      }
+    ],
+    "13": [
+      {
+        "filename": "page_13_image_1.png",
+        "path": "output\\images\\temp_d4012921-7c9a-45d0-9042-0415b4d3077c\\page_13_image_1.png",
+        "extraction_date": "2025-01-21T01:08:47.959575",
+        "page_number": 13,
+        "image_index": 1,
+        "width": 705,
+        "height": 99
+      }
+    ],
+    "14": [
+      {
+        "filename": "page_14_image_1.png",
+        "path": "output\\images\\temp_d4012921-7c9a-45d0-9042-0415b4d3077c\\page_14_image_1.png",
+        "extraction_date": "2025-01-21T01:08:47.969334",
+        "page_number": 14,
+        "image_index": 1,
+        "width": 705,
+        "height": 99
+      }
+    ],
+    "15": [
+      {
+        "filename": "page_15_image_1.png",
+        "path": "output\\images\\temp_d4012921-7c9a-45d0-9042-0415b4d3077c\\page_15_image_1.png",
+        "extraction_date": "2025-01-21T01:08:47.977331",
+        "page_number": 15,
+        "image_index": 1,
+        "width": 705,
+        "height": 99
+      },
+      {
+        "filename": "page_15_image_2.jpeg",
+        "path": "output\\images\\temp_d4012921-7c9a-45d0-9042-0415b4d3077c\\page_15_image_2.jpeg",
+        "extraction_date": "2025-01-21T01:08:47.982454",
+        "page_number": 15,
+        "image_index": 2,
+        "width": 1890,
+        "height": 2012
+      }
+    ],
+    "16": [
+      {
+        "filename": "page_16_image_1.png",
+        "path": "output\\images\\temp_d4012921-7c9a-45d0-9042-0415b4d3077c\\page_16_image_1.png",
+        "extraction_date": "2025-01-21T01:08:47.991516",
+        "page_number": 16,
+        "image_index": 1,
+        "width": 705,
+        "height": 99
+      }
+    ],
+    "17": [
+      {
+        "filename": "page_17_image_1.png",
+        "path": "output\\images\\temp_d4012921-7c9a-45d0-9042-0415b4d3077c\\page_17_image_1.png",
+        "extraction_date": "2025-01-21T01:08:48.002340",
+        "page_number": 17,
+        "image_index": 1,
+        "width": 705,
+        "height": 99
+      }
+    ],
+    "18": [
+      {
+        "filename": "page_18_image_1.png",
+        "path": "output\\images\\temp_d4012921-7c9a-45d0-9042-0415b4d3077c\\page_18_image_1.png",
+        "extraction_date": "2025-01-21T01:08:48.009420",
+        "page_number": 18,
+        "image_index": 1,
+        "width": 705,
+        "height": 99
+      }
+    ]
+  }
+}

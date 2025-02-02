@@ -1,0 +1,51 @@
+A. Chandiramani et al. 
+ 
+ 
+ISSN (Online) : 2583-1798 
+9 
+Journal of Management and Service Science 
+(JMSS) 
+A2Z Journals 
+ 
+By running this command, Django has generated an SQLite database for us, default database in our settings, and it has added 
+several tables to our database. we will know if our database was created if we see a new db.sqlite3 file in our project directory. 
+One of the table Django gives you is a user table, which can be used to store users in our app. The app we are building does 
+not need to have any users having the admin user will allow you to access the admin dashboard. To create the admin user, we 
+will run the create superuser command. 
+• 
+python manage.py createsuperuser 
+ 
+Give a username, email address, and a password for your admin user. Once you have done it, you will need to start your server 
+again and navigate to admin dashboard. 
+• 
+python manage.py runserver 
+ 
+Then go to server/admin. We can go to that page is because admin is set up in your urls.py. If we log in with the username, 
+password we just created, we should see the Django Admin Dashboard. Groups & users represent two models Django give us 
+access to. Model are just codes representations of tables in the database. Even though Django created additional tables, there 
+is no need to access the rest of them directly, therefore no models were created. Now leave the admin dashboard for now & 
+go to the code. We are required to create an app into our project for the weather app. 
+5.1. Creating the App 
+We are required to create a new application to handle everything regarding the weather. To create that app: 
+ 
+• 
+python manage.py startapp weather 
+ 
+By startapp, Django has add a new directory & more files to our project. The newly files generated, let’s create another file 
+called urls.py in the app directory. 
+ 
+urls.py 
+from django.urls import path 
+ 
+urlpatterns = [ 
+] 
+ 
+This file is same as to the urls.py in our weather directory. The distinction is that this urls.py file contain all the URL that are 
+relevant to this app itself. We are not specifying a URL yet, rather we can set up our project to recognize the app and route any 
+URL specific to the app urls.py file. First, check the INSTALLED_APPS list and then add this app to the list. 
+ 
+the_weather/the_weather/settings.py 
+... 
+ 
+INSTALLED_APPS = [ 
+    'django.contrib.admin',

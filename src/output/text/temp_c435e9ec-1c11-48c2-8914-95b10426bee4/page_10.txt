@@ -1,0 +1,24 @@
+comparison, the majority of other technologies exhibit significantly lower us-
+age rates in contrast to these leading two. Notably, among the 39 technologies
+analyzed, only ten surpass the 1% usage threshold across CI/CD repositories.
+Figure 2: Distribution of technologies across CI/CD repositories (in a logarith-
+mic scale).
+The predominance of GitHub Actions seems to indicate that repository plat-
+forms have quite some influence, at least in the projects they hold. Thus, a
+possible conclusion is that, when considering the usage of CI/CD technology,
+developers also consider where the code will be managed.
+CI/CD and programming languages
+Fig. 3 illustrates the number of repositories of each programming language with
+a usage rate exceeding 1% in repositories employing at least one CI/CD tech-
+nology. We use the GitHub API to get the main programming language of each
+repository (which does not mean the project does not use other languages).
+Notably, based on this depiction, JavaScript and Python emerge as the most
+extensively utilized languages. In absolute terms, these languages are the ones
+where more projects include CI/CD technologies.
+A comparison of the lan-
+guages highlighted in the IEEE Spectrum’s top programming languages of 2023
+[IEEE(2023)] reveals noteworthy disparities. While SQL and R claim top posi-
+tions in IEEE Spectrum’s ranking, they are absent from our list. This discrep-
+ancy may be attributed to SQL often being embedded within other program-
+ming languages and R being predominantly utilized by less technically inclined
+10

@@ -1,0 +1,22 @@
+Machinery, New York, NY, USA, 76–80.
+https://doi.org/10.1145/
+3379597.3387483
+[Xu and Marinov(2018)] Tianyin Xu and Darko Marinov. 2018. Mining Con-
+tainer Image Repositories for Software Configuration and Beyond. In
+Proceedings of the 40th International Conference on Software Engineer-
+ing: New Ideas and Emerging Results (Gothenburg, Sweden) (ICSE-NIER
+’18). Association for Computing Machinery, New York, NY, USA, 49–52.
+https://doi.org/10.1145/3183399.3183403
+[Zahedi et al.(2020)] Mansooreh
+Zahedi,
+Roshan
+Namal
+Rajapakse,
+and
+Muhammad Ali Babar. 2020. Mining Questions Asked about Continuous
+Software Engineering: A Case Study of Stack Overflow. In Proceedings of
+the Evaluation and Assessment in Software Engineering (Trondheim, Nor-
+way) (EASE ’20). Association for Computing Machinery, New York, NY,
+USA, 41–50.
+https://doi.org/10.1145/3383219.3383224
+28

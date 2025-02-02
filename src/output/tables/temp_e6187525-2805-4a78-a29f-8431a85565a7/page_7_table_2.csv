@@ -1,0 +1,52 @@
+,Actors,Reactive,Service Agent
+"Runtime
+element","Actors, [objects]","Observables,
+Subscribers,
+Objects",Agents
+Program unit,"Actor types,
+[Classes]","Sub-Observables,
+Sub-Subscribers,
+Class",Castes
+"Reference
+propagation
+model","Reference
+capability model","Reference
+capability model","Reference
+capability model +
+message sender
+identification"
+"Uses of
+Reference
+propagation
+Model","Lifecycle
+management,
+Communication
+address","Lifecycle
+management,
+Subscription for
+communication","Lifecycle
+management
+[optional],
+Communication
+address [optional]"
+"Communication
+mechanism","Asynchronous,
+Direct addressing","Asynchronous,
+Subscribe-
+publish,
+Explicit event-
+driven","Asynchronous,
+Implicit event-
+driven,
+Sender ID
+identifiable"
+"System
+structure","Centrally
+organised
+hierarchy","Flat,
+No central
+organisation","No central
+organisation"
+"Location
+transparency","Implicit by
+reference",No,Yes

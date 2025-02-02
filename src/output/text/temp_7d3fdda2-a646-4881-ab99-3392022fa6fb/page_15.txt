@@ -1,0 +1,14 @@
+Fig 4. Contributing to open source projects. We would like you to add an empty file that is named after your GitHub username to the repo used to write this
+manuscript. (A) Using your internet browser, navigate to https://github.com/jdblischak/git-for-science. (B) Click on the “Fork” button to create a copy of this
+repo on GitHub under your username. (C) On your computer, type git clone https://github.com/username/git-for-science.git, which will create a copy of git-
+for-science on your local machine. (D) Navigate to the readers directory by typing cd git-for-science/readers/. Create an empty file that is titled with
+your GitHub username by typing touch username.txt. Commit that new file by adding it to the staging area (git add username.txt) and committing
+with a message (git commit -m "Add username to directory of readers."). Note that your commit identifier will be different than what is shown
+here. (E) You have committed your new file locally, and the next step is to push that new commit up to the git-for-science repo under your username on
+GitHub. To do so, type git push origin master. (F) To request to add your commits to the original git-for-science repo, issue a pull request from the git-
+for-science repo under your username on GitHub. Once your Pull Request is reviewed and accepted, you will be able to see the file you committed with your
+username in the original git-for-science repository.
+doi:10.1371/journal.pcbi.1004668.g004
+PLOS Computational Biology | DOI:10.1371/journal.pcbi.1004668
+January 19, 2016
+15 / 18

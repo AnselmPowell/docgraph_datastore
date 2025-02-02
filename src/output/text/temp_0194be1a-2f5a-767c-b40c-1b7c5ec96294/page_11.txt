@@ -1,0 +1,133 @@
+can be created to run on any machine in the cluster with a 
+couple clicks of buttons using the agent tab; see Figure 9. 
+The running state of each agent on each LEE can also be 
+monitored. A selected running agent can be stopped when 
+needed to with a click of the Delete Agent button.  
+CIDE has been implemented in Java. Error! Reference 
+source not found. shows the architecture of CIDE.  
+C. Summary 
+CIDE is an Integrated DevOps Environment because it offers 
+code 
+deployment, 
+cluster 
+management 
+and 
+agent 
+management in addition to the features of a traditional 
+Integrated 
+Development 
+Environment. 
+In 
+this 
+way, 
+distributed and parallel programs can be tested and run on a 
+cluster. Uploading a CAVM is all that is needed to install a 
+server. 
+Note also that CAOPLE programs are “write-once, run 
+anywhere”. The virtual machine has been tested on 
+Windows, Linux and Mac OS machines. No change is 
+needed to the object code when it is moved onto a different 
+machine so clusters can be heterogeneous. 
+Finally, note that the object code of a caste is two orders 
+of magnitude smaller than that of container images of 
+Docker, making it possible for the deployment and 
+initialization of an agent to take only a few milliseconds 
+rather than the seconds taken by Docker. The sizes of the 
+object code files for castes are typically a few KBs. Our 
+experience with CAOPLE and CIDE indicate that together 
+they achieve the aims of Docker and container orchestration 
+engines better than Docker does itself. More importantly, 
+testing microservices can be done in a cluster environment as 
+a part of the programming phase.  
+VI. CONCLUSION 
+The past few years have witnessed a paradigm shift in the 
+practice of cloud software engineering. There are a number 
+of new fundamental concepts:  
+• Software applications running on a cloud 
+consist of a large number of autonomous 
+active 
+computational 
+entities 
+called 
+microservices, each wrapped as containers, 
+distributed over a network and executed in 
+parallel. 
+We 
+call 
+them 
+agents. 
+Their 
+communication is asynchronous and non-
+blocking. The connections are dynamically 
+established. 
+• Agents are dynamically instantiated from 
+templates, also called microservices but 
+represented as container images. We call 
+these castes. 
+• Software 
+processes 
+now 
+include 
+development but also deployment and 
+operation. These processes are integrated and 
+pipelined to help deal with the complexity of 
+the infrastructure and environment. Since it 
+must be possible for microservices to be 
+continuously 
+added 
+and 
+removed, 
+the 
+emphasis is on continuous integration, testing 
+and 
+delivery. 
+Both 
+the 
+microservices 
+themselves and the developers maintaining them form an 
+ecosystem. 
+• Tools exist to make deployment of code, instantiation of 
+agents and monitoring of clusters as efficient as possible. 
+We argue that a new programming model that directly 
+supports the new paradigm would significantly improve both 
+software quality and productivity. This would necessitate a 
+new programming language for microservices instead of 
+viewing it as simply an architectural style for which any 
+programming language is suitable. Goals of such a new 
+programming language would include: 
+• 
+Language facilities at a high level of abstraction that 
+match the metaphors of the paradigm; 
+• 
+Obviating the needs for low level communication 
+primitives or network location sensitivity; 
+• 
+Code-once-run-anywhere, reducing the complexities of 
+heterogeneous hardware and software platforms; 
+• 
+Supporting 
+DevOps 
+in 
+one 
+Integrated 
+DevOps 
+Environment; 
+In this paper, we examined some existing programming 
+models in the light of the emerging paradigm. We argued 
+that service agent is the best conceptual model for a 
+programming language in the new paradigm. We briefly 
+reported both CAOPLE and CIDE. Our preliminary 
+experiments show that both are promising. 
+For future work, we are searching for a new software 
+development methodology for cloud-based systems and a 
+way to reason about their properties. 
+REFERENCES 
+[1]  Lewis, J., and Fowler, M., Microservices. URL: http: 
+//martinfowler.com/articles/microservices.html#footnote- 
+monolith, 25 Mar. 2014. (Last access on 2 Nov. 2015)  
+[2]  NewMan, S., Building Microservices: Designing Fine- 
+Grained Systems. O’Reilly, Feb., 2015.  
+[3]  Krause, L., Microservices: Patterns and Applications. 
+ 
+ 
+Figure 10. Architecture of CIDE

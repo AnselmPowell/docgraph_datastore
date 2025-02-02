@@ -1,0 +1,46 @@
+of software projects.
+Nevertheless, many companies also have their software
+on GitHub, and one may expect workers from these companies to use similar
+technologies in other projects. Moreover, others have reached similar conclusions
+by interviewing developers [Golzadeh et al.(2022)].
+Since we only used GitHub, we cannot say these results apply to projects in
+other code repository services. However, there is no reason to consider projects
+hosted on GitHub to be significantly different from other projects in other repos-
+itory services.
+Still regarding the use of GitHub as the source of the software projects we
+analyzed, we could observe a predominance of GitHub Actions. One of the main
+reasons for this may in fact be related to the use of GitHub as the source of
+projects. However, we also found GitLab Actions, the CI/CD technology used
+by another repository service (GitLab).
+We collected our sample repositories by getting the 1,000 results sent by the
+GitHub API, doing it for every week in our time frame. This gave us more than
+600,000 repositories, from which more than 200,000 have CI/CD. Although we
+could have collected more repositories, this would increase the time to retrieve
+them in a way that would make our work unfeasible. Moreover, the query did
+not impose any restriction on the results, except for the 10 starts we used to have
+some kind of “quality” metric for the projects. Thus, the repositories retrieved
+should not be biased in any other way.
+We considered only technologies that we could identify through files in the
+repository. Indeed, from the 61 technologies identified by the Cloud Native Com-
+puting Foundation, we could not identify 14 technologies (plus 1 deprecated).
+Nevertheless, we were able to identify 64% of all technologies.
+Some technologies are detected through file contents and we cannot guaran-
+tee a random file would not have a certain string inside that matches. However,
+we defined content that would only make sense in the technology context, this
+probably did not happen. In any case, if it happened, was for a very small
+number of files that should not change the overall conclusions of our work.
+We assumed that the presence of CI/CD artifacts (e.g., configuration files)
+means the underlying project is using such a technology. However, this may not
+be the case as some artifacts may be left forgotten from older usages.
+9
+Conclusions
+In this work, we have investigated more than 600,000 software projects, from
+which more than 200,000 include diverse CI/CD technologies. We have charac-
+terized the current usage of CI/CD, related the technologies with programming
+languages, discovered that many projects use several technologies at the same
+time, and that projects tend to change their CI/CD technologies frequently.
+From this, several research paths can be seen, from better understanding why
+developers need to use several technologies simultaneously and to provide the
+proper support to them, to how to aid when developers want to evolve their
+technologies.
+25

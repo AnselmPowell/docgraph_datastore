@@ -1,0 +1,67 @@
+Figure 2: The ATH testing process
+• Tomcat controller (TYPE=tomcat)
+• JBoss controller (TYPE=jboss)
+• Ubuntu controller (TYPE=ubuntu)
+• CentOS controller (TYPE=centos)
+• OpenSUSE controller (TYPE=opensuse)
+Due to the open plug-in nature of the Jenkins it is dif-
+ﬁcult to have a one controller for all the above mentioned
+conﬁgurations. Therefore, the ATH provides diﬀerent types
+of controllers to run the acceptance test suite against many
+diﬀerent environments by setting the environment variable.
+3.2.3
+Test Execution
+The Test Execution process generally begins with a devel-
+oper, testing the local copy of Jenkins after checkout and
+the thoroughness of test cases depends on the expertise and
+judgment of the developer (see Fig. 2). However, in order to
+ensure the quality of acceptance test cases, a video tutorial is
+available on the Jenkins web page that shows how to write an
+acceptance test case. ATH uses WebDriver to execute tests,
+and the developers have the option to choose the browser by
+using the BROWSER environment variable. The following
+browser variables are compatible with ATH to execute the
+test suite.
+• ﬁrefox (default)
+• ie
+• chrome
+• safari
+• htmlunit
+• phantomjs
+3.2.4
+Test Incident Reporting
+Test incident reporting in ATH depends on the discussions
+in the mailing lists, which solicit feedback from interested
+stakeholders, and the voting system. ATH allows Console
+and Textﬁle reports. The Console Reporter logs the plugin
+and its version to standard output. The Textﬁle Reporter
+creates a properties ﬁle in the target folder containing a list
+of plugin names and their versions, preﬁxed by the test name.
+It can be very useful when users want to be able to see which
+plugins and their versions that were tested with a particular
+version of Jenkins Core. Note that the reporting can be
+performed by any stakeholder involved in the development
+of ATH. However, the community uses the voting system
+to prioritize the most critical bugs (see Table 2). Moreover,
+test results are categorized into three categories: 1) OK, 2)
+Warn, and 3) Fail. Test results are considered OK if the
+tests passed without any problems. Warning indicates a
+functionality malfunction, but it does not cause the whole
+Jenkins to fail. On the contrary, failure indicates a fatal error
+of the whole Jenkins or a critical issue that aﬀect all jobs,
+i.e. developers have not been to start Jenkins or save the
+conﬁguration of any job.
+Interviewees stated that external bugs are reported through
+the JIRA tool and internal bugs are reported using emails.
+The prioritization is based on the most pressing needs of
+software developers at the contributor. Additionally, all the
+test cases are written in Java using JUnit. An interviewee 3
+stated, “. . . if it is sort of a make or break we ﬁx it ourselves
+and then make a pull request and if its not, we report it.
+May be someone from the community in the future will ﬁx
+it”. Other stakeholders in the ATH also do the same, by
+taking the most important issues according to their needs
+and ﬁx them ﬁrst. However, it is important to show to the
+community that we want to contribute to the project as a
+whole and not just our part, as mentioned by Dahlander [7].
+190

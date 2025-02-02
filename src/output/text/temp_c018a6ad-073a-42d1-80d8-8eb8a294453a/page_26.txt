@@ -1,0 +1,22 @@
+26 
+ 
+Every build also means, how many times sours code has been changed and how successful. On 
+the graph, some amount of builds has passed, and some were broken. Based on the picture 
+belove we based on a pass or failed build results software quality can be analyzed. 
+ 
+ 
+ 
+Figure 10: Result analysis graph zoomed 
+ 
+On this picture, we can see that build 87 is under the progress, so it means that the developer 
+made some changes into the source code and committed it into the Subversion version control 
+system. Jenkins has tracked the change and started to build new build based on the changes 
+in SVN.  
+ 
+It uses the same script that runs all builds. Less than one Job name can be as many builds as 
+changes in source code that were committed to the version control. 
+ 
+ 
+ 
+ 
+Figure 11: Result print

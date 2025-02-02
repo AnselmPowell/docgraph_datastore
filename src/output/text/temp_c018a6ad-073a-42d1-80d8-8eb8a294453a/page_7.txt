@@ -1,0 +1,54 @@
+7 
+ 
+2.1 
+Testing Types 
+ 
+Different software testing types and methods are used to help software testing to identify 
+completeness, accuracy, quality and security. The phases of software testing done for the 
+customer. It helps the client follow the quality of the product in every development stage. 
+(Satalkar, B. 2011) 
+ 
+The next figure shows different development stages and tests required for particular devel-
+opment phases. 
+ 
+ 
+ 
+ 
+Figure 1: Development stages and needed tests 
+ 
+1 
+Product development  
+ 
+Module and Unit testing 
+2 
+Architectural design 
+ 
+System, functional and integration testing 
+3 
+End product 
+ 
+Acceptance testing 
+ 
+2.1.1 
+Module/Unit Testing 
+ 
+Unit testing ensures correct behavior, specific action or logic of software unit. The unit is 
+separate software component. Its success or failure authenticates or rejects a single unit, 
+individual hardware, software unit, or group of related units. It very first partial test as soon 
+as some feature is developed. Unit tests have to be written through all development process. 
+It is essential to unit test the feather before combining it with other software additionally 
+after combination failure is hard to find. Can be executed two different ways manually and 
+automatically. 
+  
+Module 
+Testing 
+Unit 
+Testing 
+System 
+Testing 
+Integration 
+Testing 
+Functional 
+Testing 
+Acceptance 
+Testing

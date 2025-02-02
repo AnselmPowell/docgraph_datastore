@@ -1,0 +1,108 @@
+Table 1: Interviewees description
+Anonymous name
+Involvement
+Experience
+Role
+Interviewee 1
+Jenkins and ATH
+8 Years
+Tools manager for Jenkins and contributing
+to ATH
+Interviewee 2
+Jenkins and and ATH
+6 Years
+Team lead and ATH contributor
+Interviewee 3
+Jenkins
+7 Years
+Former tools manager Jenkins
+Interviewee 4
+Responsible for Jenkins and Gerrit build
+artifacts and channel distribution
+8 years
+Software Architect
+Interviewee 5
+OSS policy maker
+More than 20 Years
+Manager responsible for overall OSS strat-
+egy
+Table 2: Diﬀerences between ISO/IEC/IEEE 29119 and the OI testing process
+Phases
+ISO/IEC/IEEE Test Process
+Acceptance test harness frame-
+work
+Test Design and Implementation
+• Identify Feature Sets
+• Derive Test Conditions
+• Derive Test Coverage Items
+• Derive Test Cases
+• Assemble Test Sets
+• Derive Test Procedures
+• Identify Independently
+• Derive Testable Aspect(s)
+• Derive Test Cases
+• Documentation
+Test Environment Set-Up and Mainte-
+nance
+• Establish Test Environment
+• Maintain Test Environment
+• Select Test Environment
+Test Execution
+• Execute Test Procedure(s)
+• Compare Test Results
+• Record Test Execution
+• Test thoroughness depends on
+developers expertise
+• Execute
+• Submit
+Test Incident Reporting
+• Analyze Test Result(s)
+• Create Incident Report
+• Review or Vote
+• Accept
+• Console reports
+• Textﬁle reports
+3.2
+The ATH Testing Process
+In this section we compare the ATH testing process to the
+ISO/IEC/IEEE 29119 testing standard. The structure below
+follow the main phases of the standard.
+3.2.1
+Test Design and Implementation
+The OI testing is less formalized than described in the
+standard. ATH does not have an explicit test plan and there
+is no formal identiﬁcation of risks (see Fig. 2). The features
+to be tested are prioritized according to the community’s or
+contributor’s internal needs independently without consulting
+other stakeholders in the project. Testable objects (plugins)
+are based on the speciﬁc interests from volunteers who to
+choose take over the testing for a component (see Table 2).
+3.2.2
+Test Environment Set-Up and Maintenance
+According to the ISO/IEC standard, test cases are derived
+by determining the pre-conditions, post-conditions, input
+values and expected outcomes. However, in the absence of a
+test plan, ATH does not have test completion criteria that
+measure the test coverage of the Jenkins plugins. An intervie-
+wee 1 stated that, “. . . the existence of acceptance test cases
+does not guarantee that Jenkins would not blow up every time
+we upgrade the core or its plugins since it is so volatile with
+with diﬀerent plugins and conﬁgurations. However, it can
+give us a fair indication what went wrong and enable to ﬁx
+the problem.’. In most OSS projects, testers move directly
+to test execution from test design and implementation in
+order to execute test procedures, since there are no speciﬁc
+requirements for the test environment in ATH (see Fig. 2).
+However, ATH has an abstraction called JenkinsController
+that allows using diﬀerent logic for starting/stopping Jenk-
+ins. It is used to run the same set of tests against many
+diﬀerent ways of launching Jenkins, such as through Java,
+JBoss, a Debian package, etc. To select a controller, run the
+test with the TYPE environment variable set to the con-
+troller ID. Common conﬁguration of controllers can be done
+through environment variables, and the following controllers
+are available in ATH.
+• Winstone controller (TYPE=winstone)
+• Winstone Docker controller (TYPE=winstone docker)
+• Existing Jenkins’ controller (TYPE=existing)
+189

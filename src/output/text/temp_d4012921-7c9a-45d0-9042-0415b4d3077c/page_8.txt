@@ -1,0 +1,34 @@
+proximal_tube = proximal_tube.filter(filter_fold_change,
+fc = fc_cutoff).saveas()
+kidney = kidney.filter(filter_fold_change, fc = fc_cutoff).saveas()
+# Identify only those sites that are peaks in all three tissue types
+combined = pybedtools.BedTool().multi_intersect(
+i = [epithelial.fn, proximal_tube.fn, kidney.fn])
+union = combined.filter(lambda x: int(x[3]) = = 3).saveas()
+union.cut(range(3)).saveas(data + "/sites-union.bed")
+Because Git is tracking clean.py, it recognizes that the file has been changed since the
+last commit.
+$ git status
+# On branch master
+# Changes not staged for commit:
+#
+(use "git add <file>. . ." to update what will be committed)
+#
+(use "git checkout --<file>. . ." to discard changes in working
+directory)
+#
+#
+modified: clean.py
+#
+no changes added to commit (use "git add" and/or "git commit -a")
+The report from git status indicates that the changes to clean.py are not staged, i.e.,
+they are in the working directory (Fig 1). To view the unstaged changes, run the command
+git diff.
+$ git diff
+diff --git a/clean.py b/clean.py
+index 7b8c058.76d84ce 100644
+-– a/clean.py
++++ b/clean.py
+PLOS Computational Biology | DOI:10.1371/journal.pcbi.1004668
+January 19, 2016
+8 / 18

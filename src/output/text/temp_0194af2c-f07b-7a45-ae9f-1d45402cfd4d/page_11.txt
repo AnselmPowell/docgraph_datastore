@@ -1,0 +1,175 @@
+REFERENCES
+[1] B. Appleton, S. Berczuk, R. Cabrera, and R. Orenstein. Streamed lines:
+Branching patterns for parallel software development. In Proceedings
+of PloP, volume 98, 1998.
+[2] R. A. Armstrong. When to use the bonferroni correction. Ophthalmic
+and Physiological Optics, 34(5):502–508, 2014.
+[3] D. Arve. Branching strategies with distributed version control in agile
+projects. pages 1–12, 2010.
+[4] S. P. Berczuk and B. Appleton.
+Software conﬁguration management
+patterns: effective teamwork, practical integration.
+Addison-Wesley
+Longman Publishing Co., Inc., 2002.
+[5] C. Bird and T. Zimmermann. Assessing the value of branches with what-
+if analysis. In Proceedings of the ACM SIGSOFT 20th International
+Symposium on the Foundations of Software Engineering, page 45. ACM,
+2012.
+[6] C. Bird, T. Zimmermann, and A. Teterev. A theory of branches as goals
+and virtual teams. In Proceedings of the 4th International Workshop on
+Cooperative and Human Aspects of Software Engineering, pages 53–56.
+ACM, 2011.
+[7] C. Casalnuovo, P. Devanbu, A. Oliveira, V. Filkov, and B. Ray. Assert
+use in github projects.
+In Proceedings of the 37th International
+Conference on Software Engineering-Volume 1, pages 755–766. IEEE
+Press, 2015.
+[8] C. Casalnuovo, B. Vasilescu, P. Devanbu, and V. Filkov.
+Developer
+onboarding in github: The role of prior social links and language expe-
+rience. In Proceedings of the 2015 10th Joint Meeting on Foundations
+of Software Engineering, pages 817–828. ACM, 2015.
+[9] S. Chacon and B. Straub. Pro git. Apress, 2014.
+[10] N. Cliff. Ordinal methods for behavioral data analysis. Psychology
+Press, 2014.
+[11] J. Cohen, P. Cohen, S. G. West, and L. S. Aiken.
+Applied multiple
+regression/correlation analysis for the behavioral sciences. Routledge,
+2013.
+[12] C. Costa, J. Figueiredo, L. Murta, and A. Sarma. Tipmerge: recommend-
+ing experts for integrating changes across branches. In Proceedings of
+the 2016 24th ACM SIGSOFT International Symposium on Foundations
+of Software Engineering, pages 523–534. ACM, 2016.
+[13] S. Daniel, R. Agarwal, and K. J. Stewart. The effects of diversity in
+global, distributed collectives: A study of open source project success.
+Information Systems Research, 24(2):312–333, 2013.
+[14] P. Devanbu, T. Zimmermann, and C. Bird.
+Belief & evidence in
+empirical software engineering. In Proceedings of the 38th International
+Conference on Software Engineering, pages 108–119. ACM, 2016.
+[15] J. L. Fleiss. Measuring nominal scale agreement among many raters.
+Psychological bulletin, 76(5):378, 1971.
+[16] J. Fowkes and C. Sutton. Parameter-free probabilistic api mining across
+github. In Proceedings of the 2016 24th ACM SIGSOFT International
+Symposium on Foundations of Software Engineering, pages 254–265.
+ACM, 2016.
+[17] J. Gamalielsson and B. Lundell. Long-term sustainability of open source
+software communities beyond a fork: A case study of libreofﬁce. In
+IFIP International Conference on Open Source Systems, pages 29–47.
+Springer, 2012.
+[18] G. Gousios, M. Pinzger, and A. v. Deursen.
+An exploratory study
+of the pull-based software development model. In Proceedings of the
+36th International Conference on Software Engineering, pages 345–355.
+ACM, 2014.
+[19] G. Gousios, M.-A. Storey, and A. Bacchelli.
+Work practices and
+challenges in pull-based development: the contributor’s perspective. In
+Proceedings of the 38th International Conference on Software Engineer-
+ing, pages 285–296. ACM, 2016.
+[20] G. Gousios, A. Zaidman, M.-A. Storey, and A. Van Deursen.
+Work
+practices and challenges in pull-based development: the integrator’s
+perspective.
+In Proceedings of the 37th International Conference on
+Software Engineering-Volume 1, pages 358–368. IEEE Press, 2015.
+[21] J. Hua. A case study of cross-branch porting in Linux Kernel. PhD
+thesis, 2014.
+[22] B. Javidi, J. Pickell, B. Heys, T. Erwee, and W.-P. Schaub. Microsoft
+Visual Studio Team Foundation Server Branching Guidance 2010.Mi-
+crosoft Corporation, 2010 edition, 2009. 2010.
+[23] J. Jiang, D. Lo, J. He, X. Xia, P. S. Kochhar, and L. Zhang. Why and
+how developers fork what from whom in github. Empirical Software
+Engineering, 22(1):547–578, 2017.
+[24] J. Jiang, L. Zhang, and L. Li.
+Understanding project dissemination
+on a social coding site. In 2013 20th Working Conference on Reverse
+Engineering (WCRE), pages 132–141. IEEE, 2013.
+[25] R. Kabacoff. R in action: data analysis and graphics with R. Manning
+Publications Co., 2015.
+[26] E. Kalliamvakou, G. Gousios, K. Blincoe, L. Singer, D. M. German, and
+D. Damian. The promises and perils of mining github. In Proceedings
+of the 11th working conference on mining software repositories, pages
+92–101. ACM, 2014.
+[27] E. Kalliamvakou, G. Gousios, K. Blincoe, L. Singer, D. M. German,
+and D. Damian. An in-depth study of the promises and perils of mining
+github. Empirical Software Engineering, 21(5):2035–2071, 2016.
+[28] N. Kerzazi.
+Branching strategies based on social networks.
+In
+Proceedings of the 1st International Workshop on Release Engineering,
+pages 25–28. IEEE Press, 2013.
+[29] V. Kovalenko, F. Palomba, and A. Bacchelli.
+Mining ﬁle histories:
+should we consider branches? In Proceedings of the 33rd ACM/IEEE
+International Conference on Automated Software Engineering, pages
+202–213. ACM, 2018.
+[30] M. J. Lee, B. Ferwerda, J. Choi, J. Hahn, J. Y. Moon, and J. Kim. Github
+developers use rockstars to overcome overﬂow of news.
+In CHI’13
+Extended Abstracts on Human Factors in Computing Systems, pages
+133–138. ACM, 2013.
+[31] Linus, Torvalds.
+[git pull] drm-next, March 2009.
+http://www.
+mail-archive.com/dri-devel@lists.sourceforge.net/msg39091.html, 2009.
+[32] J. Loeliger and M. McCullough. Version Control with Git: Powerful
+tools and techniques for collaborative software development. ” O’Reilly
+Media, Inc.”, 2012.
+[33] W. Ma, L. Chen, X. Zhang, Y. Zhou, and B. Xu. How do developers
+ﬁx cross-project correlated bugs?: a case study on the github scientiﬁc
+python ecosystem. In Proceedings of the 39th International Conference
+on Software Engineering, pages 381–392. IEEE Press, 2017.
+[34] H. B. Mann and D. R. Whitney.
+On a test of whether one of two
+random variables is stochastically larger than the other. The annals of
+mathematical statistics, pages 50–60, 1947.
+[35] J. Marlow, L. Dabbish, and J. Herbsleb. Impression formation in online
+peer production: activity traces and personal proﬁles in github.
+In
+Proceedings of the 2013 conference on Computer supported cooperative
+work, pages 117–128. ACM, 2013.
+[36] H. M. Michaud. Detection of Named Branch Origin for Git Commits.
+PhD thesis, University of Akron, July 2015.
+[37] R. Pham.
+Improving the software testing skills of novices during
+onboarding through social transparency.
+In Proceedings of the 22nd
+ACM SIGSOFT International Symposium on Foundations of Software
+Engineering, pages 803–806. ACM, 2014.
+[38] R. Pham, L. Singer, and K. Schneider. Building test suites in social
+coding sites by leveraging drive-by commits.
+In Proceedings of the
+2013 International Conference on Software Engineering, pages 1209–
+1212. IEEE Press, 2013.
+[39] S. Phillips, J. Sillito, and R. Walker.
+Branching and merging: an
+investigation into current version control practices. In Proceedings of
+the 4th International Workshop on Cooperative and Human Aspects of
+Software Engineering, pages 9–15. ACM, 2011.
+[40] R. Premraj, A. Tang, N. Linssen, H. Geraats, and H. van Vliet. To branch
+or not to branch? In Proceedings of the 2011 International Conference
+on Software and Systems Process, ICSSP ’11, pages 81–90, New York,
+NY, USA, 2011. ACM.
+[41] B. Ray, V. Hellendoorn, S. Godhane, Z. Tu, A. Bacchelli, and P. De-
+vanbu.
+On the naturalness of buggy code.
+In Proceedings of the
+38th International Conference on Software Engineering, pages 428–439.
+ACM, 2016.
+[42] B. Ray, D. Posnett, V. Filkov, and P. Devanbu. A large scale study of
+programming languages and code quality in github. In Proceedings of
+the 22nd ACM SIGSOFT International Symposium on Foundations of
+Software Engineering, pages 155–165. ACM, 2014.
+[43] E. Shihab, C. Bird, and T. Zimmermann.
+The effect of branching
+strategies on software quality.
+In Proceedings of the 2012 ACM-
+IEEE International Symposium on Empirical Software Engineering and
+Measurement, pages 301–310. IEEE, 2012.
+[44] D. Silva, N. Tsantalis, and M. T. Valente. Why we refactor? confessions
+of github contributors. In Proceedings of the 2016 24th ACM SIGSOFT
+International Symposium on Foundations of Software Engineering, pages
+858–870. ACM, 2016.
+316
+Authorized licensed use limited to: Nanjing University. Downloaded on May 20,2020 at 13:25:16 UTC from IEEE Xplore.  Restrictions apply.

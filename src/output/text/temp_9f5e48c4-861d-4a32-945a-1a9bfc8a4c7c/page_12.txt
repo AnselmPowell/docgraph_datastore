@@ -1,0 +1,59 @@
+[45] A. Tarvo, T. Zimmermann, and J. Czerwonka. An integration resolution
+algorithm for mining multiple branches in version control systems. In
+Software Maintenance (ICSM), 2011 27th IEEE International Confer-
+ence on, pages 402–411. IEEE, 2011.
+[46] R. C. Team et al.
+R: A language and environment for statistical
+computing. 2013.
+[47] J. Tsay, L. Dabbish, and J. Herbsleb. Inﬂuence of social and technical
+factors for evaluating contribution in github.
+In Proceedings of the
+36th international conference on Software engineering, pages 356–366.
+ACM, 2014.
+[48] M. Tufano, F. Palomba, G. Bavota, M. Di Penta, R. Oliveto, A. De Lucia,
+and D. Poshyvanyk. An empirical investigation into the nature of test
+smells. In Proceedings of the 31st IEEE/ACM International Conference
+on Automated Software Engineering, pages 4–15. ACM, 2016.
+[49] E. van der Veen, G. Gousios, and A. Zaidman. Automatically prioritizing
+pull requests.
+In 12th IEEE/ACM Working Conference on Mining
+Software Repositories, Florence, Italy, May 16-17, 2015, pages 357–
+361, 2015.
+[50] B. Vasilescu, K. Blincoe, Q. Xuan, C. Casalnuovo, D. Damian, P. De-
+vanbu, and V. Filkov.
+The sky is not the limit: multitasking across
+github projects. In Proceedings of the 38th International Conference on
+Software Engineering, pages 994–1005. ACM, 2016.
+[51] B. Vasilescu, D. Posnett, B. Ray, M. G. van den Brand, A. Serebrenik,
+P. Devanbu, and V. Filkov. Gender and tenure diversity in github teams.
+In Proceedings of the 33rd Annual ACM Conference on Human Factors
+in Computing Systems, pages 3789–3798. ACM, 2015.
+[52] B. Vasilescu, Y. Yu, H. Wang, P. Devanbu, and V. Filkov. Quality and
+productivity outcomes relating to continuous integration in github. In
+Proceedings of the 2015 10th Joint Meeting on Foundations of Software
+Engineering, pages 805–816. ACM, 2015.
+[53] C. Vendome.
+A large scale study of license usage on github.
+In
+2015 IEEE/ACM 37th IEEE International Conference on Software
+Engineering, volume 2, pages 772–774. IEEE, 2015.
+[54] C. Vendome, G. Bavota, M. Di Penta, M. Linares-V´asquez, D. German,
+and D. Poshyvanyk. License usage and changes: a large-scale study on
+github. Empirical Software Engineering, pages 1–41, 2017.
+[55] L. Wingerd and C. Seiwald.
+High-level best practices in software
+conﬁguration management.
+In International Workshop on Software
+Conﬁguration Management, pages 57–66. Springer, 1998.
+[56] Y. Yu, H. Wang, V. Filkov, P. Devanbu, and B. Vasilescu.
+Wait for
+it: Determinants of pull request evaluation latency on github. In 2015
+IEEE/ACM 12th Working Conference on Mining Software Repositories,
+pages 367–371. IEEE, 2015.
+[57] J. Zhu, M. Zhou, and A. Mockus. Effectiveness of code contribution:
+from patch-based to pull-request-based tools.
+In Proceedings of the
+2016 24th ACM SIGSOFT International Symposium on Foundations of
+Software Engineering, pages 871–882. ACM, 2016.
+317
+Authorized licensed use limited to: Nanjing University. Downloaded on May 20,2020 at 13:25:16 UTC from IEEE Xplore.  Restrictions apply.

@@ -1,0 +1,39 @@
+@@ -28,7 +28,7 @@ def filter_fold_change(feature, fc = 1):
+return False
+# Filter based on fold-change over control sample
+-fc_cutoff = 10
++fc_cutoff = 20
+epithelial = epithelial.filter(filter_fold_change,
+fc = fc_cutoff).saveas()
+proximal_tube = proximal_tube.filter(filter_fold_change,
+fc = fc_cutoff).saveas()
+kidney = kidney.filter(filter_fold_change, fc = fc_cutoff).saveas()
+Any lines of text that have been added to the script are indicated with a +, and any lines
+that have been removed with a -. Here, we altered the line of code that sets the value of
+fc_cutoff. git diff displays this change as the previous line being removed and a new
+line being added with our update incorporated. You can ignore the first five lines of output,
+because they are directions for other software programs that can merge changes to files. If you
+wanted to keep this edit, you could add clean.py to the staging area using git add and
+then commit the change using git commit, as you did above. Instead, this time undo the edit
+by following the directions from the output of git status to “discard changes in the work-
+ing directory” using the command git checkout.
+$ git checkout -- clean.py
+$ git diff
+Now git diff returns no output, because git checkout undid the unstaged edit you
+had made to clean.py. This ability to undo past edits to a file is not limited to unstaged
+changes in the working directory. If you had committed multiple changes to the file
+clean.py and then decided you wanted the original version from the initial commit, you
+could replace the argument -- with the commit identifier of the first commit you made above
+(your commit identifier will be different; use git log to find it). The -- used above was simply
+a placeholder for the first argument because, by default, git checkout restores the most
+recent version of the file from the staging area (if you haven’t staged any changes to this file, as
+is the case here, the version of the file in the staging area is identical to the version in the last
+commit). Instead of using the entire commit identifier, use only the first seven characters,
+which is simply a convention, since this is usually long enough for it to be unique.
+$ git checkout 660213b clean.py
+At this point, you have learned the commands needed to version your code with Git. Thus,
+you already have the benefits of being able to make edits to files without copying them first, to
+create a record of your changes with accompanying messages, and to revert to previous versions
+PLOS Computational Biology | DOI:10.1371/journal.pcbi.1004668
+January 19, 2016
+9 / 18

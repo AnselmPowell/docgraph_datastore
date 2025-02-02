@@ -1,0 +1,27 @@
+20 
+ 
+ 
+ 
+Figure 4: System configuration 
+ 
+Setting up Java Development Kit by adding a right path to Java Home. 
+ 
+9.3 
+Jenkins Plugins for Python Scripting languade 
+ 
+Jenkins plugins are needed to be able to extend usability of the tool. Adding plugins by going 
+to the Manage JenkinsManage Plugins, after all plugins are installed restarting Jenkins. 
+ 
+9.3.1 
+Virtual NV  
+ 
+Downloaded from official website pypi.python.org/pypi/virtualenv. Creates isolated or 
+private working environment; can be used for testing before committing ready code into 
+the real-time environment. (Virtualenv., 2015) 
+ 
+9.3.2 
+Pip-installer 
+ 
+Is used for installing easily python, the installer for Python packages. It helps to install 
+software easily. pip.pypa.io/en/stable/ (Pypa., 2015) 
+In this project used as a part of Jenkins Testing environment.

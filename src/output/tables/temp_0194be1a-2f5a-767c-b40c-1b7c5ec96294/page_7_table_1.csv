@@ -1,0 +1,15 @@
+"Concept of
+Microservices",Meanings,"Concept in Service
+Agent Model"
+Service,"The functionality provided by a
+computer system and delivered to
+the users",Service
+,"The computational entity that
+provides the services in the above
+sense",Agent
+Microservice,"Identical copies of a service,
+where each copy is a runtime
+computational entity",Agent
+,"A template from which instances
+can be generated and deployed to
+different servers",Caste

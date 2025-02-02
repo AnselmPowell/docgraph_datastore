@@ -1,0 +1,42 @@
+Docker: Lightweight Linux Containers for Consistent Development and
+Deployment
+Dirk Merkel
+Abstract
+Take on “dependency hell” with Docker containers, the lightweight and nimble cousin of VMs. Learn how Docker makes applications portable and isolated by packaging
+them in containers based on LXC technology.
+Imagine being able to package an application along with all of its dependencies easily and then run it smoothly in disparate development, test and production
+environments. That is the goal of the open-source Docker project. Although it is still not ofﬁcially production-ready, the latest release (0.7.x at the time of this writing)
+brought Docker another step closer to realizing this ambitious goal.
+Docker tries to solve the problem of “dependency hell”. Modern applications often are assembled from existing components and rely on other services and applications.
+For example, your Python application might use PostgreSQL as a data store, Redis for caching and Apache as a Web server. Each of these components comes with its own
+set of dependencies that may conﬂict with those of other components. By packaging each component and its dependencies, Docker solves the following problems:
+Conﬂicting dependencies: need to run one Web site on PHP 4.3 and another on PHP 5.5? No problem if you run each version of PHP in a separate Docker container.
+Missing dependencies: installing applications in a new environment is a snap with Docker, because all dependencies are packaged along with the application in a
+container.
+Platform differences: moving from one distro to another is no longer a problem. If both systems run Docker, the same container will execute without issues.
+Docker: a Little Background
+Docker started life as an open-source project at dotCloud, a cloud-centric platform-as-a-service company, in early 2013. Initially, Docker was a natural extension of the
+technology the company had developed to run its cloud business on thousands of servers. It is written in Go, a statically typed programming language developed by
+Google with syntax loosely based on C. Fast-forward six to nine months, and the company has hired a new CEO, joined the Linux Foundation, changed its name to
+Docker Inc., and announced that it is shifting its focus to the development of Docker and the Docker ecosystem. As further indication of Docker's popularity, at the time of
+this writing, it has been starred on GitHub 8,985 times and has been forked 1,304 times. Figure 1 illustrates Docker's rising popularity in Google searches. I predict that
+the shape of the past 12 months will be dwarfed by the next 12 months as Docker Inc. delivers the ﬁrst version blessed for production deployments of containers and the
+community at large becomes aware of Docker's usefulness.
+Figure 1. Google Trends Graph for “Docker Software” for Past 12 Months
+Under the Hood
+Docker harnesses some powerful kernel-level technology and puts it at our ﬁngertips. The concept of a container in virtualization has been around for several years, but by
+providing a simple tool set and a uniﬁed API for managing some kernel-level technologies, such as LXCs (LinuX Containers), cgroups and a copy-on-write ﬁlesystem,
+Docker has created a tool that is greater than the sum of its parts. The result is a potential game-changer for DevOps, system administrators and developers.
+Docker provides tools to make creating and working with containers as easy as possible. Containers sandbox processes from each other. For now, you can think of a
+container as a lightweight equivalent of a virtual machine.
+Linux Containers and LXC, a user-space control package for Linux Containers, constitute the core of Docker. LXC uses kernel-level namespaces to isolate the container
+from the host. The user namespace separates the container's and the host's user database, thus ensuring that the container's root user does not have root privileges on the
+host. The process namespace is responsible for displaying and managing only processes running in the container, not the host. And, the network namespace provides the
+container with its own network device and virtual IP address.
+Another component of Docker provided by LXC are Control Groups (cgroups). While namespaces are responsible for isolation between host and container, control groups
+implement resource accounting and limiting. While allowing Docker to limit the resources being consumed by a container, such as memory, disk space and I/O, cgroups
+also output lots of metrics about these resources. These metrics allow Docker to monitor the resource consumption of the various processes within the containers and make
+sure that each gets only its fair share of the available resources.
+In addition to the above components, Docker has been using AuFS (Advanced Multi-Layered Uniﬁcation Filesystem) as a ﬁlesystem for containers. AuFS is a layered
+ﬁlesystem that can transparently overlay one or more existing ﬁlesystems. When a process needs to modify a ﬁle, AuFS creates a copy of that ﬁle. AuFS is capable of
+merging multiple layers into a single representation of a ﬁlesystem. This process is called copy-on-write.

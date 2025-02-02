@@ -1,0 +1,80 @@
+EDITORIAL
+Ten Simple Rules for Taking Advantage of Git
+and GitHub
+Yasset Perez-Riverol1*, Laurent Gatto2, Rui Wang1, Timo Sachsenberg3,
+Julian Uszkoreit4, Felipe da Veiga Leprevost5, Christian Fufezan6, Tobias Ternent1,
+Stephen J. Eglen7, Daniel S. Katz8, Tom J. Pollard9, Alexander Konovalov10, Robert
+M. Flight11, Kai Blin12, Juan Antonio Vizcaíno1*
+1 European Molecular Biology Laboratory, European Bioinformatics Institute (EMBL-EBI), Wellcome Trust
+Genome Campus, Hinxton, Cambridge, United Kingdom, 2 Computational Proteomics Unit, Cambridge
+Systems Biology Centre, University of Cambridge, Cambridge, United Kingdom, 3 Applied Bioinformatics
+and Department of Computer Science, University of Tübingen, Tübingen, Germany, 4 Medizinisches
+Proteom-Center, Ruhr-Universität Bochum, Bochum, Germany, 5 Department of Pathology, University of
+Michigan, Ann Arbor, Michigan, United States of America, 6 Institute of Plant Biology and Biotechnology,
+University of Münster, Münster, Germany, 7 Centre for Mathematical Sciences, University of Cambridge,
+Cambridge, United Kingdom, 8 National Center for Supercomputing Applications and Graduate School of
+Library and Information Science, University of Illinois, Urbana, Illinois, United States of America, 9 MIT
+Laboratory for Computational Physiology, Institute for Medical Engineering and Science, Massachusetts
+Institute of Technology, Cambridge, Massachusetts, United States of America, 10 Centre for Interdisciplinary
+Research in Computational Algebra, University of St Andrews, St Andrews, United Kingdom, 11 Department
+of Molecular Biology and Biochemistry, Markey Cancer Center, Resource Center for Stable Isotope-
+Resolved Metabolomics, University of Kentucky, Lexington, Kentucky, United States of America, 12 The
+Novo Nordisk Foundation Center for Biosustainability, Technical University of Denmark, Hørsholm, Denmark
+* yperez@ebi.ac.uk (YPR); juan@ebi.ac.uk (JAV)
+Introduction
+Bioinformatics is a broad discipline in which one common denominator is the need to produce
+and/or use software that can be applied to biological data in different contexts. To enable and
+ensure the replicability and traceability of scientific claims, it is essential that the scientific pub-
+lication, the corresponding datasets, and the data analysis are made publicly available [1,2]. All
+software used for the analysis should be either carefully documented (e.g., for commercial soft-
+ware) or, better yet, openly shared and directly accessible to others [3,4]. The rise of openly
+available software and source code alongside concomitant collaborative development is facili-
+tated by the existence of several code repository services such as SourceForge, Bitbucket,
+GitLab, and GitHub, among others. These resources are also essential for collaborative software
+projects because they enable the organization and sharing of programming tasks between dif-
+ferent remote contributors. Here, we introduce the main features of GitHub, a popular web-
+based platform that offers a free and integrated environment for hosting the source code, docu-
+mentation, and project-related web content for open-source projects. GitHub also offers paid
+plans for private repositories (see Box 1) for individuals and businesses as well as free plans
+including private repositories for research and educational use.
+GitHub relies, at its core, on the well-known and open-source version control system Git,
+originally designed by Linus Torvalds for the development of the Linux kernel and now devel-
+oped and maintained by the Git community. One reason for GitHub’s success is that it offers
+more than a simple source code hosting service [5,6]. It provides developers and researchers
+with a dynamic and collaborative environment, often referred to as a social coding platform,
+that supports peer review, commenting, and discussion [7]. A diverse range of efforts, ranging
+from individual to large bioinformatics projects, laboratory repositories, as well as global
+PLOS Computational Biology | DOI:10.1371/journal.pcbi.1004947
+July 14, 2016
+1 / 11
+a11111
+OPEN ACCESS
+Citation: Perez-Riverol Y, Gatto L, Wang R,
+Sachsenberg T, Uszkoreit J, Leprevost FdV, et al.
+(2016) Ten Simple Rules for Taking Advantage of Git
+and GitHub. PLoS Comput Biol 12(7): e1004947.
+doi:10.1371/journal.pcbi.1004947
+Editor: Scott Markel, Dassault Systemes BIOVIA,
+UNITED STATES
+Published: July 14, 2016
+Copyright: © 2016 Perez-Riverol et al. This is an
+open access article distributed under the terms of the
+Creative Commons Attribution License, which permits
+unrestricted use, distribution, and reproduction in any
+medium, provided the original author and source are
+credited.
+Funding: This study was supported by Wellcome
+Trust [grant number WT101477MA] (http://www.
+wellcome.ac.uk/), BBSRC [grant numbers BB/
+K01997X/1, BB/I00095X/1, BB/L024225/1 and BB/
+L002817/1] (http://www.bbsrc.ac.uk/), BMBF grant de.
+NBI - German Network for Bioinformatics
+Infrastructure (FKZ031 A 534A) (https://www.denbi.
+de/), NIH grant numbers R01-GM-094231 and R01-
+EB-017205 (http://www.nih.gov/), EPSRC [reference
+EP/M022641/1] (https://www.epsrc.ac.uk), NSF grant
+number 1252893 (http://www.nsf.gov/), and Novo
+Nordisk Foundation (http://www.novonordiskfonden.
+dk/en). The funders had no role in study design, data
+collection and analysis, decision to publish, or
+preparation of the manuscript.

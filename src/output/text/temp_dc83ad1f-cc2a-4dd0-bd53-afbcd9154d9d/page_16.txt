@@ -1,0 +1,49 @@
+A. Chandiramani et al.  
+ 
+ 
+ISSN (Online) : 2583-1798 
+16 
+Journal of Management and Service Science 
+(JMSS) 
+A2Z Journals 
+ 
+Now in the template, let us update the form section so that we can use the form from our view & a csrf_token, which is needed 
+for POST requests in Django. With the form in HTML working, we now want to handle the form data as this comes in[9]. For 
+that, we’ll write an if block checking for the POST request. We want to add the check for this type of request before we start 
+grabbing our weather data, so we immediately obtain the data for the city we add. 
+ 
+the_weather/weather/views.py 
+def index(request): 
+    cities = City.objects.all()  
+ 
+    url 
+= 
+'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&ap-
+pid=YOUR_APP_KEY' 
+ 
+    if request.method == 'POST':  
+        form = CityForm(request.POST)  
+        form.save()  
+ 
+    form = CityForm() 
+    ... 
+ 
+By passing request.POST, we will be able to validate our form data. Now you should be able to type in the name of a city, click 
+add, and see it show up. I will add Mumbai as the next city. When we drop out of the if block, the form will be recreated so we 
+can add another city if we choose. 
+Conclusion 
+We now have a way to keep track of the weather for multiple cities in our app. We had to work with various parts of Django to 
+get this working: views, models, forms, and templates. We also had to use the Python library requests to get the actual weather 
+data[1][2][3]. 
+Acknowledgements 
+When I look at the precious knowledge, I have gained till date in my B. Tech journey, I realize how much time and effort spent 
+toward the completion of this work; not only by me but also by key individuals whom I feel very indebted to. I gratefully 
+acknowledge the support of my supervisor Prof. Dr. Pawan Singh. I would not imagine completing this work without all his 
+advices. I acknowledge the time he spent in our weekly meetings, even with his busy schedule and other commitments. I am 
+deeply indebted to him for his patience. He assisted in all aspects of this work from discussing new ideas to writing and 
+completing this project. I would like to thank Amity University, Lucknow Campus for providing me a wonderful platform for 
+this work. 
+References 
+[1]. S. Klamt and A. von Kamp, “An application programming interface for CellNetAnalyzer,” Biosystems., vol. 105, no. 2, pp. 162–168, 2011. 
+[2]. S. P. Ong, S. Cholia, A. Jain, et al, “The Materials Application Programming Interface (API): A simple, flexible and efficient API for mate-
+rials data based on representational State Transfer (REST) principles,” Comput. Mater. Sci., vol. 97, pp. 209–215, Feb 2015.

@@ -1,0 +1,10 @@
+28 
+ 
+12 
+Future suggestions 
+ 
+In the future, client could add more features into system by adding more plugins, for example 
+in the result prints. Another suggestion to write unit tests for the rest of robot framework 
+source code, that all possible fails would be easy to track on the early stage of development. 
+Also, continue write unit tests, during development phase; when creating new keyword, or 
+adding a new features to old data.

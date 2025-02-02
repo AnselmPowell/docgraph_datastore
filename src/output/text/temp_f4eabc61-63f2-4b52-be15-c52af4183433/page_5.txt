@@ -1,0 +1,45 @@
+from GitHub, Bitbucket, and GitLab to search for CI/CD adoption. They find
+only around 10% applications leverage CI/CD technologies, a small number
+of applications (291) adopt multiple CI/CD technologies, nearly half of the
+applications that adopt CI/CD technologies do not really use them, and CI/CD
+technologies are useful to improve project popularity. Their approach is similar
+to ours however, our analysis is done with a greater sample of 612557 repositories
+and we don’t limit ourselves to Android applications.
+Calefato et al. [Calefato et al.(2022)] study MLOps (that is, DevOps but
+focused on machine learning projects) practices in GitHub repositories, focus-
+ing on GitHub Actions and CML. Their preliminary results suggest that the
+adoption of MLOps workflows is rather limited. On the other hand, we have
+found that, indeed, many projects rely on CI/CD pipelines.
+Kumar et al. [Kumar et al.(2022)] assess the maturity of DevOps practices
+in the software industry. To this end, they analyze the HELENA2 dataset (an
+international survey aiming to collect data regarding the common use of software
+and systems in practice). They rank organizations by DevOps maturity. The
+authors conducted a user survey while we analyzed software repositories.
+3
+Data collection
+This section details the process we followed to collect the data for our analysis.
+Fig. 1 presents an overall view that we detail in the following paragraphs.
+3.1
+Repository Sampling
+The initial data collection phase involved assembling a representative sample
+of GitHub repositories, reflective of real-world projects.
+To achieve this, we
+excluded school projects and smaller repositories, employing a methodology
+inspired by prior research projects. That is, we focused on repositories attaining
+a certain level of popularity, ultimately choosing to collect only those with more
+than ten stars, accounting for a mere 5% of all GitHub repositories.
+The sampling process encompassed repositories from the beginning of 2012 to
+October 18, 2023. This timeframe was selected because the concept of DevOps
+gained prominence around that period.
+This assertion is supported by the
+emergence of the first comprehensive survey on the state of DevOps by Puppet
+Labs in the same year [by Perforce(2023)].
+Leveraging the GitHub REST API, we devised a methodology to identify
+the top one thousand repositories with the highest star count each week. That
+is, we queried GitHub and got one thousand repositories every week in the time
+range. From these, we excluded the ones with fewer than ten stars. This ap-
+proach yielded a comprehensive dataset, totaling 612,557 repositories, spanning
+the specified date range. The entire dataset of repositories is provided for ref-
+erence [Author(2023b)]. The code used to create this dataset is also available
+[Anonymous(2023a)].
+5

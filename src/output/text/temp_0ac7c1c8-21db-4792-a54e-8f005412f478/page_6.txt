@@ -1,0 +1,48 @@
+project and forms the basis of social coding. It allows anyone to develop and test novel features
+with existing code and offers the possibility of contributing novel features, bug fixes, and
+improvements to documentation back into the original upstream project (requested by open-
+ing an pull request) repository and becoming a contributor. Forking a repository and providing
+pull requests constitutes a simple method for collaboration inside loosely defined teams and
+over more formal organizational boundaries, with the original repository owner(s) retaining
+control over which external contributions are accepted. Once a pull request is opened for
+review and discussion, it usually results in additional insights and increased code quality [7].
+Many contributors can work on the same repository at the same time without running into
+edit conflicts. There are multiple strategies for this, and the most common way is to use Git
+branches to separate different lines of development. Active development is often performed on
+a development branch and stable versions, i.e., those used for a software release, are kept in a
+master or release branch (see for example https://github.com/OpenMS/OpenMS/branches). In
+practice, developers often work concurrently on one or several features or improvements. To
+keep commits of the different features logically separated, distinct branches are typically used.
+Later, when development is complete and verified to work (i.e., none of the tests fail, see Rule
+5), new features can be merged back into the development line or master branch. In addition,
+one can always pull the currently up-to-date master branch into a feature branch to adapt the
+feature to the changes in the master branch.
+When developing different features in parallel, there is a risk of applying incompatible
+changes in different branches/forks; these are said to become out of sync. Branches are just
+short-term departures from master. If you pull frequently, you will keep your copy of the
+repository up to date and you will have the opportunity to merge your changed code with oth-
+ers’ contributors, ideally without requiring you to manually address conflicts to bring the
+branches in sync again.
+Rule 4: Naming Branches and Commits: Tags and Semantic
+Versions
+Tags can be used to label versions during the development process. Version numbering should
+follow “semantic versioning” practice, with the format X.Y.Z., with X being the major, Y the
+minor, and Z the patch version of the release, including possible meta information, as described
+in http://semver.org/. This semantic versioning scheme provides users with coherent version
+numbers that document the extent (bug fixes or new functionality) and backwards compatibil-
+ity of new releases. Correct labeling allows developers and users to easily recover older versions,
+compare them, or simply use them to reproduce results described in publications (see Rule 8).
+This approach also help to define a coherent software publication strategy.
+Rule 5: Let GitHub Do Some Tasks for You: Integrate
+The first rule of software development is that the code needs to be ready to use as soon as possi-
+ble [10], to remain so during development, and that it should be well-documented and tested.
+In 2005, Martin Fowler defined the basic principles for continuous integration in software
+development [11]. These principles have become the main reference for best practices in con-
+tinuous integration, providing the framework needed to deploy software and, in some way,
+also data. In addition to mere error-free execution, dedicated code testing is aimed at detecting
+possible bugs introduced by new features or changes in the code or dependencies, as well as
+detecting wrong results, often known as logic errors, in which the source code produces a differ-
+ent result than what was intended. Continuous integration provides a way to automatically and
+PLOS Computational Biology | DOI:10.1371/journal.pcbi.1004947
+July 14, 2016
+6 / 11

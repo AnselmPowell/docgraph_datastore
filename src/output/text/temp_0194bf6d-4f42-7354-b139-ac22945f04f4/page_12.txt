@@ -1,0 +1,21 @@
+Figure 4: Percentage of CI/CD usage per language.
+demonstrates higher popularity in JavaScript projects, while GitHub Actions is
+more prominently employed in Python projects. This trend may be attributed
+to the synchronized growth of GitHub Actions and the increasing popularity
+of Python. Furthermore, GitHub Actions emerges as the preferred technology
+across most programming languages.
+This analysis suggests that programming languages experiencing heightened
+popularity in recent years, like Python and TypeScript, are more commonly
+associated with GitHub Actions. Conversely, languages such as JavaScript are
+more prevalent in projects utilizing Travis. This observation implies that newer
+projects tend to favor GitHub Actions, indicating a potential trend of migration
+from Travis to GitHub Actions, particularly in numerous JavaScript projects.
+5
+RQ2:
+Can a single CI/CD technology ade-
+quately meet the needs of a specific project?
+With this RQ we intend to understand the co-usage of several CI/CD technolo-
+gies among the projects.
+Fig. 6 displays the logarithmic distribution of the number of CI/CD technolo-
+gies employed across repositories with at least one such technology. A notable
+12

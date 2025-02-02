@@ -1,0 +1,78 @@
+experience in years with the studied company: 47% 0-4 years, 
+7% 5-9 years, 13% 10-14 years, 13% 15-19 years, 13% 20 
+years or more, and 7% did not provide an answer. Of the 
+survey respondents, 17% had 0-5 years of working experience 
+in total, 20% had 5-10 years, 17% 10-15 years, 30% 15-20 
+years, 10% more than 20 years, and 7% did not answer the 
+question. 
+Two of the four interviewees were senior software 
+developers, both with 3 years of working experience in the 
+company. The two others were business architect and tester, 
+both employed in the company for 18 years.  
+A. Current Development Environment
+The company had been utilizing agile methods for over a 
+decade. They had a company-wide development process based 
+on Scrum. They also utilized Kanban in some of their teams. 
+The company was interested in modern software development 
+approaches such as continuous deployment and DevOps and 
+they were in transition towards utilizing those. However, as the 
+company had thousands of employees in several countries and 
+they were running large customer projects, the transition was
+not straightforward.
+The current approach for software engineering was 
+described in the interviews as follows. Feature requests were
+gathered and handled by customer support. Development 
+organization got those as product backlog items and prioritized 
+them based on internal parameters. Development organisation 
+utilized cloud technologies such as IaaS, PaaS, and SaaS 
+(Infrastructure, Platform, and Software as a Service) for build, 
+test, deployment and application management. They used Git 
+for version control. They also did continuous integration but 
+did not run all test to all Git commits. Deployment was done 
+manually by a separate operations organization that was
+responsible for configuring and setting up production 
+environments. Operations department also took care of
+databases, backups of software builds and reversing bad builds 
+in case of errors in new software versions. Deployments to 
+production were typically done once in a month and larger 
+releases were due quarterly.  
+B. Challenges in Adopting Continuous Deployment and 
+DevOps
+The interviewed business architect saw the current siloed
+organizational structure as the main barrier to adopting 
+DevOps. The company had
+separate development and 
+operations organisations and they had been running into 
+difficulties and bureaucracy with utilizing competencies across 
+departments. The business architect gave an example that 
+developers know how to setup a system, but only operations 
+have the rights to perform the setup. 
+Interviewed developers mentioned that many of the 
+company's products were running on legacy systems which do 
+not necessarily support continuous development. Changing 
+platforms to such that support a continuous development 
+environment was not considered feasible as it would take a 
+significant amount of time and resources. The company
+however implements all new systems development on 
+platforms that support modern software development. They 
+host their new projects on a cloud computing platform and plan 
+to use it increasingly in the future. They also have changed 
+their version control to Git as the old system was not 
+compatible with the selected cloud platform. Moreover, they
+have improved their programming practices and standards to 
+better support continuous development as guided by the cloud 
+computing platform provider.
+We asked in the survey how often the respondents 
+experience certain development and deployment related 
+challenges in their projects (fig. 1). ‘infrequent releases’ and 
+‘time consuming to test’ were rather common as 36% and 28%
+of the respondents, respectively, reported experiencing those 
+either ‘Often’ or ‘Always’. 
+Figure 1 The proportion of respondents experiencing 
+certain challenges (y-axis) in software development at five-
+level scale of frequencies from never to always (N = 27).
+Figure 2 The percentage of respondents considering that
+continuous practice (y-axis) would help them to mitigate 
+certain problems in software development projects (N = 
+30). C* is an abbreviation of continuous. 
+62

@@ -1,0 +1,27 @@
+A. Chandiramani et al. 
+ 
+ 
+ISSN (Online) : 2583-1798 
+5 
+Journal of Management and Service Science 
+(JMSS) 
+A2Z Journals 
+ 
+ 
+ 
+2.To make our project let know about our newly created app by making changes to the 'django_blog/settings.py' 
+INSTALLED_APP section. 
+ 
+ 
+ 
+4.2. Changing in our Models 
+Django uses 'SQLite' as a default database, which is light can only be used for small projects, that is fine for this project. 'Object 
+Relational Mapper (ORM)' is used which makes it uncomplicated to work with the database. The true database code is not 
+written, since the database tables are created through the help of 'class' keyword in 'models.py'. 
+ 
+ Inside 'blog/models.py', we are creating a new model named 'Post'. This is a class will become a database table after that 
+which currently inherits from models. As in a standard blog, a certain 'Post' contains a title, which will be a field called Char 
+Field. It is a text-based column and accepts mandatory argument as 'max_length', which happens to be 50 in our case. Also, 
+there is another field named 'content', which is the Text Field, which contains the detail text of the 'Post' as in a standard blog. 
+The double underscore('str') method is defined, which overrides the field 'title' and returns the name of actual 'title' instead 
+of some objects.

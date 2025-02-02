@@ -1,0 +1,97 @@
+Software Testing in Open Innovation: An Exploratory Case
+Study of the Acceptance Test Harness for Jenkins
+Hussan Munir
+Lund University, Sweden
+hussan.munir@cs.lth.se
+Per Runeson
+Lund University, Sweden
+per.runeson@cs.lth.se
+ABSTRACT
+Open Innovation (OI) has gained signiﬁcant attention since
+the term was introduced in 2003. However, little is known
+whether general software testing processes are well suited for
+OI. An exploratory case study on the Acceptance Test Har-
+ness (ATH) is conducted to investigate OI testing activities
+of Jenkins. As far as the research methodology is concerned,
+we extracted the change log data of ATH followed by ﬁve
+interviews with key contributors in the development of ATH.
+The ﬁndings of the study are threefold. First, it highlights
+the key stakeholders involved in the development of ATH.
+Second, the study compares the ATH testing activities with
+ISO/IEC/IEEE testing process and presents a tailored pro-
+cess for software testing in OI. Finally, the study underlines
+some key challenges that software intensive organizations
+face while working with the testing in OI.
+Categories and Subject Descriptors
+D.2.5 [Testing and Debugging]: [testing tool]
+Keywords
+Testing, Open Innovation, OSS, Acceptance Test Harness,
+Jenkins
+1.
+INTRODUCTION
+Open Innovation (OI) is an emerging paradigm in Software
+Engineering (SE) which lacks empirical evidence for software-
+intensive organizations. In 2003, Chesbrough deﬁned OI
+as follows [6]: “A paradigm that assumes that ﬁrms can
+and should use external ideas as well as internal ideas, and
+internal and external path to markets, as they look to advance
+their technology”.
+One of the most well known ways for
+enabling OI in the software-intensive organizations is the use
+of Open Source Software (OSS). However, it is important to
+acknowledge that OI and OSS are not the same. In order for
+OSS to be used as an example of OI, ﬁrms’ OSS activities
+must be in line with their business model to create and
+capture value. OI is more transactional in nature, compared
+to OSS, where ﬁrms try to leverage external knowledge to
+accelerate their internal innovation process and in return,
+contribute back to the community by adopting a selective
+revealing strategy [8].
+Prior to this study, we conducted a systematic mapping
+study [11] on OI in SE to identify the research in the ﬁeld.
+The study shows that empirical studies on the role of testing
+in OI are scarce. Furthermore, software testing in OI entails
+a dual role: 1) to verify the functions and characteristics of
+open components and services, supplied by the community,
+and 2) to verify the functions and characteristics of services
+delivered to stakeholder higher up in the value chain (e.g.
+internal customers, software developers and testers). Further-
+more, it is still unknown whether or not the general practices
+of software testing are feasible to deal with the challenges of
+OI.
+This paves way for this exploratory case study with the
+main focus of software testing in OI. The object of study
+is Jenkins, an open source build server [2]. The main ob-
+jective of this study is to identify the top contributors to
+the Acceptance Test Harness (ATH) which is part of the
+Jenkins project (see Section 3.1) and explore the testing
+processes used to test Jenkins, using ATH. Furthermore, this
+paper presents the key challenges faced by one of the key
+contributors to Jenkins (see Section 3.3).
+2.
+RESEARCH DESIGN
+In order to explore software testing activities in OI, we
+launched a case study [13] of an OSS project, studied as an
+instance of OI. The focus of the study is on the initiation
+and development of the ATH to test Jenkins in an auto-
+mated fashion. We conducted the following steps: ﬁrst we
+mined the ATH source code repository and extracted the
+change log data, using CVSAnly, to characterize the top
+ATH contributors in the Jenkins community. Then, face
+to face semi-structured interviews were conducted with the
+key software developers of ATH (see Table 1). Thirdly, we
+analyzed the OI testing by relating the process to a general
+test process, and identiﬁed key challenges for OI testing.
+2.1
+Research Questions
+Our general interest in understanding OI aspects of soft-
+ware testing are detailed in three research questions:
+RQ1: Who are the top stakeholders involved in the devel-
+opment of ATH and are those stakeholders the same
+as the contributors of Jenkins?
+This is the author’s version of the work. It is posted here for your personal use. Not for
+redistribution. The deﬁnitive version was published in the following publication:
+ICSSP’15, August 24–26, 2015, Tallinn, Estonia
+c⃝2015 ACM. 978-1-4503-3346-7/15/08...
+http://dx.doi.org/10.1145/2785592.2795365
+187

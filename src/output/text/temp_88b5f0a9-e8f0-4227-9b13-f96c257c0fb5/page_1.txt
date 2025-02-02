@@ -1,0 +1,66 @@
+Journal of Management and Service Science, 2021,  
+ 
+Vol. 01, Iss. 02, S. No. 005, pp. 1-17 
+ 
+ISSN (Online): 2583-1798   
+ 
+  
+ 
+ISSN (Online) : 2583-1798 
+1 
+Journal of Management and Service Science 
+(JMSS) 
+A2Z Journals 
+ 
+ 
+Management of Django Web Development 
+in Python 
+Ashish Chandiramani1, Pawan Singh2 
+Department of Computer Science and Engineering, Amity University Uttar Pradesh, Lucknow Campus, India1, 2 
+ashishchandiramani24@gmail.com1, pawansingh51279@gmail.com2 
+ 
+How to cite this paper: A. Chandiramani and
+P. Singh (2021) Management of Django Web
+Development in Python. Journal of Manage-
+ment and Service Science, 1(2), 5, pp. 1-17. 
+https://doi.org/10.54060/JMSS/001.02.005 
+Received: 28/02/2021 
+Accepted: 12/03/2021 
+Published: 25/07/2021 
+Copyright © 2021 The Author(s).  
+This work is licensed under the Creative
+Commons Attribution International License
+(CC BY 4.0). 
+http://creativecommons.org/licenses/by/4.0
+/ 
+ 
+ 
+, Abstract 
+Application Development is not only limited to the business or promotional field, but it 
+also helps to provide the necessary services to the common people across the world by 
+creating an interaction between the companies and the customers through the web-
+site. It also creates a platform for the common people who have the ability to attract 
+the audience using their talent. We can take the example of various blog writers, online 
+councilors and fashion influencers who have a large audience because of their quality 
+content and knowledge in their field. We have generally seen how the electronic com-
+panies have marked their presence on the online platform via the website which ena-
+bles the users to contact the company easily. Online retail companies interact with the 
+users via website and provide the orders at the doorsteps of the people. There are var-
+ious news agencies which had created their website which keeps the users updated 
+with the latest national and international articles. The website development has helped 
+to create a link between the people and the companies, but behind all these facilities 
+there is a powerful language and commands that holds these computational activities 
+and data transfers which helps to create a good interaction between the users and the 
+website owners. Web developers are classified into Front-end and Back-end web devel-
+opers, Front-end developers help to create an interactive interface that can be easily 
+accessed by the users, whereas Back-end development deals with the main work that 
+is done behind the screens. We can say that it helps to power the website by managing 
+data transfer and other computational activities. In this project, the importance of 
+Django and back-end web development is explained. Using the tools and commands of 
+these languages we can make an interactive and user-friendly interface that can be 
+easily accessed by people. Back-end was earlier known for limited purposes but now 
+when it is explored thoroughly proved to be one of the best languages for website de-
+velopment, gaming, Artificial Intelligence, and highly advanced mobile applications. 
+Keywords 
+Web Development, Django, Python, Backend 
+Open Access

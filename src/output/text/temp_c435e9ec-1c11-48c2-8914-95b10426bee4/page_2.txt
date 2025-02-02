@@ -1,0 +1,48 @@
+1
+Introduction
+In 2022 the Information Technology (IT) market accounted for $9,325.69 bil-
+lion dollars worldwide [Company(2022)].
+Half of IT costs are related to the
+maintenance and upkeep of existing systems, and of those, 50% correspond to
+emergencies, unplanned work, and changes [Kim et al.(2016)]. This cost hap-
+pens partially because the IT and development team’s goals often conflict in
+most organizations. Instead of working for a common goal, most organizations’
+development teams are responsible for reacting to and answering rapid changes
+in markets and customer needs. In contrast, IT teams provide customers with
+a secure, reliable, and stable experience. This dynamic leads to technical debt,
+meaning decisions made over time lead to increasingly more complex problems
+and slower operations and thus impede the achievement of the organization’s
+goals [Kim et al.(2016)].
+In recent years, DevOps, that is, the integration of development and IT
+teams seamlessly, has emerged to enable organizations to respond to market de-
+mands with unparalleled agility hoping to address the aforementioned problems.
+In particular, methodologies and technologies for Continuous Integration, Con-
+tinuous Delivery, and Continuous Deployment, or simply CI/CD, have emerged
+as a means for organizations to achieve rapid and frequent delivery of changes.
+A CI/CD pipeline encompasses a series of essential steps involved in integrat-
+ing and deploying codebase changes [Kim et al.(2016)]. This process involves
+the regular integration of new code changes, which undergo automated build-
+ing and testing procedures. Subsequently, the validated code is deployed into
+production through the CD process [Kim et al.(2016)].
+Organization have the option to employ various technologies like GitHub
+Actions1, GitLab CI/CD2, Travis CI3, CircleCI4 or Jenkins5. The wide range
+of existing technologies makes it harder for researchers and developers to study
+and improve the CI/CD process. Indeed, there is no view of the usage of CI/CD
+technologies in a global sense, e.g., most used technologies, their evolution over
+time, which kinds of projects most rely on CI/CD, and so on.
+GitHub is a widely used version control and software hosting service. As of
+2023, more than 100 million developers used GitHub, and the platform hosted
+over 284 million public repositories [Kyle Daigle(2023)]. GitHub also provides
+an API to collect information from its software repositories. With this API,
+we can search repositories inside GitHub using parameters such as keywords in
+their name and README, size, number of stars, followers, and forks6. The
+insights collected using the API help understand various developer behaviors
+and have been used in several studies [Haque et al.(2020), Henkel et al.(2020),
+Golzadeh et al.(2022), Liu et al.(2023), Calefato et al.(2022)]. Indeed, in this
+1https://github.com/features/actions
+2https://docs.gitlab.com/ee/ci/
+3https://www.travis-ci.com/
+4https://www.jetbrains.com/teamcity
+5https://www.jenkins.io/
+6https://docs.github.com/en/rest/search
+2

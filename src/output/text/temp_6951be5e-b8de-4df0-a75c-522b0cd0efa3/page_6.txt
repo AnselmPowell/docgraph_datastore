@@ -1,0 +1,51 @@
+Future Internet 2022, 14, 63
+6 of 14
+(Agile), as in deployment and testing in operations (DevOps). However, despite DevOps
+decreasing the gap between Developers and Operators, in terms of standardization, the
+DevOps methodology lacks a simple approach or a roadmap to be followed for its imple-
+mentation in an organization [41], leaving it up to companies to deﬁne their standards
+and metrics. This can present as a complicating factor, very dependent on the maturity
+level of organizations and work teams, which will have to deﬁne their speciﬁc integration
+processes in a DevOps approach.
+3. Methodology
+This study adopts a qualitative methodology to explore the beneﬁts of the combined
+adoption of DevOps and Agile. This type of methodology is used in the context of social
+sciences and engineering and, according to Merriam and Tisdell [42], is concerned with a
+level of reality that cannot be quantiﬁed, exploring meanings, aspirations, beliefs, values,
+and attitudes that correspond to a deeper space of relationships, processes, and phenomena,
+and cannot be reduced for operationalization of variables. Dyba et al. [43] recognize that the
+software industry presents lines of research that are not only limited to exploring technical
+software engineering issues, but also need to look at the challenges of the intersection
+between technical and non-technical aspects. In this sense, adopting a purely quantitative
+approach is insufﬁcient. Moreover, phenomena addressed in the ﬁeld of project develop-
+ment in a DevOps and Agile paradigm are complex and unique. Therefore, the qualitative
+approach adopted in this study allows for exploring and understanding the relationships
+and activities performed by organizations in their software development activity.
+In the scope of this study, twelve case studies were incorporated that report the
+simultaneous inclusion of DevOps and Agile methodologies in their software development
+teams. These cases correspond to reports and press releases from commercial vendors of
+reference in this area. The data come from secondary sources and the authors have not
+made any changes to the press releases that represent the view of each manufacturer. No
+summarization of the press releases has been made. It cannot be guaranteed that there
+is no risk of bias since the identiﬁed beneﬁts come from press releases from commercial
+companies in the area and that have commercial goals in the market. However, to minimize
+this risk, external and internal validity mechanisms were used. To ensure external validity,
+multiple case studies were used of companies in different geographic areas, and to ensure
+internal validity, the same identiﬁer was used to associate similar beneﬁts between the
+case studies.
+Table 2 presents brief descriptions of the proﬁles of the case studies. In general, it can
+be concluded that the area of activity of the organizations is similar through the offer of IT
+products and services based on cloud architecture. We also highlight the offer of consulting
+services in the ﬁeld of web and mobile development, and the offer of complementary
+services in the ﬁeld of artiﬁcial intelligence, big data, and cybersecurity.
+Thematic analysis is an interpretive data analysis method widely used in the social
+sciences and engineering and was adopted in the context of this study to identify common
+beneﬁts in the combined adoption of DevOps and Agile. Flexibility is, according to Braun
+and Clarke [44], one of the beneﬁts of thematic analysis. Through its theoretical freedom,
+the thematic analysis provides a ﬂexible and useful research tool that can potentially
+provide a rich and detailed set of information about the data. Figure 1 shows the process
+of conducting data. The step begins with the coding process in which one coded the
+advantages present in each case study report. After that, an iterative process follows in
+which common themes of the advantages among the case studies are identiﬁed. Finally, the
+last step consists of accounting for the beneﬁts identiﬁed in the case studies. This approach
+allows for a ranking of the top beneﬁts.

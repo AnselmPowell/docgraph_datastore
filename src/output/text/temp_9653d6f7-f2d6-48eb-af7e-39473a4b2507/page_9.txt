@@ -1,0 +1,48 @@
+GitHub, ensuring the cited code remains up to date. Once the DOI has been assigned, it can be
+added to literature information resources such as Europe PubMed Central [16].
+As already mentioned in the introduction, reproducibility of scientific claims should be
+enabled by providing the software, the datasets, and the process leading to interpretable results
+that were used in a particular study. As much as possible, publications should highlight that
+the code is freely available in, for example, GitHub, together with any other relevant outputs
+that may have been deposited. In our experience, this openness substantially increases the
+chances of getting the paper accepted for publication. Journal editors and reviewers receive the
+opportunity to reproduce findings during the manuscript review process, increasing confi-
+dence in the reported results. In addition, once the paper is published, your work can be repro-
+duced by other members of the scientific community, which can increase citations and foster
+opportunities for further discussion and collaboration.
+The availability of a public repository containing the source code does not make the soft-
+ware open-source per se. You should use an Open Source Initiative (OSI)-approved license
+that defines how the software can be freely used, modified, and shared. Common licenses such
+as those listed on http://choosealicense.com are preferred. Note that the LICENSE file in the
+repository should be a plain-text file containing the contents of an OSI-approved license, not
+just a reference to the license.
+Rule 9: Promote and Discuss Your Projects: Web Page and More
+The traditional way to promote scientific software is by publishing an associated paper in the
+peer-reviewed scientific literature, though, as pointed out by Buckheir and Donoho, this is just
+advertising [17]. Additional steps can boost the visibility of an organization. For example,
+GitHub Pages are simple websites freely hosted by GitHub. Users can create and host blog web-
+sites, help pages, manuals, tutorials, and websites related to specific projects. Pages comes with
+a powerful static site generator called Jekyll that can be integrated with other frameworks such
+as Bootstrap or platforms such as Disqus to support and moderate comments.
+In addition, several real-time communication platforms have been integrated with GitHub
+such as Gitter and Slack. Real-time communication systems allow the user community, devel-
+opers, and project collaborators to exchange ideas and issues and to report bugs or get support.
+For example, Gitter is a GitHub-based chat tool that enables developers and users to share
+aspects of their work. Gitter inherits the network of social groups operating around GitHub
+repositories, organizations, and issues. It relies on identities within GitHub creating Internet
+Relay Chat (IRC)-like chat rooms for public and private projects. Within a Gitter chat, mem-
+bers can reference issues, comments, and pull requests. GitHub also supports wikis (which are
+version-controlled repositories themselves) for each repository, in which users can create and
+edit pages for documentation, examples, or general support.
+A different service is Gist, which represents a unique way to share code snippets, single files,
+parts of files, or full applications. Gists can be generated in two different ways: public gists that
+can be browsed and searched through Discover and secret gists that are hidden from search
+engines. One of the main features of Gist is the possibility of embedding code snippets in other
+applications, enabling users to embed gists in any text field that supports JavaScript.
+Rule 10: Use GitHub to Be Social: Follow and Watch
+In the same way researchers are following developments in their field, scientific programmers
+could follow publicly available projects that might benefit their research. GitHub enables this
+functionality by following other GitHub users (see also Rule 2) or watching the activity of
+PLOS Computational Biology | DOI:10.1371/journal.pcbi.1004947
+July 14, 2016
+9 / 11

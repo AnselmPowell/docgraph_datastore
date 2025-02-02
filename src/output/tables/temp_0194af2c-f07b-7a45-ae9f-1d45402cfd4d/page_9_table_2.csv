@@ -1,0 +1,14 @@
+Variable TValue Significance
+"(Intercept) 17.4 p<.001***
+brCnt 8.8 p<.001***
+log(forks count+0.5) -9.2 p<.001***
+log(watchers count+0.5) -3.5 p<.001***
+age 6.6 p<.001***
+log(projectsize) 43.7 p<.001***
+developer 9.4 p<.001***
+PRs 4.8 p<.001***
+log(PRcomments) 4.7 p<.001***
+log(issuecomments) 8.3 p<.001***"
+"Signif.codes:0‘***’0.001‘**’0.01‘*’0.05‘.’0.1‘’1
+F-statistic=542.9,p-value:<0.001.R2 =0.625
+Theresponsevariableislog(totalcommits)."

@@ -1,0 +1,81 @@
+Future Internet 2022, 14, 63
+7 of 14
+Table 2. Proﬁles of the case studies.
+ID
+Country
+Description
+CS1
+India
+A company that operates in the IT outsourcing services market in building
+technological solutions in areas such as web apps, mobile apps, cloud
+strategy, analytics and business intelligence, testing, quality assurance
+services, and Agile project management. Their report looks to different
+ways to enable DevOps in Agile environments.
+CS2
+USA
+Information technology company and advanced training for IT
+professionals in the ﬁelds of programming and technological development.
+Their report explores the relevance of Agile principles for deployment
+activities.
+CS3
+Canada
+A global company that offers consulting services to help companies adjust
+their development teams by integrating new practices and technologies.
+Their report explores how Agile practices should be updated considering
+the needs of operations teams in organizations.
+CS4
+USA
+Cloud services provider offering technology infrastructures based on
+public cloud, private cloud, hybrid cloud, and multi-cloud. Their report
+explores the difference and similarities between both paradigms.
+CS5
+Australia
+Australian software company that develops products for software
+developers, project managers, and other software development teams.
+Their press release presents how automation processes can be
+implemented using a combination of both paradigms.
+CS6
+USA
+Global business and technology consulting ﬁrm dedicated to helping
+organizations leverage emerging technologies and the latest business
+management thinking to achieve competitive advantage and mission
+success. Provides consulting and training services, primarily targeted at
+executives. Their article explores the differences between the two
+paradigms and suggests points of convergence between them.
+CS7
+USA
+Company specialized in the dissemination of technological information in
+the ﬁeld of information and communication technologies. Their press
+release looks to important aspects observed while combining DevOps and
+Agile.
+CS8
+USA
+Multinational company in information technologies that develops
+automation solutions and advanced knowledge in areas such as
+automation, enterprise DevOps, data-driven business, and adaptive
+cybersecurity. Their article explores the role that Agile practices can play in
+DevOps.
+CS9
+Switzerland
+Company that operates mainly in the European market in providing
+captivating scalable cloud-based solutions. Their article looks at the
+isolated beneﬁts of each paradigm and tries to predict the beneﬁts of their
+combined adoption.
+CS10
+India
+Company that develops technological solutions for the education ﬁeld and
+relies on the application of the Agile scalability paradigm, especially the
+SAFe model. Their article explores the change-driven management
+approach and looks at how DevOps and SCRUM address this challenge.
+CS11
+Germany
+IT company that operates in the global market implementing cloud
+solutions, DevOps, software testing, quality assurance, artiﬁcial
+intelligence, and big data. Their press release looks at the problems in
+software engineering that the joint adoption of both paradigms can solve.
+CS12
+UK
+A consulting company that aims to optimize work processes in
+organizations using cloud solutions, slack, and Trello services. Their press
+release looks at the role of the cloud and Agile methodologies in
+developing the DevOps paradigm.

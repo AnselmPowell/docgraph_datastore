@@ -1,0 +1,53 @@
+Future Internet 2022, 14, 63
+4 of 14
+•
+Automation: a high level of automation to achieve continuous delivery running each
+code change through automated tests;
+•
+Lean: the application of lean principles to increase efﬁciency and reduce complexity;
+•
+Measurement: keeping key performance indicators for measuring performance and
+identifying where improvements can be achieved;
+•
+Sharing: knowledge and best practice should be shared in the organization and across
+organizational boundaries.
+Security issues concerning DevOps led to the spread of another term: DevSecOps. It
+adds “Security” to “Development” and “Operations”, which were already part of the De-
+vOps term. According to Rajapakse et al. [14], security is often treated as a non-functional
+requirement, handled at a later stage of the software development life cycle. Under DevSec-
+Ops, security should be built into every part of the DevOps life cycle. The purpose of the
+DevSecOps philosophy is to align the speed of code delivery with building secure code,
+merged into one streamlined process.
+The application of DevOps still must deal with some problems and concerns that
+can limit its use (e.g., resistance to change, organizational vision, legacy systems) [26].
+Misuse of the term, lack of clear guidelines and, as already mentioned, the lack of a
+clear deﬁnition creates some ambiguity about how to use DevOps principles. Those
+principles presuppose that, before DevOps, development teams and operations teams were
+working independently with almost no knowledge about each other’s work. This lack of
+knowledge across teams is not, in general, as deep as DevOps assume. The whole software
+development process is improved with better collaboration between teams, as DevOps
+advocates, but it does not mean that DevOps teams did not previously cooperate. Another
+concern around DevOps is that its adoption rate is still low.
+There is a close relation between DevOps and Agile methods in software development.
+According to Leite et al. [13], DevOps is an evolution of the Agile movement since software
+development under Agile favors small release iterations with customer reviews.
+2.2. Similarities and Differences between DevOps and Agile
+In the context of Software Engineering, as discussed in this paper, DevOps can be
+understood as a behavioral evolution of Agile development [27], which was gradually
+conceived through practical experiences of implementation in software development.
+However, it is important to point out that the Agile method has its focus directed speciﬁcally
+to software development [28], while DevOps aims to involve the software development area
+in the implementation and operation of the software developed or still under development,
+which shows us that DevOps processes are being implemented within the Agile processes.
+Currently, in the professional community of Information and Communication Tech-
+nologies (ICT) there is a growing consensus, in practice, that DevOps can be understood
+as “DevOps = Agile + Lean + IT service management (ITSM)” [29]. In its method and
+processes, DevOps adopts characteristics of frameworks related to the technical area of
+Agile software development together with ICT management processes. Complementarily,
+other relevant methodologies (e.g., Extreme Programming, Dynamic Systems Development
+Method, Kanban, SCRUM) have approaches intrinsically related to the Agile philoso-
+phy [30–33]. SCRUM is very well-known and intensely used in the Agile method, and
+is generally enhanced by the Kanban tool, for managing the workﬂow of software devel-
+opment, but which also ﬁts very well into the DevOps development process itself [34].
+Table 1 presents the problems or gaps in the Agile method that are solved by adopting the
+DevOps method.

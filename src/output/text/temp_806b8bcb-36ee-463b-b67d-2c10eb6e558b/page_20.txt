@@ -1,0 +1,54 @@
+2012
+2013
+2014
+2015
+2016
+2017
+2018
+2019
+2020
+2021
+2022
+2023
+Year of repository creation
+0
+100
+200
+300
+400
+500
+600
+Mean time to first technology (days)
+91
+120
+180
+143
+141
+150
+181
+189
+245
+300
+407
+586
+Figure 13: Mean time in days to first CI/CD technology detection by repository
+creation year.
+Thus, the research community has quite an interesting path to explore.
+How often do projects change CI/CD technologies?
+As Fig. 16 shows, the percentage of snapshots with CI/CD changes compared to
+the previous snapshot grows steadily from 2013 (2.3%) to 2019 (6.9%) and peaks
+in 2020 (12.2%) and 2021 (12.6%), coinciding with GitHub Actions’s explosive
+growth phase. Since 2021, this number has remained stable at almost 8%.
+This is a very significant result since it shows that every year, between 2.3%
+(in 2013) and 12.6% (in 2021) of all snapshots include some kind of change
+in the CI/CD technologies used. This represents a very significant amount of
+technologies’ shift, with all the known issues with that. Moreover, it is important
+to notice that this constant over time and there is no reason to think this
+may change in a near future. This means the research community can give a
+significant contribution to aid all these teams when they migrate and evolve
+their systems.
+If we limit this analysis to a subset of active repositories from 2012 to 2023
+(Fig. 17), we find similar trends but higher change percentages over time. For
+this analysis, we discarded all snapshots for each repository before the first,
+where we detected CI/CD technologies. This was done because we were not
+20

@@ -1,0 +1,53 @@
+Future Internet 2022, 14, 63
+11 of 14
+Finally, it is recognized that in recent years there has been a growing adoption of the
+term “DevOps culture”, as a counter position to DevOps implementations based only on
+tools. In DevOps culture, it is advocated that software development and infrastructure
+teams work together towards the same goal [56,57]. As Clavier and Kaminski [58] argue,
+DevOps not only optimizes development processes but changes the way employees think
+about their products and interact with customers. The combined Agile and DevOps
+approach allows the leveraging of these beneﬁts by enhancing empathy among team
+members and unites sectors that previously worked independently and without personal
+connection. Furthermore, as Venugopal [59] acknowledges, when there is trust between
+teams, then it also increases the freedom that professionals have to experiment and innovate,
+without the problems of incompatibility and miscommunication as there would be with
+separate teams.
+6. Conclusions
+This study demonstrates that the Agile and DevOps paradigms are not incompatible
+but can bring beneﬁts to organizations when properly aligned. While Agile brought
+about a fast delivery model aligned with customer expectations, DevOps optimized this
+system. In this sense, an alternative that usually gives great results is the adoption of both
+methodologies. They not only complement each other but also help companies to face
+changes in a team.
+Changing the strategy and methodology of a team can be a delicate process full of
+obstacles. Therefore, organizations must address this challenge in a cross-cutting way
+within the organization to avoid isolated silos that do not contribute to collaborative work.
+Agile creates a space for more agile work with partial deliveries, while DevOps creates an
+environment conducive to managing these processes, with effective communication.
+This study offers both theoretical and practical relevant contributions. In the theoretical
+dimension, this study has enabled the identiﬁcation of a set of beneﬁts of the combined
+adoption of both paradigms through the adoption of multiple case studies of software
+companies in the international market. The study identiﬁes a total of 12 beneﬁts and allows
+us to explore the relative relevance of each of them. From a practical perspective, the
+beneﬁts identiﬁed are relevant to companies that, having adopted Agile and DevOps alone,
+have not yet taken steps towards the combined adoption of both models. The ﬁndings of
+the study made it evident that the two models are not incompatible, but when combined
+they can amplify their impacts on organizations.
+Limitations and Future Research Directions
+This study presents some limitations. Firstly, the case studies included in this study
+come from secondary sources, which does not allow us to deepen the knowledge on the
+themes with the use of interviews that may evidence the application of both paradigms.
+Furthermore, the case studies come from companies with commercial purposes, which
+may not give a totally unbiased view of the beneﬁts to the organizations or represent very
+speciﬁc groups of the population. Nevertheless, this study adopted external and internal
+validation mechanisms to reduce this risk of bias. As future work it is recommended that
+the business view be complemented with a scientiﬁc view of the beneﬁts of combining
+DevOps and Agile and, to this end, a systematic review of the literature in the ﬁeld can be
+conducted. Moreover, the qualitative approach used does not allow us to systematically
+identify all the advantages and make a rigorous quantiﬁcation of these beneﬁts. As future
+work, a quantitative study based on a large dataset is suggested to identify the advantages
+of the combined adoption of both paradigms considering also different sectors of activity
+of the organizations. It would also be relevant to consider the degree of maturity in the
+implementation of Agile and DevOps in these organizations and, thus, explore its relevance
+in the beneﬁts found, since it is expected that some of the beneﬁts may be more easily
+achieved by organizations with lower levels of maturity in these processes.

@@ -1,0 +1,42 @@
+Go
+Shell
+C++
+C
+Java
+Jupyter Notebook
+HTML
+Python
+C#
+Rust
+TypeScript
+JavaScript
+Ruby
+Kotlin
+PHP
+Swift
+language
+0.0
+0.5
+1.0
+1.5
+average #tools
+Figure 11: Average number of tools used per programming language repository.
+the percentage then increased until 2015 to more than 37%, and has been since
+then in a gentle descending/stable curve. The drop in the last year is justified
+because many projects start without CI/CD, and only later, it is introduced.
+As seen in Fig. 13, CI/CD technologies are being integrated into the devel-
+opment workflow sooner as time goes on. CI/CD’s increasing popularity is due
+to older, possibly more complex, projects’ adoption and new, perhaps simpler,
+projects that see value in continuous practices. The sharp decreases in 2022 and
+2023 come from all analyzed repositories having at least one CI/CD technology
+in 2023.
+Usage of different technologies
+A repository may use more than one technology at a time, as seen in Fig. 14. The
+technologies used in a repository in a given year are the union of the technologies
+of the snapshots retrieved in that year. In cases where a repository does not
+have any snapshots in a given year but has activity following that year, the
+technologies used for that year are the ones in the most recent snapshot up to
+that point in time, i.e., if a repository has snapshots in 2016 and 2018, but
+not in 2017, its used technologies in 2017 are the ones from the last snapshot
+from 2016. If a repository has no activity following a given year, its technology
+18

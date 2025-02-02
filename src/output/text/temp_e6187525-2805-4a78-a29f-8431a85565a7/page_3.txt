@@ -1,0 +1,187 @@
+(2) Benefits of The Microservices Architecture 
+The benefits of microservices for large cloud-based 
+applications [19] over alternative styles, such as monolithic 
+architecture, include the following:  
+• Continuous 
+software 
+evolution. 
+Introducing 
+new 
+functionality can be achieved by adding new services, 
+and bugs can be fixed at runtime by replacing existing 
+services. 
+Only 
+one 
+service 
+(and 
+possibly 
+its 
+dependencies) needs to be rebuilt and redeployed. This 
+can be done without stopping the rest of the application, 
+which is of particular importance for cloud-based 
+applications.  
+• Seamless technology integration. It is easy to combine 
+many different programming languages, varieties of 
+database, hardware and software environments and other 
+computing technology depending on what fits best, all 
+running on a heterogeneous cluster of different platforms.  
+• Optimal runtime performance. This can easily be 
+achieved in the microservices architecture by running 
+multiple copies of a service when there is high demand 
+and balancing the system load by deploying the right 
+number of these copies to the correct servers, and moving 
+them between servers. 
+• Horizontal scalability. The system can be easily scale out 
+by running multiple copies of individual services on new 
+servers in response to demand rather than running 
+multiple copies of the whole system.  
+• Reliability through fault tolerance. Fault tolerance can be 
+achieved by running multiple copies of some services for 
+redundancy and multiple implementations of the same 
+service for diversity. Recovery from failure simply 
+requires a new copy of the service. 
+(3) Challenging Problems  
+Adopting the microservices architecture is difficult, 
+however, because of the following problems.  
+• Complexity in Deployment, due to the large number of 
+services that must be deployed to the cluster and started 
+quickly. This deployment must be done dynamically to 
+achieve the advantages of load balance and elastic 
+scalability. As Daya et al. pointed out [ 20 ], 
+“microservices cause an explosion of moving parts. It is 
+not a good idea to attempt to implement microservices 
+without serious deployment and monitoring automation”. 
+• The Need to Monitor Execution, to diagnose hardware 
+and software failures quickly and to replace failed parts 
+with new instances, thereby conferring the benefits of 
+fault tolerance and reliability. Workload must also be 
+monitored to achieve load balance and elastic scalability. 
+Monitoring services is even more difficult when there is a 
+large number of them, due to the fine granularity, all 
+running in parallel in a distributed environment. 
+• Network Latency, which is a greater problem when 
+services communicate with each other a lot over the 
+network.  
+• Cognitive Load of the extra complexity brought by the 
+microservices architecture including message formats, 
+load balance and fault tolerance. This is shifted to the 
+monitoring tools. The usual problems of complex parallel 
+and distributed software remain. One approach to 
+developing the microservices architecture is to refactor a 
+monolithic architecture in a gradual way. This approach 
+has worked for eBay, Twitter, Google, and Amazon [13].  
+These challenges have led to the rise of technologies and 
+methodologies that support microservices such as container 
+technology and DevOps, both of which we review in the next 
+two subsections.  
+B. Container Technology 
+Container technology [21, 22] enables a piece of runnable 
+software code to be wrapped, together with any resources 
+needed, into a package, called a container image. This is 
+then deployed onto a machine, which generates a container 
+instance running as an isolated process in user space. Each 
+machine can run several containers, all sharing the same OS 
+kernel. Each container typically takes up far less space than a 
+virtual machine would (e.g. tens of MBs vs several GBs). It 
+can therefore be sent through a network more quickly and 
+started almost instantly as a process on an operating system, 
+whereas it takes far longer, often a few minutes, to reboot a 
+virtual machine. Containers also provide separation between 
+users, thereby achieving the same security and privacy 
+advantages that virtual machines have. Figure 1 shows the 
+differences 
+between 
+container 
+and 
+virtual 
+machine 
+techniques [23].  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+(a) Container 
+(b) Virtual Machine 
+Figure 1. Comparison of Container with Virtual Machine [23] 
+Since a container comes with all the resources it needs to 
+run, it can be deployed on any machine that runs the 
+operating system it targets. This is described as “package 
+once and deploy anywhere” [24] but that differs from “write 
+once and run anywhere” motto of Java because a container 
+can only run on one operating system. The code must be 
+packaged once for each operating system. Further flexibility 
+is given by the fact that containers can be run on virtual 
+machines which can then be on different platforms, as shown 
+in Figure 2.  
+Figure 2. Containers and Virtual Machines Used Together [23] 
+Launched in 2013, Docker is the de facto industry 
+standard for container technology, with 40% of enterprises 
+ 
+App A  
+App B  
+App C 
+ 
+Bins/Libs 
+Bins/Libs 
+Bins/Libs 
+App D 
+ 
+Docker 
+Docker 
+Bins/Libs 
+ 
+Guest OS 
+Guest OS 
+Guset OS 
+ 
+Hypervisor OS 
+ 
+Infrastructure 
+ 
+ 
+ 
+ 
+CONTAINER 
+ 
+App A  
+App B  
+App C 
+ 
+Bins/Libs 
+Bins/Libs 
+Bins/Libs 
+ 
+ 
+Docker 
+ 
+ 
+Host OS 
+ 
+ 
+Infrastructure 
+ 
+ 
+VM 
+ 
+App A  
+App B  
+App C 
+ 
+Bins/Libs 
+Bins/Libs 
+Bins/Libs 
+ 
+Guest OS 
+Guest OS 
+Guest OS 
+ 
+ 
+Hypervisor OS 
+ 
+ 
+Infrastructure

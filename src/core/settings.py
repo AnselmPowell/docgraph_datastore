@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'api',
-    'document_analysis',
+    # 'document_analysis',
     # 'vector_store',
     # 'pgvector',
      'research_assistant',

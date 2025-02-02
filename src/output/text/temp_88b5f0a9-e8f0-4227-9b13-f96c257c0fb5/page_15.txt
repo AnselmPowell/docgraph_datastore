@@ -1,0 +1,43 @@
+A. Chandiramani et al. 
+ 
+ 
+ISSN (Online) : 2583-1798 
+15 
+Journal of Management and Service Science 
+(JMSS) 
+A2Z Journals 
+ 
+the_weather/weather/views.py 
+... 
+context = {'weather_data' : weather_data} 
+... 
+ 
+Next, inside of the template, we want to loop over this list & generate the HTML for every city in the list. For this, we can put 
+up a for loop around the HTML that will generate a single box for that city. After updating the HTML file[9] we can see the data 
+for all the cities we have in the database. 
+5.5. Creating the Form 
+The last thing we need to do is allow our user to add a city straight in the form. For that, we need to generate a form. We could 
+generate the form directly, but since our form will have exact same field as our model, we can use our ModelForm. Create a 
+new file called forms.py. 
+the_weather/weather/forms.py 
+from django.forms import ModelForm, TextInput 
+from .models import City 
+ 
+class CityForm(ModelForm): 
+    class Meta: 
+        model = City 
+        fields = ['name'] 
+        widgets = { 
+            'name': TextInput(attrs={'class' : 'input', 'placeholder' : 'City Name'}), 
+        } 
+To view this form, we need to create it in the view and pass it to our template. To do that, let us update the index video that 
+will create the form. We will replace the old city variable the same time because we no longer need it. We can also need to 
+update context so the form gets passed to the template. 
+the_weather/weather/views.py 
+def index(request): 
+    ... 
+    form = CityForm() 
+ 
+    weather_data = [] 
+    ... 
+    context = {'weather_data' : weather_data, 'form' : form}

@@ -1,0 +1,53 @@
+(ESEM ’20). Association for Computing Machinery, New York, NY, USA,
+Article 7, 11 pages.
+https://doi.org/10.1145/3382494.3410693
+[Henkel et al.(2020)] Jordan Henkel, Christian Bird, Shuvendu K. Lahiri, and
+Thomas Reps. 2020. Learning from, Understanding, and Supporting De-
+vOps Artifacts for Docker. In 2020 IEEE/ACM 42nd International Confer-
+ence on Software Engineering (ICSE). Association for Computing Machin-
+ery, New York, NY, United States, 38–49.
+https://doi.org/10.1145/
+3377811.3380406
+[IEEE(2023)] IEEE.
+2023.
+https://spectrum.ieee.org/
+the-top-programming-languages-2023 accessed: 17/11/2023.
+[Kim et al.(2016)] G. Kim, J. Humble, P. Debois, and J. Willis. 2016. The De-
+vOps Handbook: How to Create World-Class Agility, Reliability, and Secu-
+rity in Technology Organizations. IT Revolution Press, Portland, Oregon,
+United States.
+https://books.google.pt/books?id=ui8hDgAAQBAJ
+[Kumar et al.(2022)] Ankur Kumar, Mohammad Nadeem, and Mohammad
+Shameem. 2022. Assessing the Maturity of DevOps Practices in Software
+Industry: An Empirical Study of HELENA2 Dataset. In Proceedings of the
+26th International Conference on Evaluation and Assessment in Software
+Engineering (Gothenburg, Sweden) (EASE ’22). Association for Comput-
+ing Machinery, New York, NY, USA, 428–432.
+https://doi.org/10.
+1145/3530019.3531335
+[Kyle Daigle(2023)] GitHub Staff Kyle Daigle. 2023.
+Octoverse: The State
+of Open Source and rise of AI in 2023.
+https://github.blog/
+2023-11-08-the-state-of-open-source-and-ai/
+[Liu et al.(2023)] Pei Liu, Xiaoyu Sun, Yanjie Zhao, Yonghui Liu, John Grundy,
+and Li Li. 2023. A First Look at CI/CD Adoptions in Open-Source Android
+Apps. In Proceedings of the 37th IEEE/ACM International Conference on
+Automated Software Engineering (Rochester, MI, USA) (ASE ’22). Associ-
+ation for Computing Machinery, New York, NY, USA, Article 201, 6 pages.
+https://doi.org/10.1145/3551349.3561341
+[Rostami Mazrae et al.(2023)] Pooya Rostami Mazrae,
+Tom Mens,
+Mehdi
+Golzadeh, and Alexandre Decan. 2023. On the usage, co-usage and migra-
+tion of CI/CD tools: A qualitative analysis. Empirical Software Engineer-
+ing 28, 2 (2023), 52.
+https://doi.org/10.1007/s10664-022-10285-5
+[Study(2023)] Case Study. 2023. Cloud native computing foundation.
+https:
+//www.cncf.io/
+[Wu et al.(2020)] Yiwen Wu, Yang Zhang, Tao Wang, and Huaimin Wang.
+2020. An Empirical Study of Build Failures in the Docker Context. In Pro-
+ceedings of the 17th International Conference on Mining Software Reposi-
+tories (Seoul, Republic of Korea) (MSR ’20). Association for Computing
+27

@@ -1,0 +1,45 @@
+It is also possible for repository administrators to create issue and pull request templates
+(https://help.github.com/articles/helping-people-contribute-to-your-project/) (see Rule 3) to
+customize and standardize the information to be included when contributors open issues.
+GitHub issues are thus dynamic, and they pose a low entry barrier for users to report bugs and
+request features. A well-organized and tagged issue tracker helps new contributors and users to
+understand a project more deeply. As an example, one issue in the OpenMS repository
+(https://github.com/OpenMS/OpenMS/issues/1095) allowed the interaction of eight develop-
+ers and attracted more than one hundred comments. Contributors can add figures, comments,
+and references to other issues and pull requests in the repository, as well as direct references to
+code.
+As another illustration of issues and their generic and wide application, we (https://github.
+com/ypriverol/github-paper/issues) and others (https://github.com/ropensci/RNeXML/issues/
+121) used GitHub issues to discuss and comment on changes in manuscripts and address
+reviewers’ comments.
+Rule 8: Make Your Code Easily Citable, and Cite Source Code!
+It is a good research practice to ensure permanent and unambiguous identifiers for citable
+items like articles, datasets, or biological entities such as proteins, genes, and metabolites (see
+also Box 3). Digital Object Identifiers (DOIs) have been used for many years as unique and
+unambiguous identifiers for enabling the citation of scientific publications. More recently, a
+trend has started to mint DOIs for other types of scientific products such as datasets [12] and
+training materials (for example [13]). A key motivation for this is to build a framework for giv-
+ing scientists broader credit for their work [14,15] while simultaneously supporting clearer,
+more persistent ways to cite and track it. Helping to drive this change are funding agencies
+such as the National Institutes of Health (NIH) and National Science Foundation (NSF) in the
+United States and Research Councils in the United Kingdom, which are increasingly recogniz-
+ing the importance of research products such as publicly available datasets and software.
+A common issue with software is that it normally evolves at a different speed than text pub-
+lished in the scientific literature. In fact, it is common to find software having novel features
+and functionality that were not described in the original publication. GitHub now integrates
+with archiving services such as Zenodo and Figshare, enabling DOIs to be assigned to code
+repositories. The procedure is relatively straightforward (see https://guides.github.com/
+activities/citable-code/), requiring only the provision of metadata and a series of administrative
+steps. By default, Zenodo creates an archive of a repository each time a new release is created in
+Box 3
+Every repository should ideally have the following three files. The first and arguably most
+important file in a repository is a LICENCE file (see also Rule 8) that clearly defines the
+permissions and restrictions attached to the code and other files in your repository. The
+second important file is a README file, which provides, for example, a short description
+of the project, a quick start guide, information on how to contribute, a TODO list, and
+links to additional documentation. Such README files are typically written in mark-
+down, a simple markup language that is automatically rendered on GitHub. Finally, a
+CITATION file to the repository informs your users how to cite and credit your project.
+PLOS Computational Biology | DOI:10.1371/journal.pcbi.1004947
+July 14, 2016
+8 / 11

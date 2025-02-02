@@ -1,0 +1,50 @@
+A. Chandiramani et al.  
+ 
+ 
+ISSN (Online) : 2583-1798 
+10 
+Journal of Management and Service Science 
+(JMSS) 
+A2Z Journals 
+ 
+    'django.contrib.auth', 
+    'django.contrib.contenttypes', 
+    'django.contrib.sessions', 
+    'django.contrib.messages', 
+    'django.contrib.staticfiles', 
+    'weather', 
+] 
+ 
+... 
+ 
+This lets Django know that we want to use our weather app in the project. By doing that, Django will know where the migrations 
+and the URL are. Afterward, we need to modify the main urls.py to point to our weather app urls.py file. To do that, we add on 
+a line under the existing path for admin dashboard. We are also required to import include so we can point to our 
+app urls.py file. 
+ 
+the_weather/the_weather/urls.py 
+from django.contrib import admin 
+from django.urls import path, include 
+ 
+urlpatterns = [ 
+    path('admin/', admin.site.urls), 
+    path('', include('weather.urls')), 
+] 
+ 
+The null string means that we won’t utilize an endpoint for the entry point to our app. Instead we’ll let our app handle any 
+specific endpoint. We could have put up something like path [‘weather/’, …], which would have meant we would have to 
+type server/weather/ to get anything with our weather app. 
+5.2. Adding the Template and View 
+Next, we need to add template to our project. A template in Django is an HTML file that allow for extra syntax that make the 
+template dynamic. We will be able to do things like add variables, if statement, and loops, among all other things.[9] We have 
+an HTML files, but this will be enough for you to start. We are going to create a template directory to put that file in. 
+ 
+• 
+cd weather 
+• 
+mkdir templates && cd templates 
+• 
+mkdir weather 
+ 
+We created another directory with the similar name as our application. We did this because Django combine all the template 
+directories by the various apps we have. To prevent filename being duplicated, we can take the name of our app to prevent

@@ -1,0 +1,50 @@
+8 
+ 
+2.1.2 
+Integration testing  
+ 
+Integration tests are the interaction between software and hardware components. 
+Testing happens between multiple units. Verify functionality of combined units together. 
+ 
+2.1.3 
+Regression Testing 
+ 
+Retesting of component or system to ensure that updates or changes have not made any prob-
+lems and still works with its requirements.(Williams. L., 2006) 
+It focuses on retesting the product. Checks that there are no new defects after same prob-
+lems have been fixed; mostly done automatically sometimes manually.  
+ 
+2.1.4 
+Functional Testing 
+ 
+Performed manually or automatically based on the specification, special functionality of the 
+software or its part. Mostly done using these five points; suitability, security, accuracy and 
+fulfillment. 
+ 
+2.1.5 
+System testing 
+Product based testing of the entire complete combined system, which tests based on re-
+quirements of all system parts. 
+ 
+2.1.6 
+Acceptance Testing 
+Acceptance testing is the final phase of testing.  The purpose is to ensure that the product 
+meets the standards of quality to be accepted by the client. Made from combination of tests; 
+ensure that the product has right output from the production phase. It also focuses on things 
+other than functionality that includes documentation and other items related to the product. 
+The test verifies, does the product meet the customers demand and ensure correct delivery 
+and shows the success of all solution.  
+ 
+2.1.7 
+Beta testing 
+Beta testing is testing by potential users. All errors found, have to be reported to the 
+development team. (Jenkins, N. 2008) 
+ 
+3 
+Agile  
+ 
+Agile model concentrate more on interaction with the customer value. The main goal is to 
+make flexible and efficient product by interacting with the client all the time while develop-
+ing the process. 
+The top priority of the agile manifesto is customer satisfaction based on early continuous de-
+livery. The timescale is from two weeks to two months. The idea is that business people and

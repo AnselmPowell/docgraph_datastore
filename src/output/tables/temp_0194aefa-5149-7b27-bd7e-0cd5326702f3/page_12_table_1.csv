@@ -1,0 +1,36 @@
+"With this, let us add in a request to obtain the data into our app. First, we will need to install request so we can call our API"
+from inside our app.
+• pipenv install requests
+""
+Let us update our index view so to send a request to our URL we have.
+the_weather/weather/views.py
+from django.shortcuts import render
+import requests
+""
+def index(request):
+url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&ap-
+pid=YOUR_APP_KEY'
+city = 'Lucknow'
+city_.weather = requests.get(url.format(city)).json()
+""
+"return render(request, 'weather/index.html') #returns the index.html template"
+""
+"With those 3 lines, we are adding the URL that we would send a request to. We will make the part for the city just a placeholder"
+"for when we allow user to add their own city. For now, we will set the city to be Lucknow, but later this will be set to the cities"
+from the database. Now run the server again and we can see the details of the city regarding the weather
+5.4. Displaying the Data in the Template
+"Next, we need to pass the data to the template so it can be displayed to the user. Let’s create a dictionary to hold all of the"
+"data we need. Of the data returned, we need temperature, description, and icon."
+""
+the_weather/weather/views.py
+def index(request):
+...
+weather = {
+"'city' : city,"
+"'temperature' : city_weather['main']['temp'],"
+"'description' : city_weather['weather'][0]['description'],"
+'icon' : city_weather['weather'][0]['icon']
+}
+""
+"return render(request, 'weather/index.html') #returns the index.html template"
+""
