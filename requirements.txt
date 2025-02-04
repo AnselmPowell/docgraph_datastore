@@ -32,9 +32,10 @@ pymupdf
 python-magic-bin
 unstructured[local-inference]
 unstructured-inference
+
+
+
 lxml
-
-
 
 # PDF Processing
 PyMuPDF==1.23.8

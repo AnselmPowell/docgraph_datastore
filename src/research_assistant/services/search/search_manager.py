@@ -97,7 +97,6 @@ class SearchManager:
                 document.reference
             )
 
-            # ...existing code...
             doc_result = {
                 'document_id': str(document.id),
                 'question': context,
@@ -107,31 +106,47 @@ class SearchManager:
                 'summary': document.summary,
                 'file_name': document.file_name,
                 'relevance_score': search_result['relevance_score'],
-                'total_matches': len(search_result['relevant_sections']),
+                'total_matches': search_result['total_matches'],
                 'matching_sections': [
                     {
                         'section_id': section['section_id'],
                         'page_number': section['page_number'],
                         'start_text': section['start_text'],
-                        'matching_context': [match['text'] for match in section['matches'] if match['type'] == 'context'],
-                        'matching_keywords': [match['text'] for match in section['matches'] if match['type'] == 'keyword'],
-                        'citations': [match['citations'] for match in section['matches'] if 'citations' in match]
+                        # Context matches with citations
+                        'context_matches': [
+                            {
+                                'text': match['text'],
+                                'citations': match['citations']
+                            }
+                            for match in section['context_matches']
+                        ],
+                        # Keyword matches
+                        'keyword_matches': [
+                            {
+                                'keyword': match['keyword'],
+                                'text': match['text']
+                            }
+                            for match in section['keyword_matches']
+                        ],
+                        # Similar keyword matches
+                        'similar_matches': [
+                            {
+                                'similar_keyword': match['similar_keyword'],
+                                'text': match['text']
+                            }
+                            for match in section['similar_matches']
+                        ]
                     }
                     for section in search_result['relevant_sections']
                 ]
             }
             results.append(doc_result)
 
+            # Sort by relevance score
             results.sort(key=lambda x: x['relevance_score'], reverse=True)
 
-
-        return {
-            'status': 'success',
-            'total_documents': len(results),
-            'results': results
-        }
-    
-
-
-
-    
+            return {
+                'status': 'success',
+                'total_matches': len(results),
+                'results': results
+            }

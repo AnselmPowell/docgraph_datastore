@@ -1,0 +1,54 @@
+Laurea University of Applied Sciences 
+ 
+Abstract 
+Laurea UAS 
+Business Information Technology 
+ 
+ 
+ 
+ 
+Ahmed Anastasia 
+ 
+Unit test automation with Jenkins-CI tool 
+ 
+Year 
+2015  
+ 
+ 
+Pages  
+ 32                      
+ 
+Continuous Integration (CI) the process that is performing tasks continuously itself. Software 
+development and its testing started a new era, which allows making the process productive 
+and faster. 
+ 
+It has been one of the fast growing industries in many parts of businesses. By the years devel-
+opment techniques has been improving and produced a quality product to the client in a 
+shorter period. The competition raised, but expense of the production got smaller. 
+ 
+Automation testing is a testing model that allows performing test automatically. As a part of 
+the continuous integration, it gives great benefits and opportunities. 
+The main task of this thesis was to build an environment for continuous Integration test au-
+tomation. It allows execute the unit tests automatically using Jenkins as a tool. 
+ 
+Secondly write several Unit tests for testing only one particular part of the code for correct 
+output and start running these tests in the new automated environment. 
+As a result of this project, stable automated CI environment for the execution of unit tests. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Keywords, Test Automation, Unit Testing, Code, Commit, Subversion SVN Version Control Sys-
+tem, CI-tool, CI – Continuous Integration
