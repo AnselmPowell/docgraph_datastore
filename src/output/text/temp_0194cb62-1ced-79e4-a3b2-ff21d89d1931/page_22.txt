@@ -1,9 +1,0 @@
-22 
- 
- 
- 
-Figure 5: Build configuration, connecting to the version control  
- 
-Defined parameters of the build history the amount of days 181 days. 
-Jenkins data from the sources we defined in the subversion through URL. Any update in the 
-code of origin defined the update, as much as possible

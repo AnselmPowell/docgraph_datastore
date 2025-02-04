@@ -1,7 +1,0 @@
-"Let us build a simple Django application that displays the weather of various cities. To get current weather data, let us use"
-"the Open Weather Map API. We will work with the database and create a form, therefore the concepts used here can be"
-applicable for more complicated projects.
-"The Admin Dashboard: Next we will look at admin dashboard given by Django. To do that, 1st we have to migrate the database,"
-"which means Django will generate the pre-defined tables that is needed for the default apps. To do this, run the migrate com-"
-mand.[8]
-• python manage.py migrate

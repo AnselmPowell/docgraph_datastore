@@ -1,3 +1,0 @@
-We now have a way to keep track of the weather for multiple cities in our app. We had to work with various parts of Django to
-"get this working: views, models, forms, and templates. We also had to use the Python library requests to get the actual weather"
-data[1][2][3].

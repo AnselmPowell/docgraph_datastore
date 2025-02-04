@@ -1,9 +1,0 @@
-32 
- 
-Appendix 1 
-Appendixes 
- 
-Appendix 1:Scrum development process .............................................................. 9 
-Appendix 2: The system components of a CI ........................................................ 11 
-Appendix 3: Suversion basic work cycle ............................................................. 12 
-Appendix 4:Robot Framework Structure ............................................................. 14

@@ -1,5 +1,0 @@
-30 
- 
-Virtualenv 12. 1.1 2015 
-https://pypi.python.org/pypi/virtualenv 
-Williams. L.,2006., http://agile.csc.ncsu.edu/SEMaterials/BlackBox.pdf
