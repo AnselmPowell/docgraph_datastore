@@ -292,7 +292,7 @@ class DocumentSearcher:
                 is_batch=False
             ))
         
-            print("full Response: ", response)
+            # print("full Response: ", response)
             results = json.loads(response.choices[0].message.function_call.arguments)
             print(f"[DocumentSearcher] API response received:", results)
             validated_results = SearchResults(**results)
@@ -426,9 +426,11 @@ class DocumentSearcher:
                 keywords=keywords,
                 summary=summary
             )
+            print("[DocumentSearcher] Search Results: ", results)
 
             # Initialize section data
             section_matches = {
+
                 'page_number': section['page_number'],
                 'section_id': section['section_id'],
                 'start_text': section['start_text'],
@@ -441,19 +443,24 @@ class DocumentSearcher:
             for match in results.get('responses', []):
                 # Context matches
                 if match['has_context']:
+                    print("Has Matching Context ")
                     matches["context"] += 1
+                    print("Has Matching Context Text: \n", match["context"])
                     section_matches['context_matches'].append({
-                        'text': match['context'],
+                        'text': match["context"],
                         'citations': self._extract_citations(match['context'], reference_data)
                     })
 
                 # Keyword matches
                 if match['has_keyword']:
                     matches["keyword"] += 1
+                    print("Has Matching Keywords ")
+                    print("Has Matching Keywords Text:  ", match['keyword'] )
                     section_matches['keyword_matches'].append({
                         'keyword': match['keyword'],
                         'text': match['keyword_context']
                     })
+
 
                 # Similar keyword matches
                 if match['has_similar_keyword']:
@@ -470,6 +477,7 @@ class DocumentSearcher:
                 matches["relevant_sections"].append(section_matches)
 
         # Calculate relevance
+        
         is_relevant = self.check_summary_relevance(summary, context)
         relevance_score = self.calculate_relevance_score(
             total_sections=len(sections),

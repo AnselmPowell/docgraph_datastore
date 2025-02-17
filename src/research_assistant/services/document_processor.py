@@ -12,7 +12,7 @@ from pathlib import Path
 import os
 import requests
 from io import BytesIO
-import uuid
+import uuid 
 import re
 import json
 import logging
@@ -294,10 +294,10 @@ class DocumentProcessor:
         print(f"Processing time: {time.time() - start_time:.2f}s")
         
         self.total_pages = len(processed_sections)
-        # Cleanup
-        if os.path.exists(file_path):
-            os.remove(file_path)
-            print(f"[DocumentProcessor] Cleaned up temporary file: {file_path}")
+        # # Cleanup
+        # if os.path.exists(file_path):
+        #     os.remove(file_path)
+        #     print(f"[DocumentProcessor] Cleaned up temporary file: {file_path}")
         
         return processed_sections, reference_data
 

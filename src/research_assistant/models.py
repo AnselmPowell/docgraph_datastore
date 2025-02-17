@@ -6,11 +6,13 @@ import uuid
 import json
 from django.utils import timezone
 from datetime import timedelta
+from django.contrib.auth.models import User 
 
 class DocumentMetadata(models.Model):    
     """Store document metadata with processing status"""
     # This model stays largely the same as it contains core metadata
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    user = models.ForeignKey(User,on_delete=models.CASCADE, related_name='documents', null=True, blank=True)
     title = models.CharField(max_length=500, null=True)
     authors = models.JSONField(null=True, default=list)
     publication_date = models.DateField(null=True)
@@ -65,6 +67,7 @@ class DocumentMetadata(models.Model):
     class Meta:
         db_table = 'document_metadata'
         indexes = [
+            models.Index(fields=['user']),
             models.Index(fields=['processing_status']),
             models.Index(fields=['created_at']),
             models.Index(fields=['updated_at'])
@@ -139,6 +142,13 @@ class DocumentSection(models.Model):
 
 class SearchQuery(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    user = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name='search_queries',
+        null=True,
+        blank=True
+    )
     documents = models.ManyToManyField(DocumentMetadata, related_name='searches')
     context = models.TextField()
     keywords = models.JSONField(default=list)
@@ -147,30 +157,84 @@ class SearchQuery(models.Model):
     class Meta:
         db_table = 'search_queries'
         indexes = [
+            models.Index(fields=['user']),
             models.Index(fields=['created_at'])
         ]
 
+# class SearchResult(models.Model):
+#     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+#     search_query = models.ForeignKey(SearchQuery, on_delete=models.CASCADE, related_name='results')
+#     # user = models.ForeignKey( User, on_delete=models.CASCADE, related_name='search_queries', null=True, blank=True )
+#     document = models.ForeignKey(DocumentMetadata, on_delete=models.CASCADE)
+#     relevance_score = models.FloatField()
+#     matching_sections = models.JSONField(default=list)
+#     context_matches = models.JSONField(default=list)
+#     keyword_matches = models.JSONField(default=list)
+#     citation_matches = models.JSONField(default=list)
+#     created_at = models.DateTimeField(auto_now_add=True)
+
+#     class Meta:
+#         db_table = 'search_results'
+#         indexes = [
+#             models.Index(fields=['search_query', 'document']),
+#             models.Index(fields=['relevance_score']),
+#             models.Index(fields=['created_at'])
+#         ]
+
+
+
 class SearchResult(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    search_query = models.ForeignKey(SearchQuery, on_delete=models.CASCADE, related_name='results')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='search_results')
     document = models.ForeignKey(DocumentMetadata, on_delete=models.CASCADE)
+    
+    # Search Parameters
+    query_context = models.TextField()
+    keywords = models.JSONField(default=list)
+    
+    # Results Data
+    document_title = models.CharField(max_length=500)
+    document_authors = models.JSONField(default=list)
+    document_summary = models.TextField(null=True)
     relevance_score = models.FloatField()
+    
+    # Matching Sections
     matching_sections = models.JSONField(default=list)
-    context_matches = models.JSONField(default=list)
-    keyword_matches = models.JSONField(default=list)
-    citation_matches = models.JSONField(default=list)
+    # Structure for matching_sections:
+    # [{
+    #     'section_id': str,
+    #     'page_number': int,
+    #     'content': str,
+    #     'context_matches': [{
+    #         'text': str,
+    #         'citations': list
+    #     }],
+    #     'keyword_matches': [{
+    #         'keyword': str,
+    #         'text': str
+    #     }],
+    #     'similar_matches': [{
+    #         'similar_keyword': str,
+    #         'text': str
+    #     }]
+    # }]
+    
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = 'search_results'
         indexes = [
-            models.Index(fields=['search_query', 'document']),
-            models.Index(fields=['relevance_score']),
-            models.Index(fields=['created_at'])
+            models.Index(fields=['user']),
+            models.Index(fields=['document']),
+            models.Index(fields=['created_at']),
+            models.Index(fields=['relevance_score'])
         ]
+
+        
 class LLMResponseCache(models.Model):
     """Store LLM responses for caching"""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    user = models.ForeignKey( User, on_delete=models.CASCADE, related_name='llm_responses', null=True,  blank=True)
     file_name = models.CharField(max_length=200, null=True)
     document = models.ForeignKey(DocumentMetadata, on_delete=models.CASCADE, related_name='llm_responses')
     response_type = models.CharField(max_length=50)  # 'summary' or 'search'
@@ -181,10 +245,11 @@ class LLMResponseCache(models.Model):
     class Meta:
         db_table = 'llm_response_cache'
         indexes = [
+            models.Index(fields=['user']),
             models.Index(fields=['document', 'response_type', 'query_hash']),
             models.Index(fields=['created_at'])
         ]
-        unique_together = ['document', 'response_type', 'query_hash']
+        unique_together = ['user', 'document', 'response_type', 'query_hash']
 
 class DocumentRelationship(models.Model):
     """Track relationships between documents"""
@@ -211,3 +276,6 @@ class DocumentRelationship(models.Model):
             models.Index(fields=['relationship_type']),
             models.Index(fields=['confidence_score'])
         ] 
+
+
+

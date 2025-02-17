@@ -1,8 +1,11 @@
+# src/core/settings.py
+
 import os
 from pathlib import Path
 import dj_database_url
 from dotenv import load_dotenv
 from decouple import config
+from datetime import timedelta
 
 # Load environment variables
 load_dotenv()
@@ -54,6 +57,7 @@ INSTALLED_APPS = [
     # 'vector_store',
     # 'pgvector',
      'research_assistant',
+     'auth_api',
 ]
 
 
@@ -67,7 +71,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'auth_api.middleware.SecurityHeadersMiddleware',
+    'auth_api.middleware.IPBlocklistMiddleware',
+    'auth_api.middleware.RateLimitMiddleware',
 ]
+
 
 ROOT_URLCONF = 'core.urls'
 
@@ -93,6 +101,21 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 CORS_ALLOW_ALL_ORIGINS = False
 
+# DATABASES = {
+#     'default': {
+#             'ENGINE': 'django.db.backends.sqlite3',
+#             'NAME': BASE_DIR / 'db.sqlite3',
+#         }
+# }
+
+# Database
+# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+
+print("--------- DATABASE URL  ", app_config['DATABASE_URL'])
+
+DATABASES = {
+    'default': dj_database_url.config(default=app_config['DATABASE_URL'])
+}
 
 # Governance-specific settings
 GOVERNANCE_SETTINGS = {
@@ -128,21 +151,26 @@ PROCESSING_SETTINGS = {
     'ENABLE_IMAGE_ANALYSIS': True
 }
 
-DATABASES = {
-    'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+
+
+AUTH_SETTINGS = {
+    'TOKEN_LIFETIME': 60,  # minutes
+    'REFRESH_TOKEN_LIFETIME': 7,  # days
+    'PASSWORD_RESET_TIMEOUT': 24,  # hours
+    'MAX_LOGIN_ATTEMPTS': 5,
+    'LOGIN_ATTEMPT_TIMEOUT': 15  # minutes
 }
 
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# print("--------- DATABASE URL  ",app_config['DATABASE_URL'])
+JWT_SETTINGS = {
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+}
 
-# DATABASES = {
-#     'default': dj_database_url.config(default=app_config['DATABASE_URL'])
-# }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -213,35 +241,14 @@ CORS_ALLOW_HEADERS = [
 CORS_ALLOW_CREDENTIALS = True
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'auth_api.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
+        # 'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated',
     ]
 }
 
 
-
-
-
-
-
-
-
-
-# try:
-#             # First clear all previous_section references in document_sections
-#             await sync_to_async(DocumentSection.objects.all().update)(previous_section=None)
-#             print("[Database Cleanup] Cleared all previous section references")
-            
-#             # Then delete all sections
-#             sections_count = await sync_to_async(DocumentSection.objects.all().delete)()
-#             print(f"[Database Cleanup] Deleted {sections_count[0]} sections")
-            
-#             # Finally delete all documents
-#             docs_count = await sync_to_async(DocumentMetadata.objects.all().delete)()
-#             print(f"[Database Cleanup] Deleted {docs_count[0]} documents")
-            
-#             print("[Database Cleanup] Successfully cleared all database records")
-
-#         except Exception as e:
-#             print(f"[Database Cleanup] Error cleaning database: {str(e)}")
-#             raise

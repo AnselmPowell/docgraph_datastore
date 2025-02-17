@@ -1,3 +1,4 @@
+# src/api/urls.py
 from django.urls import path
 from .views import api_root, user_list_create, user_detail, admin_user_list
 

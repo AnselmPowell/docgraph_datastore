@@ -7,4 +7,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
     path('api/research/', include('research_assistant.urls')),
+    path('api/auth/', include('auth_api.urls')),
 ]
