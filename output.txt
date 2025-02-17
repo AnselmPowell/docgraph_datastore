@@ -1,0 +1,2298 @@
+
+--- Start of research_assistant/models.py ---
+
+# research_assistant/models.py
+# models.py
+from django.db import models
+import uuid
+import json
+from django.utils import timezone
+from datetime import timedelta
+from django.contrib.auth.models import User 
+
+class DocumentMetadata(models.Model):    
+    """Store document metadata with processing status"""
+    # This model stays largely the same as it contains core metadata
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    user = models.ForeignKey(User,on_delete=models.CASCADE, related_name='documents', null=True, blank=True)
+    title = models.CharField(max_length=500, null=True)
+    authors = models.JSONField(null=True, default=list)
+    publication_date = models.DateField(null=True)
+    publisher = models.CharField(max_length=200, null=True)
+    doi = models.CharField(max_length=100, null=True)
+    url = models.URLField(null=True, max_length=500)
+    file_name = models.CharField(max_length=200, null=True)
+    citation = models.TextField(null=True)
+    reference = models.JSONField(null=True, default=dict)
+    summary = models.TextField(null=True)
+    total_pages = models.IntegerField(null=True)
+    
+    processing_status = models.CharField(
+        max_length=50,
+        choices=[
+            ('pending', 'Pending'),
+            ('processing', 'Processing'),
+            ('completed', 'Completed'),
+            ('failed', 'Failed')
+        ],
+        default='pending'
+    )
+    processing_progress = models.FloatField(default=0.0)
+    processing_stage = models.CharField(max_length=100, null=True)
+    error_message = models.TextField(null=True, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def is_expired(self):
+        """Check if document is older than 30 days"""
+        if not self.created_at:
+            return False
+        expiration_date = self.created_at + timedelta(days=30)
+        return timezone.now() > expiration_date
+    
+
+    @classmethod
+    def delete_expired(cls):
+        """Delete all documents older than 30 days"""
+        expiration_cutoff = timezone.now() - timedelta(days=30)
+        expired_docs = cls.objects.filter(created_at__lt=expiration_cutoff)
+        
+        # Get count before deletion for logging
+        count = expired_docs.count()
+        
+        # Django will handle cascade deletion for related models
+        deleted = expired_docs.delete()
+        
+        return count
+
+    class Meta:
+        db_table = 'document_metadata'
+        indexes = [
+            models.Index(fields=['user']),
+            models.Index(fields=['processing_status']),
+            models.Index(fields=['created_at']),
+            models.Index(fields=['updated_at'])
+        ]
+
+class DocumentSection(models.Model):
+    """Store document sections with metadata"""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    document = models.ForeignKey(DocumentMetadata, on_delete=models.CASCADE, related_name='sections')
+    section_type = models.CharField(max_length=100)  # 'text', 'table', 'image'
+    content = models.TextField()  # Main page content
+    section_start_page_number = models.IntegerField()
+    
+    # Context text from adjacent pages
+    prev_page_text = models.TextField(null=True)
+    next_page_text = models.TextField(null=True)
+    
+    # Content flags
+    has_citations = models.BooleanField(default=False)
+    has_tables = models.BooleanField(default=False)
+    has_images = models.BooleanField(default=False)
+    
+    # Content data
+    citations = models.JSONField(default=dict)
+    tables = models.JSONField(null=True)  # Store table data
+    images = models.JSONField(default=list)  # Store image metadata
+    
+    class Meta:
+        db_table = 'document_sections'
+        ordering = ['section_start_page_number']
+        indexes = [
+            models.Index(fields=['document', 'section_start_page_number']),
+            models.Index(fields=['section_type'])
+        ]
+
+    def set_elements(self, elements_list):
+        """Transform and set tables and images data"""
+        print(f"[DocumentSection] Processing {len(elements_list)} elements")
+        
+        tables = []
+        images = []
+        
+        for element in elements_list:
+            try:
+                if isinstance(element, dict):
+                    if element.get('type') == 'table':
+                        tables.append(element.get('content'))
+                    elif element.get('type') == 'image':
+                        images.append(element.get('metadata'))
+                
+            except Exception as e:
+                print(f"[DocumentSection] Error processing element: {str(e)}")
+                continue
+            
+        self.tables = tables if tables else None
+        self.images = images
+        
+    def get_elements(self):
+        """Get combined elements data"""
+        elements = []
+        
+        # Add tables
+        if self.tables:
+            elements.extend([{'type': 'table', 'content': table} for table in self.tables])
+            
+        # Add images
+        if self.images:
+            elements.extend([{'type': 'image', 'metadata': img} for img in self.images])
+            
+        return elements
+
+
+class SearchQuery(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    user = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name='search_queries',
+        null=True,
+        blank=True
+    )
+    documents = models.ManyToManyField(DocumentMetadata, related_name='searches')
+    context = models.TextField()
+    keywords = models.JSONField(default=list)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'search_queries'
+        indexes = [
+            models.Index(fields=['user']),
+            models.Index(fields=['created_at'])
+        ]
+
+
+class SearchResult(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='search_results')
+    document = models.ForeignKey(DocumentMetadata, on_delete=models.CASCADE)
+    
+    # Search Parameters
+    query_context = models.TextField()
+    keywords = models.JSONField(default=list)
+    
+    # Results Data
+    document_title = models.CharField(max_length=500)
+    document_authors = models.JSONField(default=list)
+    document_summary = models.TextField(null=True)
+    relevance_score = models.FloatField()
+    
+    # Matching Sections
+    matching_sections = models.JSONField(default=list)
+    # Structure for matching_sections:
+    # [{
+    #     'section_id': str,
+    #     'page_number': int,
+    #     'content': str,
+    #     'context_matches': [{
+    #         'text': str,
+    #         'citations': list
+    #     }],
+    #     'keyword_matches': [{
+    #         'keyword': str,
+    #         'text': str
+    #     }],
+    #     'similar_matches': [{
+    #         'similar_keyword': str,
+    #         'text': str
+    #     }]
+    # }]
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'search_results'
+        indexes = [
+            models.Index(fields=['user']),
+            models.Index(fields=['document']),
+            models.Index(fields=['created_at']),
+            models.Index(fields=['relevance_score'])
+        ]
+
+        
+class LLMResponseCache(models.Model):
+    """Store LLM responses for caching"""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    user = models.ForeignKey( User, on_delete=models.CASCADE, related_name='llm_responses', null=True,  blank=True)
+    file_name = models.CharField(max_length=200, null=True)
+    document = models.ForeignKey(DocumentMetadata, on_delete=models.CASCADE, related_name='llm_responses')
+    response_type = models.CharField(max_length=50)  # 'summary' or 'search'
+    query_hash = models.TextField()
+    response_data = models.JSONField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        db_table = 'llm_response_cache'
+        indexes = [
+            models.Index(fields=['user']),
+            models.Index(fields=['document', 'response_type', 'query_hash']),
+            models.Index(fields=['created_at'])
+        ]
+        unique_together = ['user', 'document', 'response_type', 'query_hash']
+
+class DocumentRelationship(models.Model):
+    """Track relationships between documents"""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    source_document = models.ForeignKey(
+        DocumentMetadata,
+        on_delete=models.CASCADE,
+        related_name='source_relationships'
+    )
+    target_document = models.ForeignKey(
+        DocumentMetadata,
+        on_delete=models.CASCADE,
+        related_name='target_relationships'
+    )
+    relationship_type = models.CharField(max_length=100)  # e.g., 'citation', 'keyword'
+    confidence_score = models.FloatField()
+    metadata = models.JSONField(default=dict)  # Store relationship details
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'document_relationships'
+        indexes = [
+            models.Index(fields=['source_document', 'target_document']),
+            models.Index(fields=['relationship_type']),
+            models.Index(fields=['confidence_score'])
+        ] 
+
+
+
+
+--- End of research_assistant/models.py ---
+
+--- Start of views/document_management.py ---
+# src/research_assistant/views/document_management.py
+
+# document_management.py
+import uuid
+from rest_framework import viewsets, status
+from rest_framework.decorators import action 
+from rest_framework.response import Response
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from asgiref.sync import sync_to_async, async_to_sync
+import asyncio
+from typing import Dict
+
+from rest_framework.permissions import IsAuthenticated
+
+
+from ..models import DocumentMetadata, DocumentSection, SearchResult, DocumentRelationship, LLMResponseCache
+from ..services.document_processor import DocumentProcessor
+from ..services.document_summarizer import DocumentSummarizer
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class DocumentManagementViewSet(viewsets.ViewSet):
+    """Handle document upload and processing"""
+
+    permission_classes = [IsAuthenticated] 
+    
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+       
+        print("[DocumentManagementViewSet] Initialized")
+
+    async def _process_document(self, file_data: Dict, user) -> Dict:
+        """Process single document and return metadata"""
+        print(f"[_process_document] Processing document for user: {user.email}")
+        print(f"[_process_document] Processing document: {file_data['file_name']}")
+        
+
+       # Check for existing document using model query
+        existing_doc = await sync_to_async(DocumentMetadata.objects.filter(
+            file_name=file_data['file_name'],
+            url=file_data['file_url'],
+            user=user
+        ).first)()
+
+        if existing_doc:
+            return {
+                'document_id': str(existing_doc.id),
+                'title': existing_doc.title,
+                'authors': existing_doc.authors,
+                'pages': existing_doc.total_pages, 
+                'summary': existing_doc.summary,
+                'references': existing_doc.reference,
+                'processing_status': existing_doc.processing_status,
+                'file_name': existing_doc.file_name,
+                'file_url': existing_doc.url,
+                'created_at': existing_doc.created_at 
+            }
+        
+        # Initialize processors
+        doc_processor = DocumentProcessor(
+            document_id=file_data["file_id"],
+            document_url=file_data['file_url']
+        )
+        
+        # Process document
+        print(f"[_process_document] Processing document: {file_data['file_name']}")
+        sections, reference_data = await sync_to_async(doc_processor.process_document_from_url)(
+            file_data['file_url']
+        )
+
+        # Create new document
+        print(f"[_process_document] Creating new document: {file_data['file_name']}")
+        print(f"[_process_document] file_data['file_id']: {file_data['file_id']}")
+        print(f"[_process_document] user: {user}")
+        print(f"[_process_document] file_data['file_url']: {file_data['file_url']}")
+        # print(f"[_process_document] Creating new document: {file_data['file_name']}")
+        try:
+            document = await sync_to_async(DocumentMetadata.objects.create)(
+                # id= uuid.uuid4(),
+                # id= file_data['file_id'],
+                user=user, 
+                file_name=file_data['file_name'],
+                url=file_data['file_url'],
+                processing_status='processing'
+            )
+            print(f"[_process_document] Created document: {document}")
+        except Exception as e:
+            print(f"[_process_document] Processing error for {file_data['file_name']}: {str(e)}")
+            raise
+
+        # try:
+            
+        print("Init summarizer document")
+        summarizer = DocumentSummarizer()
+        
+        total_pages = await sync_to_async(doc_processor.get_total_pages)()
+        print(f"[_process_document] Total Pages {total_pages}")
+        print(f"[_process_document] Processed {len(sections)} sections")
+
+        # Get metadata
+        metadata = await sync_to_async(summarizer.generate_summary)(
+            sections[:2],  # Pass first two sections instead of just first page text
+            document.id 
+        )
+        print("Done summarising document")
+        # Update document metadata
+        for field, value in metadata.items():
+            setattr(document, field, value)
+        document.reference = reference_data
+        document.processing_status = 'completed'
+        await sync_to_async(document.save)()
+
+        # Store sections
+        print("Upload Sections Data")
+        for section_data in sections:
+            try:
+                section = await sync_to_async(DocumentSection.objects.create)(
+                    document=document,
+                    section_type=section_data['content'].get('type', 'text'),  # Added default
+                    content=section_data['content'].get('text', ''),  # Added safety
+                    section_start_page_number=int(section_data['section_start_page_number']),  # Ensure int
+                    prev_page_text=section_data.get('prev_page_text'),
+                    next_page_text=section_data.get('next_page_text'),
+                    has_citations=bool(section_data['content'].get('has_citations', False)),
+                    citations=section_data.get('citations', {})  # Added default
+                )
+
+                # Handle tables and images
+                if 'elements' in section_data:
+                    section.set_elements(section_data['elements'])
+                    await sync_to_async(section.save)()
+
+            except Exception as e:
+                print(f"[_process_document] Error creating section: {str(e)}")
+                continue
+        
+        print("return document data")
+        return {
+            'document_id': str(document.id),
+            'title': document.title,
+            'authors': document.authors,
+            'pages': total_pages,
+            'summary': document.summary,
+            'references': document.reference,
+            'processing_status': document.processing_status,
+            'file_name': file_data['file_name'],
+            'file_url': file_data['file_url'],
+        }
+            
+        # except Exception as e:
+        #     print(f"[_process_document] Processing error for {file_data['file_name']}: {str(e)}")
+        #     document.processing_status = 'failed'
+        #     document.error_message = "Unable to process document. Please try uploading again."
+        #     await sync_to_async(document.save)()
+        #     raise
+
+
+    @action(detail=False, methods=['POST'])
+    def upload_documents(self, request):
+        """Handle document uploads"""
+        return async_to_sync(self._upload_documents)(request)
+
+    async def _upload_documents(self, request):
+        print(f"[_upload_documents] User: {request.user.email}")
+        print("[_upload_documents] Starting document upload")
+        print("[_upload_documents] request data", request.data)
+        
+        data = request.data
+        if not isinstance(data, list):
+            data = [data]
+
+        if not data:
+            return Response(
+                {"error": "No files provided"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        
+
+        
+        # Process documents
+        tasks = []
+        for file_data in data:
+            if not all(k in file_data for k in ['file_url', 'file_id', 'file_type']):
+                continue
+            task = self._process_document(file_data, request.user)
+            tasks.append(task)
+
+        if not tasks:
+            return Response(
+                {'error': 'No valid files to process'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            
+            # Filter out errors
+            successful_results = [
+                result for result in results 
+                if not isinstance(result, Exception)
+            ]
+
+            if not successful_results:
+                return Response(
+                    {
+                        'status': 'error',
+                        'message': 'No documents were processed successfully'
+                    },
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+
+            return Response({
+                'status': 'success',
+                'documents': successful_results
+            })
+
+        except Exception as e:
+            return Response(
+                {
+                    'status': 'error',
+                    'message': str(e)
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+    @action(detail=False, methods=['GET'])
+    def get_documents(self, request):
+        """Retrieve all documents"""
+        try:
+            
+            # Filter documents by user
+            print(f"[get_documents] Fetching for user: {request.user.email}")
+            documents = DocumentMetadata.objects.filter(
+                user=request.user
+            ).order_by('-created_at')
+
+            # Check if documents exist
+            if not documents.exists():
+                return Response({
+                    'status': 'success',
+                    'message': 'No documents found',
+                    'documents': []
+                }, status=status.HTTP_200_OK) 
+
+            return Response({
+                'status': 'success',
+                'documents': [{
+                    'document_id': str(doc.id),
+                    'title': doc.title,
+                    'authors': doc.authors,
+                    'summary': doc.summary,
+                    'references': doc.reference,
+                    'processing_status': doc.processing_status,
+                    'file_name': doc.file_name,
+                    'file_url': doc.url,
+                    'created_at': doc.created_at
+                } for doc in documents]
+            })
+            
+        except Exception as e:
+            return Response(
+                {
+                    'status': 'error',
+                    'message': str(e)
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+  
+ 
+    @action(detail=False, methods=['DELETE'])
+    def delete_documents(self, request):
+        """Delete document and all related data"""
+        print("[DELETE] Starting document deletion")
+        try:
+            document_id = request.data.get('document_id')
+            print(f"[DELETE] Attempting to delete document: {document_id}")
+
+
+            if not document_id:
+                return Response(
+                    {"error": "No document ID provided"},
+                    status=status.HTTP_400_BAD_REQUEST
+                ) 
+            
+            
+            # Get document and verify ownership
+            try:
+                document = DocumentMetadata.objects.get(
+                    id=document_id,
+                    user=request.user
+                )
+            except SearchResult.DoesNotExist:
+                return Response({
+                    'status': 'error',
+                    'message': 'Document not found'
+                }, status=status.HTTP_404_NOT_FOUND)
+
+            # Delete related data (Django will handle cascade deletion for ForeignKey relationships)
+            # But we'll be explicit about some relationships
+            
+            # Delete document sections
+            DocumentSection.objects.filter(document=document).delete()
+            
+            # Delete search results
+            SearchResult.objects.filter(document=document).delete()
+            
+            # Delete LLM cache responses
+            LLMResponseCache.objects.filter(document=document).delete()
+            
+            # Delete document relationships
+            DocumentRelationship.objects.filter(
+                source_document=document
+            ).delete()
+            DocumentRelationship.objects.filter(
+                target_document=document
+            ).delete()
+            
+            # Finally delete the document itself
+            document.delete()
+            
+            return Response({
+            'status': 'success',
+            'message': 'Document successfully removed',
+            'detail': 'Document and associated data have been deleted'
+            })
+        except DocumentMetadata.DoesNotExist:
+            return Response({
+                'status': 'error',
+                'message': 'Document not found',
+                'detail': 'The requested document could not be found or may have been already deleted'
+            }, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            print(f"[DELETE] Critical error: {str(e)}")
+            return Response({
+                'status': 'error',
+                'message': 'Unable to delete document',
+                'detail': 'Please try again or contact support if the problem persists'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        
+
+
+
+
+
+
+--- End of views/document_management.py ---
+
+--- Start of views/document_search.py ---
+
+# src/research_assistant/views/document_search.py
+
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from django.views.decorators.csrf import csrf_exempt 
+from django.utils.decorators import method_decorator
+from asgiref.sync import sync_to_async
+from django.db import transaction
+import asyncio
+
+from ..models import SearchResult, DocumentMetadata
+from ..services.search.search_manager import SearchManager
+
+@method_decorator(csrf_exempt, name='dispatch')
+class DocumentSearchViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated]
+    
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.search_manager = SearchManager()
+        print("[DocumentSearchViewSet] Initialized")
+
+    @action(detail=False, methods=['POST'])
+    def search_results(self, request):
+        # Use synchronous wrapper for async function
+        return asyncio.run(self._handle_search(request))
+
+    async def _handle_search(self, request):
+        print(f"[_handle_search] Starting search for email: {request.user.email}")
+        data  = request.data
+        context = data.get('context')
+        keywords = data.get('keywords', [])
+
+        try:
+            # Validate input data
+            data = self._prepare_search_data(request)
+            print("Search Results: retured")
+
+            # Perform search using sync_to_async
+            print("Search Results: Init search manager ")
+            search_func = sync_to_async(self.search_manager.search_documents)
+
+            results = await search_func(
+                search_data=data,
+                context=context,
+                keywords=keywords,
+                user=request.user
+            )
+            print("Save Search ")
+            # Save results using sync_to_async with transaction
+            await self._save_search_results(request.user, context, 
+                                         keywords, results)
+
+            return Response(results)
+
+        except Exception as e:
+            print(f"[Search] Error performing search: {str(e)}")
+            return Response({
+                'status': 'error',
+                'message': 'Search failed',
+                'detail': 'Unable to complete search. Please try again'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def _prepare_search_data(self, request):
+        """Prepare and validate search data"""
+        print("[Prepare Search] Prepare and validate search data")
+        data = request.data
+        if not isinstance(data, dict):
+            data = {'file_name': data}
+
+        print("[Prepare Search] Search data: ", data)
+        data['user'] = request.user
+        
+        file_names = data.get('file_name')
+        # if isinstance(file_name, list):
+        #     file_name = file_name[0]
+
+        searchResults = []
+        for file_name in file_names:  
+
+            context = data.get('context')
+            keywords = data.get('keywords', [])
+            
+            searchResults.append({
+                'file_name': file_name,
+                'context': context,
+                'keywords': keywords,
+                'user': request.user
+            })
+        print("[prepare_search]  Done Preparing:", searchResults)
+        return searchResults
+
+    @sync_to_async
+    def _save_search_results(self, user, context, keywords, results):
+        """Save search results with transaction"""
+       
+        with transaction.atomic():
+            for result in results.get('results', []):
+                document = DocumentMetadata.objects.get(id=result['document_id'])
+                print("Matching Section Results: \n", result['matching_sections'])
+                SearchResult.objects.create(
+                    id=result['search_results_id'],
+                    user=user,
+                    document=document,
+                    query_context=context,
+                    keywords=keywords,
+                    document_title=result['title'],
+                    document_authors=result['authors'],
+                    document_summary=result['summary'],
+                    relevance_score=result['relevance_score'],
+                    matching_sections=result['matching_sections']
+                )
+
+    @action(detail=False, methods=['GET'])
+    def get_search_results(self, request):
+        """Retrieve search results for user synchronously"""
+        print(f"[get_search_results] Fetching results for user: {request.user.email}")
+        
+        try:
+            results = SearchResult.objects.filter(
+                user=request.user
+            ).order_by('-created_at')
+            
+            formatted_results = []
+            for result in results:
+                formatted_result = {
+                    'search_results_id': result.id,
+                    'document_id': str(result.document.id),
+                    'title': result.document_title,
+                    'question': result.query_context,
+                    'keywords': result.keywords,
+                    'authors': result.document_authors,
+                    'summary': result.document_summary,
+                    'relevance_score': result.relevance_score,
+                    'matching_sections': result.matching_sections
+                }
+                formatted_results.append(formatted_result)
+            
+            return Response({
+                'status': 'success',
+                'results': formatted_results,
+                'total_matches': len(formatted_results)
+            })
+                
+        except Exception as e:
+            print(f"[get_search_results] Error: {str(e)}")
+            return Response({
+                'status': 'error',
+                'message': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+
+    @action(detail=False, methods=['DELETE'])
+    def remove_search_result(self, request):
+        """Remove a specific search result"""
+        print("[remove_search_result] Starting removal")
+        
+        try:
+            search_result_id = request.data.get('search_result_id')
+            
+            if not search_result_id:
+                return Response({
+                    'status': 'error',
+                    'message': 'No search result ID provided'
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+
+            # Get the search result and verify ownership
+            try:
+                search_result = SearchResult.objects.get(
+                    id=search_result_id,
+                    user=request.user
+                )
+            except SearchResult.DoesNotExist:
+                return Response({
+                    'status': 'error',
+                    'message': 'Search result not found'
+                }, status=status.HTTP_404_NOT_FOUND)
+
+            # Delete the search result
+            search_result.delete()
+            print(f"[remove_search_result] Successfully removed result: {search_result_id}")
+
+            return Response({
+                'status': 'success',
+                'message': 'Search result removed successfully'
+            })
+
+        except Exception as e:
+            print(f"[remove_search_result] Error: {str(e)}")
+            return Response({
+                'status': 'error',
+                'message': 'Failed to remove search result'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+--- End of views/document_search.py ---
+
+--- Start of services/document_processor.py ---
+
+# src/research_assistant/services/document_processor.py
+
+
+
+from .pdf_parser import PDFParser
+from typing import Dict, List, Tuple, Any, Optional
+import time
+from datetime import datetime
+import fitz  # PyMuPDF
+from pathlib import Path
+import os
+import requests
+from io import BytesIO
+import uuid 
+import re
+import json
+import logging
+from dataclasses import dataclass
+
+
+
+from pdf2docx import Converter
+import pdfplumber
+
+
+# Reference section markers - keeping existing ones and adding new
+REFERENCE_SECTION_TITLES = [
+    r'^\s*references?\s*$',
+    r'^\s*bibliography\s*$', 
+    r'^\s*works\s+cited\s*$',
+    r'^\s*reference\s+list\s*$',
+    r'^\s*(?:\d+\.|[ivx]+\.|\[\d+\])\s*references?\s*$',
+    r'^[-_*=]{2,}\s*references?\s*[-_*=]{2,}$',
+    r'^\s*references?\s*[-_*=]{2,}$',
+    r'^[-_*=]{2,}\s*references?\s*$',
+    r'^\s*acknowledgements?\s*$',
+]
+
+# Reference section markers - keeping your existing ones
+REFERENCE_SECTION_TITLES = [
+    r'^\s*references?\s*$',
+    r'^\s*bibliography\s*$', 
+    r'^\s*works\s+cited\s*$',
+    r'^\s*reference\s+list\s*$',
+    r'^[-_*=]{2,}\s*references?\s*[-_*=]{2,}$',
+    r'^\d+\.\s*references?\s*$'
+]
+
+# Define reference patterns
+REFERENCE_PATTERNS = {
+    'numbered_bracket': r'^\s*\[(\d+)\]',           # [1]
+    'numbered_dot': r'^\s*(\d+)\.',                 # 1.
+    'author_year': r'^\s*\[([A-Za-z]+(?:\s*,\s*[A-Za-z]+)*\s*\(\d{4}[a-z]?\))\]',  # [Author(2023a)]
+    'parenthetical': r'^\s*\(([A-Za-z]+\s*,\s*\d{4})\)',  # (john,2024)
+    'narrative': r'^([A-Za-z]+\s+et\s+al\.\s*\(\d{4}\))',  # AuthorName et al.(2016)
+    'standard': r'^([A-Za-z]+\s*,\s*[A-Za-z]+\s*\.\s*\d{4})'  # Ammann P., Offutt.J. 2008
+}
+
+# In-text citation patterns
+CITATION_PATTERNS = {
+    'numbered': r'\[(\d+(?:,\s*\d+)*)\]',          # [1] or [1,2,3]
+    'parenthetical': r'\(([A-Za-z]+\s+et\s+al\.,\s*\d{4})\)',  # (Kim et al., 2016)
+    'narrative': r'([A-Za-z]+\s+et\s+al\.\s*\(\d{4}\))',  # Author et al. (2023)
+    'with_page': r'\(([A-Za-z]+,\s*\d{4},\s*p\.\s*\d+)\)',  # (Smith, 2020, p.45)
+    'author_year': r'\(([A-Za-z]+,\s*[A-Za-z]\.,\s*\d{4}(?:-\d{4})?\.?)\)'  # (Tatham, S., 2001-2015.)
+}
+
+
+
+
+# Custom types
+@dataclass
+class ImageMetadata:
+    """Data class for storing image metadata"""
+    filename: str
+    path: str
+    extraction_date: str
+    page_number: int
+    image_index: int
+    width: int = None
+    height: int = None
+
+class Section:
+    """Represents a processed document section (page)"""
+    def __init__(
+        self,
+        text: str,
+        section_type: str,
+        section_start_page_number: int,
+        document_id: str,
+        prev_page_text: Optional[str] = None,
+        next_page_text: Optional[str] = None,
+        tables: Optional[List[List[List[str]]]] = None,
+        images: Optional[List[ImageMetadata]] = None
+    ):
+        self.text = text
+        self.type = section_type
+        self.section_start_page_number = section_start_page_number
+        self.document_id = document_id
+        self.section_id = f"{document_id}_p{section_start_page_number}_{uuid.uuid4().hex[:8]}"
+        self.prev_page_text = prev_page_text
+        self.next_page_text = next_page_text
+        self.tables = tables or []
+        self.images = images or []
+
+    def get_context_text(self, window_size: int = 0) -> str:
+        """Gets context from adjacent pages with specified word window"""
+        context = []
+        if self.prev_page_text:
+            prev_words = self.prev_page_text.split()[-window_size:]
+            context.append(' '.join(prev_words))
+            
+        context.append(self.text)
+        
+        if self.next_page_text:
+            next_words = self.next_page_text.split()[:window_size]
+            context.append(' '.join(next_words))
+            
+        # return '\n'.join(context)
+        return self.text
+
+class DocumentProcessor:
+    """Enhanced document processor with custom PDF parsing"""
+    
+    def __init__(self, document_id: str = None, document_url: str = None):
+        """Initialize document processor
+        
+        Input:
+            document_id: Optional[str] - Unique document identifier
+            document_url: Optional[str] - URL to PDF document
+            
+        Output: None
+        
+        Creates processing pipeline with:
+        - document_id: str
+        - document_url: str  
+        - data_dir: Path
+        - sections: List[Section]
+        """
+        print("\n[DocumentProcessor] Initializing document processor")
+        self.document_id = document_id
+        self.document_url = document_url
+        self.data_dir = Path("research_assistant/data")
+        self.data_dir.mkdir(parents=True, exist_ok=True)
+        self.sections = [],
+        self.total_pages = 0,
+        self.reference_data ={}
+        
+        print(f"[DocumentProcessor] Initialized for document {self.document_id}")
+        print(f"[DocumentProcessor] Document URL: {document_url}")
+        print(f"[DocumentProcessor] Data directory: {self.data_dir}")
+
+    def _download_file(self, url: str) -> str:
+        """Download file from URL
+        
+        Input:
+            url: str - URL to download PDF from
+            
+        Output:
+            str - Local file path to downloaded PDF
+            
+        Side effects:
+            - Creates temporary file in self.data_dir
+        """
+        print(f"[DocumentProcessor] Starting file download: {url}")
+        
+        response = requests.get(url, timeout=30)
+        
+        print(f"[DocumentProcessor] Download status: {response.status_code}")
+        print(f"[DocumentProcessor] Content type: {response.headers.get('content-type')}")
+        
+        file_path = self.data_dir / f"temp_{self.document_id}.pdf"
+        with open(file_path, 'wb') as f:
+            content = response.content
+            f.write(content)
+        
+        print(f"[DocumentProcessor] File downloaded: {file_path}")
+        
+        return str(file_path)
+
+    def _cleanup_temp_file(self, file_path):
+        """Delete temporary PDF file."""
+        try:
+            Path(file_path).unlink()
+            print(f"[DocumentProcessor] Temporary file deleted: {file_path}")
+        except Exception as e:
+            print(f"[DocumentProcessor] Error deleting temporary file: {e}")
+
+    
+
+    def get_total_pages(self):
+        print("Get total number of Pages:", self.total_pages)
+        return self.total_pages
+
+    def process_document_from_url(self, url: str) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+        """Process document from URL
+        
+        Input:
+            url: str - URL to PDF document
+            
+        Output: 
+            Tuple[List[Dict], Dict]:
+            - List of section data dictionaries
+            - Reference data dictionary
+            
+        Section data format:
+        {
+            'document_id': str,
+            'section_id': str,
+            'section_type': str,
+            'section_start_page_number': int,
+            'content': {
+                'text': str,
+                'type': str,
+                'has_citations': bool
+            },
+            'citations': List[Dict],
+            'reference_data': Dict
+        }
+        """
+        print(f"\n[DocumentProcessor] Processing document from URL: {url}")
+        print(f"[DocumentProcessor] Starting URL processing")
+        file_path = self._download_file(url)
+        sections, reference_data = self.process_document(file_path)
+        self._cleanup_temp_file(file_path)
+        print(f"[DocumentProcessor] Retrieved {len(sections)} sections")
+
+
+        return sections, reference_data
+
+    def process_document(self, file_path: str) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+        """Process PDF document to extract content and structure
+        
+        Input:
+            file_path: str - Path to PDF file
+            
+        Output:
+            Tuple[List[Dict], Dict]:
+            - List of section data (one per page)
+            - Reference data dictionary
+            
+        Processing steps:
+        1. Parse PDF with custom parser
+        2. Extract references
+        3. Create sections with page overlays
+        4. Process citations
+        """
+        print(f"\n[DocumentProcessor] Starting document processing: {self.document_id}")
+        
+        start_time = time.time()
+        
+        # Initialize custom PDF parser
+        parser = PDFParser(file_path)
+        
+        # Extract all content
+        result = parser.parse()
+        
+        # Process pages into sections
+        processed_sections = []
+        
+        # Extract references
+        reference_data = self._extract_reference_section([p for p in result["pages"].values()])
+        self.reference_data = reference_data
+        
+        # Get page texts with context overlays 
+        pages_data = []
+        for page_num, page_text in result["pages"].items():
+            prev_text = result["pages"].get(page_num - 1)
+            next_text = result["pages"].get(page_num + 1)
+            
+            # Get any tables/images for this page
+            tables = result["tables"].get(page_num, [])
+            images = result["images"].get(page_num, [])
+            
+            # Create section
+            section = Section(
+                text=page_text,
+                section_type='text',
+                section_start_page_number=page_num,
+                document_id=self.document_id,
+                prev_page_text=prev_text,
+                next_page_text=next_text,
+                tables=tables, 
+                images=images
+            )
+            # Process section data
+            section_data = self._create_section_data(section)
+            processed_sections.append(section_data)
+
+        
+        print(f"\n[DocumentProcessor] Processing completed:")
+        print(f"Total pages: {len(processed_sections)}")
+        print(f"Processing time: {time.time() - start_time:.2f}s")
+        
+        self.total_pages = len(processed_sections)
+        # # Cleanup
+        # if os.path.exists(file_path):
+        #     os.remove(file_path)
+        #     print(f"[DocumentProcessor] Cleaned up temporary file: {file_path}")
+        
+        return processed_sections, reference_data
+
+
+
+    def _create_section_data(self, section: Section) -> Dict[str, Any]:
+        """Create section data dictionary with citations and references
+        
+        Input:
+            section: Section - Section object with page content
+            
+        Output:
+            Dict with section data:
+            {
+                'document_id': str,
+                'section_id': str, 
+                'section_type': str,
+                'section_start_page_number': int,
+                'content': {
+                    'text': str,
+                    'type': str,
+                    'has_citations': bool
+                },
+                'citations': List[Dict],
+                'elements': List[Dict]  # Tables and images
+            }
+        """
+
+        print("[Create Section] get text context")
+        # Get context-aware text
+        section_text = section.get_context_text()
+
+        print("section text: \n" , section_text)
+        # Extract citations
+        citations = self._extract_citations(section_text, self.reference_data)
+
+        print("Citation extraction: ", citations)
+
+        
+        # Build elements list from tables and images
+        elements = []
+        
+        # Add tables
+        for table in section.tables:
+            print("[Create Section] Found a table")
+            print("table data:", table)
+            elements.append({
+                'type': 'table',
+                'content': table
+            })
+            
+            # Add images
+        for image in section.images:
+            print("[Create Section] Found an image")
+            print("image data:", image)
+            elements.append({
+                'type': 'image',
+                'page_number': image['page_number'],
+                'image_index': image['image_index'],
+                'width': image['width'],
+                'height': image['height'],
+                'filename': image['filename'],
+                'path': image['path'],
+                'extraction_date': image['extraction_date']
+            })
+        
+        print("[Create Section] Create section data ")
+        section_data = {
+            'document_id': section.document_id,
+            'section_id': section.section_id,
+            'section_type': section.type,
+            'section_start_page_number': section.section_start_page_number,
+            'content': {
+                'text': section_text,
+                'type': section.type,
+                'has_citations': bool(citations)
+            },
+            'citations': citations,
+            'elements': elements
+        }
+        print("[Create Section] Section created ")
+        
+        return section_data
+    
+
+
+    def _preprocess_reference_text(self, page_texts: List[str]) -> List[str]:
+        """Pre-process pages to join split references before main extraction"""
+        processed_pages = []
+        
+        for page_text in page_texts:
+            lines = page_text.split('\n')
+            joined_lines = []
+            current_line = ""
+            
+            for line in lines:
+                # If line starts with any reference pattern, it's a new reference
+                if (re.match(r'^\s*\[\d+\]', line) or      # [1]
+                    re.match(r'^\s*\d+\.', line) or        # 1.
+                    re.match(r'^\s*\[.*?\(\d{4}[a-z]?\)\]', line) or  # [Author(2023a)]
+                    re.match(r'^\s*\([A-Za-z]+,\s*\d{4}\)', line)):   # (john,2024)
+                    if current_line:  # Save previous reference if exists
+                        joined_lines.append(current_line)
+                    current_line = line
+                # If we're in a reference and line doesn't start with pattern
+                elif current_line:
+                    current_line += " " + line.strip()
+                else:
+                    joined_lines.append(line)
+                        
+            # Add final reference
+            if current_line:
+                joined_lines.append(current_line)
+                    
+            processed_pages.append('\n'.join(joined_lines))
+        
+        return processed_pages
+
+    def _extract_citations(self, text: str, reference_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """Extract citations and match with references"""
+        print(f"\n[Citation Extraction] Starting citation extraction")
+        print(f"[Citation Extraction] Text length: {len(text)}")
+        
+        citations = []
+        cleaned_text = re.sub(r'\s+', ' ', text).strip()
+        
+        # First handle numbered citations (keep existing functionality)
+        for match in re.finditer(r'\[(\d+(?:,\s*\d+)*)\]', cleaned_text):
+            citation_text = match.group(0)
+            ref_numbers = [num.strip() for num in match.group(1).split(',')]
+            
+            citation_data = {
+                'text': citation_text,
+                'type': 'numbered',
+                'position': match.span(),
+                'ref_numbers': ref_numbers,
+                'references': []
+            }
+            
+            # Match references (keep existing logic)
+            if reference_data and 'entries' in reference_data:
+                for ref_num in ref_numbers:
+                    if ref_num in reference_data['entries']:
+                        citation_data['references'].append(
+                            reference_data['entries'][ref_num]
+                        )
+            
+            citations.append(citation_data)
+
+        # Add additional citation pattern matching
+        for pattern_type, pattern in CITATION_PATTERNS.items():
+            if pattern_type == 'numbered':
+                continue  # Skip as already handled above
+            
+            for match in re.finditer(pattern, cleaned_text):
+                citation_data = {
+                    'text': match.group(0),
+                    'type': pattern_type,
+                    'position': match.span(),
+                    'matched_text': match.group(1),
+                    'references': []
+                }
+                citations.append(citation_data)
+        
+        print(f"[Citation Extraction] Found {len(citations)} citations")
+        print(f"[Citation Extraction] Citations matched with references: {citations}")
+        
+        return citations
+
+    def _extract_reference_section(self, page_texts: List[str]) -> Dict[str, Any]:
+        """Extract reference section and entries from document"""
+        print("\n[DocumentProcessor] Starting reference section extraction")
+
+        page_texts = self._preprocess_reference_text(page_texts)
+        print(" page text: \n", page_texts)
+        
+        reference_data = {
+            'entries': {},
+            'type': 'unknown',
+            'start_page': None,
+            'end_page': None
+        }
+
+        def is_likely_reference_entry(line: str) -> bool:
+            """Check if line looks like a reference entry"""
+            print("Line of text:", line)
+            if not line.strip():
+                return False
+                
+            patterns = [
+                r'^\s*\[\d+\]',          # [1] Style
+                r'^\s*\(\d+\)',          # (1) Style  
+                r'^\s*\d+\.',            # 1. Style
+                r'^[A-Z][a-zA-Z\'-]+',   # Starts with capitalized word
+                r'^[A-Z]\.',             # Starts with initial
+                r'et\s+al\.?,',          # et al.
+                r'\(\d{4}\)[,.]',        # Year in parentheses
+                r'doi:',                 # DOI
+                r'ISBN:?',               # ISBN
+                r'vol\.',                # Volume indicator
+                r'pp\.',                 # Page indicators
+                r'http[s]?://'           # URLs
+            ]
+            return any(re.search(pattern, line) for pattern in patterns)
+        
+        def combine_reference_lines(lines: List[str], start_idx: int) -> Tuple[str, int]:
+            """Combines multi-line references into single string"""
+            combined = lines[start_idx]
+            current_idx = start_idx + 1
+            
+            while current_idx < len(lines):
+                next_line = lines[current_idx].strip()
+                
+                # Stop if we hit next reference (any pattern)
+                if any(re.match(pattern, next_line) for pattern in REFERENCE_PATTERNS.values()):
+                    break
+                    
+                # Stop if we found completion marker
+                if re.search(r'\d{4}\.|\b(?:https?://|www\.)\S+', next_line):
+                    combined += ' ' + next_line
+                    break
+                    
+                combined += ' ' + next_line
+                current_idx += 1
+                
+            return combined, current_idx - 1
+
+        # Process each page (keeping your existing page processing)
+        reference_section_found = False
+        for page_idx, page_text in enumerate(page_texts):
+            if not page_text:
+                continue
+                
+            lines = page_text.split('\n')
+            
+            # Look for reference section marker
+            for line_idx, line in enumerate(lines):
+                for pattern in REFERENCE_SECTION_TITLES:
+                    if re.search(pattern, line.lower().strip()):
+                        print(f"[DocumentProcessor] Found potential reference marker on page {page_idx + 1}")
+                        reference_section_found = True
+                        if reference_data['start_page'] is None:
+                            reference_data['start_page'] = page_idx + 1
+                        break
+                if reference_section_found:
+                    break
+
+            if reference_section_found:
+                # Process references line by line
+                current_line = line_idx + 1
+                while current_line < len(lines):
+                    line = lines[current_line].strip()
+                    
+                    # First try all reference patterns
+                    for ref_type, pattern in REFERENCE_PATTERNS.items():
+                        ref_match = re.match(pattern, line)
+                        if ref_match:
+                            # Get reference identifier based on type
+                            if ref_type == 'numbered_bracket':
+                                ref_id = ref_match.group(1)
+                            elif ref_type == 'numbered_dot':
+                                ref_id = ref_match.group(1)
+                            else:
+                                ref_id = ref_match.group(1)
+                                
+                            # Combine multi-line reference
+                            full_ref, current_line = combine_reference_lines(lines, current_line)
+                            
+                            if len(full_ref) > 10:  # Basic validation
+                                reference_data['entries'][ref_id] = {
+                                    'text': full_ref,
+                                    'type': ref_type
+                                }
+                            break
+                    
+                    current_line += 1
+
+        # Continue processing subsequent pages (keeping your existing logic)
+        if reference_section_found:
+            for page_idx in range(reference_data['start_page'], len(page_texts)):
+                page_text = page_texts[page_idx]
+                lines = page_text.split('\n')
+                current_line = 0
+                while current_line < len(lines):
+                    line = lines[current_line].strip()
+                    
+                    # Process reference patterns
+                    for ref_type, pattern in REFERENCE_PATTERNS.items():
+                        ref_match = re.match(pattern, line)
+                        if ref_match:
+                            ref_id = ref_match.group(1)
+                            full_ref, current_line = combine_reference_lines(lines, current_line)
+                            
+                            if len(full_ref) > 10:
+                                reference_data['entries'][ref_id] = {
+                                    'text': full_ref,
+                                    'type': ref_type
+                                }
+                            break
+                    
+                    current_line += 1
+                reference_data['end_page'] = page_idx + 1
+
+        if reference_data['entries']:
+            print(f"[DocumentProcessor] Found {len(reference_data['entries'])} references!")
+            print("reference_data \n:", reference_data['entries'])
+        
+        return reference_data
+    
+
+    
+--- End of services/document_processor.py ---
+
+--- Start of services/document_summarizer.py ---
+# src/research_assistant/services/document_summarizer.py
+from typing import Dict
+from openai import OpenAI
+from django.conf import settings
+import json
+from pydantic import BaseModel, Field
+import re
+from datetime import datetime
+
+class MetadataSchema(BaseModel): 
+    """Schema for document metadata extraction"""
+    title: str = Field(..., description="Document title")
+    authors: list[str] = Field(..., description="List of authors")
+    publication_date: str = Field(None, description="Publication date if available")
+    publisher: str = Field(None, description="Publisher name if available") 
+    doi: str = Field(None, description="DOI if available")
+    citation: str = Field(..., description="Full citation in academic format")
+    reference: str = Field(..., description="Full reference entry")
+    summary: str = Field(..., description="2-3 sentence summary")
+    total_pages: int = Field(default=1, description="Total number of pages")
+
+class DocumentSummarizer:
+    """Generate document summary and extract metadata"""
+    
+    def __init__(self):
+        self.llm = OpenAI(api_key=settings.OPENAI_API_KEY)
+        print("[DocumentSummarizer] Initialized")
+
+    def _construct_prompt(self, pages_text: list[str]) -> str:
+        """Construct metadata extraction prompt using first two pages
+        
+        Input:
+            pages_text: list[str] - List of first two pages text content
+            
+        Output:
+            str - Constructed prompt for LLM
+        """
+        print("[DocumentSummarizer] Constructing prompt")
+        
+        # Combine first two pages with separator
+        combined_text = "\n---PAGE BREAK---\n".join(pages_text)
+        print(f"[DocumentSummarizer] Combined text length: {len(combined_text)}")
+        
+        prompt = f"""
+        Academic Document Text (First Two Pages):
+        {combined_text}
+
+        \n#####
+
+        Above is the text from the first two pages of an academic document. Please analyze this text and extract key metadata.
+        Focus on identifying:
+        1. Title (required)
+        2. Authors (required)
+        3. Publication date (if available, format: YYYY-MM-DD)
+        4. Publisher (if available)
+        5. DOI (if available)
+        6. Generate proper academic citation (required)
+        7. Create full reference entry (required) HARVARD REFERENCE FORMAT
+        8. Write 2-3 sentence summary of main topic/findings (required)
+        9. Total pages (default to 1 if not found)
+        
+        Extract ALL available information but leave optional fields empty if not found.
+        Ensure citation and reference follow academic format standards.
+        For missing dates, use logical inference from content or citations if possible.
+
+        Respond in JSON format matching the MetadataSchema.
+        """
+        print(f"[DocumentSummarizer] Prompt constructed, length: {len(prompt)}")
+        return prompt
+
+    def _clean_text(self, text: str) -> str:
+        """Clean and normalize text"""
+        print(f"[DocumentSummarizer] Cleaning text, original length: {len(text)}")
+        text = re.sub(r'\s+', ' ', text)
+        text = text.strip()
+        print(f"[DocumentSummarizer] Text cleaned, new length: {len(text)}")
+        return text
+
+    def _parse_date(self, date_str: str) -> str:
+        """Parse and validate publication date"""
+        if not date_str:
+            print("[DocumentSummarizer] No date provided")
+            return None
+            
+        print(f"[DocumentSummarizer] Attempting to parse date: {date_str}")
+        
+        for fmt in ('%Y-%m-%d', '%Y/%m/%d', '%d-%m-%Y', '%Y'):
+            if parsed_date := self._try_parse_date(date_str, fmt):
+                print(f"[DocumentSummarizer] Successfully parsed date: {parsed_date}")
+                return parsed_date
+        
+        print(f"[DocumentSummarizer] Failed to parse date: {date_str}")
+        return None
+
+    def _try_parse_date(self, date_str: str, fmt: str) -> str:
+        """Helper function to try parsing a date with a specific format"""
+        try:
+            if isinstance(date_str, str):
+                print(f"[DocumentSummarizer] Attempting format {fmt}")
+                parsed_date = datetime.strptime(date_str, fmt).strftime('%Y-%m-%d')
+                print(f"[DocumentSummarizer] Date parsed: {parsed_date}")
+                return parsed_date
+        except Exception as e:
+            print(f"[DocumentSummarizer] Date parse error: {str(e)}")
+            return None
+
+    def generate_summary(self, document_sections: list[Dict], document_id: str) -> Dict:
+        """Generate document summary and extract metadata from first two pages
+        
+        Input:
+            document_sections: list[Dict] - List of document sections/pages
+            document_id: str - Document identifier
+            
+        Output:
+            Dict - Extracted metadata and summary
+        """
+        print("[DocumentSummarizer] Starting document summary generation")
+        print(f"[DocumentSummarizer] Processing first two pages for document: {document_id}")
+        
+        # Get text from first two pages
+        first_two_pages = []
+        for section in document_sections[:2]:  # Only process first two sections/pages
+            if section['content']['text']:
+                cleaned_text = self._clean_text(section['content']['text'])
+                first_two_pages.append(cleaned_text)
+        
+        print(f"[DocumentSummarizer] Got {len(first_two_pages)} pages for analysis")
+        
+        # Create function schema for LLM
+        function_schema = {
+            "name": "extract_document_metadata",
+            "parameters": MetadataSchema.schema()
+        }
+        
+        print("[DocumentSummarizer] Calling OpenAI API for metadata extraction")
+        response = self.llm.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{
+                "role": "system",
+                "content": self._construct_prompt(first_two_pages)
+            }],
+            temperature=0.3,
+            functions=[function_schema],
+            function_call={"name": "extract_document_metadata"}
+        )
+        
+        metadata = json.loads(response.choices[0].message.function_call.arguments)
+        
+        # Process publication date if present
+        if metadata.get('publication_date'):
+            metadata['publication_date'] = self._parse_date(metadata['publication_date'])
+
+        print("[DocumentSummarizer] Metadata extraction complete")
+        print(f"[DocumentSummarizer] Found {len(metadata)} metadata fields")
+        print(f"[DocumentSummarizer] Title: {metadata.get('title', 'Not found')}")
+        print(f"[DocumentSummarizer] Authors: {len(metadata.get('authors', []))} found")
+        print(f"[DocumentSummarizer] summary: {metadata.get('summary', [])} ")
+
+        
+        return metadata
+--- End of services/document_summarizer.py ---
+
+--- Start of search/search_manager.py ---
+
+# src/research_assistant/services/search/search_manager.py
+
+from typing import Dict, List, Any
+from research_assistant.models import DocumentMetadata, DocumentSection
+from ..document_searcher import DocumentSearcher
+import uuid
+
+class SearchManager:
+    def __init__(self):
+        print("[SearchManager] Initializing")
+        self.searcher = DocumentSearcher()
+
+    def prepare_sections_for_search(self, sections: List[Dict]) -> List[Dict]:
+        search_sections = []
+        for section in sections:
+            # Added validation and type conversion
+            section_id = str(section.id) if hasattr(section, 'id') else None
+            content = section.content if hasattr(section, 'content') else section.get('text', '')
+            
+            search_section = {
+                'text': content,
+                'section_id': section_id,
+                'page_number': int(section.section_start_page_number),
+                'section_type': section.section_type,
+                'start_text': content[:100] if content else "",
+                'elements': section.get_elements() if hasattr(section, 'get_elements') else [],
+                'citations': section.citations if hasattr(section, 'citations') else {},
+                'matching_context': "",
+                'matching_keywords': [],
+                'matching_similar_keywords': [],
+                'relevance_type': []
+            }
+            search_sections.append(search_section)
+        return search_sections
+
+    def search_documents(
+        self,
+        search_data,
+        context: str,
+        keywords: List[str],
+        user=None  # Add user parameter
+    ) -> Dict:
+        
+        print(f"[SearchManager] Searching documents for user: {user.email if user else 'No user'}")
+        print(f"[SearchManager] Searching document {search_data} documents")
+        print(f"[SearchManager] Context: {context}")
+        print(f"[SearchManager] Keywords: {keywords}")
+
+
+        # Extract file names from input
+        file_names = [item.get('file_name', '') for item in search_data if isinstance(item, dict)]
+
+        # if not isinstance(file_names, list):
+        #     file_names = [file_names]
+            
+        print(f"Filtering for file_names: {file_names}")
+        # Add user filter to document query
+        documents = DocumentMetadata.objects.filter(
+            file_name__in=file_names,
+            user=user
+        ) if user else DocumentMetadata.objects.filter(file_name__in=file_names)
+        
+        print("documets:", len(documents))
+
+        if not documents.exists():
+            print(f"No documents found for file_names: {file_names}")
+            raise ValueError(f"No valid documents found for file_names: {file_names}")
+
+        results = []
+        print(" documents found")
+        for document in documents:
+            print(f"[SearchManager] Processing document: {document.file_name}")
+            
+            # Get all sections for document directly from model
+            sections = DocumentSection.objects.filter(
+                document=document,
+                content__isnull=False  # Ensure no empty sections
+            ).order_by('section_start_page_number').select_related('document')
+            
+            search_sections = self.prepare_sections_for_search(sections)
+            
+            print("start section search")
+            search_result = self.searcher.search_document(
+                search_sections,
+                context,
+                keywords,
+                document.summary,
+                document.reference
+            )
+
+            doc_result = {
+                'search_results_id': uuid.uuid4(),
+                'document_id': str(document.id),
+                'question': context,
+                'keywords': keywords,
+                'title': document.title,
+                'authors': document.authors,
+                'summary': document.summary,
+                'file_name': document.file_name,
+                'relevance_score': search_result['relevance_score'],
+                'total_matches': search_result['total_matches'],
+                'matching_sections': [
+                    {
+                        'section_id': section['section_id'],
+                        'page_number': section['page_number'],
+                        'start_text': section['start_text'],
+                        # Context matches with citations
+                        'context_matches': [
+                            {
+                                'text': match['text'],
+                                'citations': match['citations']
+                            }
+                            for match in section['context_matches']
+                        ],
+                        # Keyword matches
+                        'keyword_matches': [
+                            {
+                                'keyword': match['keyword'],
+                                'text': match['text']
+                            }
+                            for match in section['keyword_matches']
+                        ],
+                        # Similar keyword matches
+                        'similar_matches': [
+                            {
+                                'similar_keyword': match['similar_keyword'],
+                                'text': match['text']
+                            }
+                            for match in section['similar_matches']
+                        ]
+                    }
+                    for section in search_result['relevant_sections']
+                ]
+            }
+            print("Done  processing append results")
+            results.append(doc_result)
+            print("Sort by relevance score")
+            # Sort by relevance score
+            results.sort(key=lambda x: x['relevance_score'], reverse=True)
+            print("RETURN")
+        
+        print(" final results: \n", results)
+        # print(x)
+        return {
+            'status': 'success',
+            'total_matches': len(results),
+            'results': results
+        }
+--- End of search/search_manager.py ---
+
+--- Start of services/document_searcher.py ---
+# src/research_assistant/services/document_searcher.py
+
+import re
+from typing import Dict, List, Any, Optional
+import json
+from openai import OpenAI
+from django.conf import settings
+from pydantic import BaseModel, Field
+from .monitoring.system_monitor import AIModelCosts
+from research_assistant.services.document_processor import DocumentProcessor
+from ..models import DocumentMetadata
+from .search.relevance_scorer import RelevanceScorer
+from .document_processor import DocumentProcessor
+
+class SearchMatch(BaseModel):
+    """Individual search match result"""
+    has_context: bool = Field(..., description="Whether section contains or answers the context provided by the user")
+    context: Optional[str] = Field(None, description="Matching context text, provide the exact matching text and the whole sentence from the section")
+    has_keyword: bool = Field(..., description="Whether section contains keyword true or false")
+    has_similar_keyword: bool = Field(..., description="Whether section contains similar keyword, true or false")
+    keyword: Optional[str] = Field(None, description="Matching keyword text, extract the exact keyword from the section")
+    similar_keyword: Optional[str] = Field(None, description="Matching similar keyword text, extract the similar keyword")
+    keyword_context: Optional[str] = Field(None, description="The full sentence containing the keyword or similar keyword")
+
+class SearchResults(BaseModel):
+    """Container for multiple search matches"""
+    responses: List[SearchMatch] = Field(..., description="List of all matches found in the section")
+
+class DocumentSearcher:
+    """Search document sections for relevant content with enhanced monitoring""" 
+    def __init__(self):
+        print("\n[DocumentSearcher] Initializing searcher")
+        self.llm = OpenAI(api_key=settings.OPENAI_API_KEY)
+        self.total_tokens_used = 0
+        self.total_api_calls = 0
+        self.relevance_scorer = RelevanceScorer()
+        print("[DocumentSearcher] Initialization complete")
+
+    def _construct_search_prompt(
+        self,
+        text: str,
+        context: str,
+        keywords: List[str],
+        summary: str,
+    ) -> str:
+        """Construct section analysis prompt with context awareness"""
+        print("\n[DocumentSearcher] Constructing search prompt")
+        
+        # Validate and sanitize inputs
+        text = str(text) if text is not None else ''
+        context = str(context) if context is not None else ''
+        summary = str(summary) if summary is not None else ''
+        keywords_str = ', '.join(str(k) for k in keywords) if keywords else ''
+        
+        print(f"[DocumentSearcher] Text length: {len(text)}")
+        print(f"[DocumentSearcher] Context: {context}")
+        print(f"[DocumentSearcher] Keywords: {keywords_str}")
+        
+        # Your original prompt with proper formatting
+        prompt = f"""
+        # BACKGROUND 
+        # Background of the Academic Document Summary: \n
+        {summary} \n
+        ################## 
+        Above is a summary of a academic document to understand the what the academic document is about. \n
+        The user is looking for specific information in the document. below is their search criteria containing everything the user is looking for from the document section. \n
+        Context: Is the information the user is looking for in the document, if so return the information found in the document. \n
+        Keywords: Are the exact keywords that the user is looking for in the document. \n
+        Similar Keywords: are synonyms or related concepts to the keywords that are in the document based on the context.\n \n
+        I will share with you a sections from the document, your job is to look for anything in that section that the user may find useful  using the information in the "search criteria" extract as much information as possible.  Then return as many  extracted information from that section as possible in a json format. \n
+        Below is the section of Content from the academic research paper document, please read it carefully \n 
+       
+        \n \n
+        # DOCUMENT SECTION \n
+        # Current Document Section Content Below: \n
+        {text} \n\n 
+         ###################### \n
+
+        Note: The Document Section Content Above is one part of the Academic Document, Focus your analysis only on the "Current Document Section" above, and extract as much information as possible from the documentation the user will find imporant.
+        
+        ## Your goal is to use the Search Criterias below provided by the user to search the Document Current Section and determine if it is anything relevant to the user Search Criterias. \n
+
+        Task: Analyze the current section document against the search criteria extract as many json formated responses as possible:
+        1. Context Match: Ask yourself Does the document section have any relation to the context asked by the user? If yes, extract the exact matching text and the whole sentance for context from the section in full, with citations (e.g [44]/ (John, 2018)) or sources. \n
+        2. Keyword Match: Ask yourself Does the section contain any exact keywords? If yes, extract the sentence containing the keyword from the section. \n
+        3. similar Concepts: Does the section contain related concepts? If yes, extract the relevant text. \n
+
+        Below is the User Search Query, the context is what the user is looking for from the section of the academic paper above.
+
+
+        --------------------------- \n
+        # USER SEARCH CRITERIA: \n
+        **Context:** \n
+        {context} \n\n
+        **Keywords:** \n
+        {keywords_str} \n\n 
+        
+         ---------------------------
+
+        - Your goal is to use the Search Criterias above given by the user to analyse the Document Section Content and determine if any of it is relevant to the user based on the search criteria. \n
+        - The "context" can contain questions from the user, or information the user is looking for. If the context is a question check the Current Document Section Content to see if it answers any of the questions. If yes, extract any many matching text and the whole sentance from the section document in full with its citations or sources. \n
+        - The "context" can also be information or a statment made by the user, If the context is a information or a statment made by the user check the Current Document Section Content that any part of the user context(search criteria) is relevant this could be a supporting statement or a opposing statement both is considered relevant match, return as many as possible if found. \n
+        - For "Keywords" Ask yourself Does the section contain any exact keywords? If yes, extract the sentence containing the keyword from the section.\n
+        - For "Similar Keyword" Ask yourself Does the section contain any phrase and words with similar meaning to th keywords the user searching for? If yes, extract the sentence containing the simluar keyword from the section \n \n
+        --------------------------- \n
+
+        # RESPONSE
+        Must always Return JSON response format as many matches as possible from the section document  :\n 
+        has_context: bool, 
+        context: str ,
+        has_keyword: bool, 
+        has_similar_keyword: bool, 
+        keyword: str ,
+        similar_keyword: str ,
+        keyword_context: str, \n 
+
+        IMPORTANT: Return ALL matches found in the section. Each match should be a separate object in the responses array.
+        For each relevant piece of text found:
+        - If it matches the context, return the full sentance for full context
+        - If it contains keywords, include it as a separate match, include the keyword found and in the keyword_context include the sentance the keyword was found
+        - If it contains similar concepts to the keyword, include it as a separate match,  include the found concept and in the keyword_context include the sentance the simliar concept was found
+        
+        
+        ---------------------------
+        **JSON Response Format:**  
+        Each relevant match should be returned as a **separate object** in the `responses` array.  
+        If a section document contains multiple matches or relevant information, return **each match as a distinct object**. \n
+        
+         # EXAMPLE 1:\n
+        ```json
+        {"""
+            "responses": [
+                {{
+                    "has_context": true, 
+                    "context": "Extracted relevant sentence with citation [12].",  
+                    "has_keyword": true, 
+                    "has_similar_keyword": false, 
+                    "keyword": "example_keyword",  
+                    "similar_keyword": "",  
+                    "keyword_context": "Full sentence containing example_keyword."
+                }},
+                {{
+                    "has_context": false,  
+                    "context": "",  
+                    "has_keyword": true,  
+                    "has_similar_keyword": false,  
+                    "keyword": "another_keyword",  
+                    "similar_keyword": "",  
+                    "keyword_context": "Sentence containing another_keyword."
+                }},
+                {{
+                    "has_context": true,  
+                    "context": "A sentence that is relevant to the user’s search context, with citation [5].",  
+                    "has_keyword": false,  
+                    "has_similar_keyword": false,  
+                    "keyword": "",  
+                    "similar_keyword": "",  
+                    "keyword_context": ""
+                }},
+                {{
+                    "has_context": true,  
+                    "context": "A statement discussing a related topic relevant to the user's search query.",  
+                    "has_keyword": true,  
+                    "has_similar_keyword": true,  
+                    "keyword": "original_keyword",  
+                    "similar_keyword": "related_concept",  
+                    "keyword_context": "Sentence containing both original_keyword and related_concept."
+                }}
+            ]
+        """}
+        ```
+
+        # EXAMPLE 2:\n
+                {"""
+                    {
+                        "responses": [
+                            {
+                                "has_context": true,
+                                "context": "A legume that\\'s high in protein and fiber, and also contains B vitamins, iron, and potassium [8].",
+                                "has_keyword": true,
+                                "has_similar_keyword": false,
+                                "keyword": "fiber",
+                                "similar_keyword": "",
+                                "keyword_context":" A legume that\\'s high in protein and fiber"
+                            },
+                            {
+                                "has_context": false,
+                                "context": "",
+                                "has_keyword": true,
+                                "has_similar_keyword": false,
+                                "keyword": "zinc.",
+                                "similar_keyword": ""
+                                 "keyword_context": "Plant-based proteins that also contain iron and zinc.",
+                            },
+                            {
+                                "has_context": true,
+                                "context": "With the addition of protein an essential nutrient that helps build and repair body tissue [34, 50], maintain muscle strength, and heal wounds.",
+                                "has_keyword": false,
+                                "has_similar_keyword": false,
+                                "keyword": "",
+                                "similar_keyword": "",
+                                "keyword_context": ""
+                            },
+                            {
+                                "has_context": true,
+                                "context": "A quick snack that contains protein, fiber, magnesium, zinc, and polyunsaturated fatty acids [12]. A complete protein that contains all the essential amino acids, as well as omega-3 fatty acids, iron, and fiber.  [10, 15, 52]. ",
+                                "has_keyword": true,
+                                "has_similar_keyword": false,
+                                "keyword": "fiber, zinc",
+                                "similar_keyword": "",
+                                "keyword_context": "A quick snack that contains protein, fiber, magnesium, zinc, and polyunsaturated fatty acids [12]."
+                            }
+                        ]
+                    }
+                    """}
+
+         ###################
+        """
+        
+        print(f"[DocumentSearcher] Prompt constructed, length: {len(prompt)}")
+        return prompt
+
+
+    def analyze_section(
+        self,
+        section: Dict,
+        context: str,
+        keywords: List[str],
+        summary: str,
+        ) -> Dict:
+            """Analyze section with context awareness
+            
+            Input:
+                section: {
+                    'content': {
+                        'text': str,
+                        'type': str,
+                        'has_citations': bool
+                    },
+                    'prev_page_text': Optional[str],
+                    'next_page_text': Optional[str]
+                }
+            """
+            print("\n[DocumentSearcher] Starting section analysis: \n", section )
+
+            # Get main text with context
+            analysis_text = []
+                
+            analysis_text.append(section['text'])
+            
+            full_text = "\n".join(analysis_text)
+            
+            prompt = self._construct_search_prompt(
+                full_text, context, keywords, summary
+            )
+            print(f"[DocumentSearcher] Search prompt: \n {prompt}")
+
+                
+            function_schema = {
+                "name": "analyse_section_content",
+                "parameters": SearchResults.schema()
+            }
+
+            print("[DocumentSearcher] Calling OpenAI API")
+            response = self.llm.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[{
+                    "role": "system",
+                    "content": prompt
+                }],
+                temperature=0.3,
+                functions=[function_schema],
+                function_call={"name": "analyse_section_content"}
+            )
+                
+            
+            prompt_tokens = response.usage.prompt_tokens
+            completion_tokens = response.usage.completion_tokens
+            total_tokens = response.usage.total_tokens
+            # Track API usage
+            self.total_tokens_used += total_tokens
+            self.total_api_calls += 1
+
+            print(f"[DocumentSearcher] API call completed, tokens used: {response.usage.total_tokens}")
+            print(f"[DocumentSearcher] prompt_tokens", prompt_tokens)
+            print(f"[DocumentSearcher] completion_tokens", completion_tokens)
+            print(f"[DocumentSearcher] total_tokens", self.total_tokens_used)
+            print(f"[DocumentSearcher] estimated_cost", AIModelCosts.calculate_cost(
+                total_tokens, 
+                "gpt4-mini",
+                is_cached=False,
+                is_batch=False
+            ))
+        
+            # print("full Response: ", response)
+            results = json.loads(response.choices[0].message.function_call.arguments)
+            print(f"[DocumentSearcher] API response received:", results)
+            validated_results = SearchResults(**results)
+
+            for idx, match in enumerate(validated_results.responses):
+                print(f"Match {idx + 1}:")
+                if match.has_context:
+                    print(f"  Context: {match.context}")
+                if match.has_keyword:
+                    print(f"  Keyword: {match.keyword}")
+                    print(f"  Keyword Context: {match.keyword_context}")
+                if match.has_similar_keyword:
+                    print(f"  Similar Keyword: {match.similar_keyword}")
+                
+                
+            return validated_results.model_dump()
+
+    def calculate_relevance_score(
+    self,
+    total_sections: int,
+    context_matches: int,
+    keyword_matches: int,
+    similar_matches: int,
+    document_relevance: bool
+) -> float:
+        """Calculate relevance score with detailed monitoring"""
+        print("\n[DocumentSearcher] Calculating relevance score")
+
+        print(f"[DocumentSearcher] Total sections: {total_sections}")
+        print(f"[DocumentSearcher] Context matches: {context_matches}")
+        print(f"[DocumentSearcher] Keyword matches: {keyword_matches}")
+        print(f"[DocumentSearcher] similar keyword matches: {similar_matches}")
+        
+        # Calculate components with adjusted weights
+        context_score = (context_matches) * 15  # Increased weight for context
+        keyword_score = (keyword_matches) * 5   # Adjusted weight for keywords
+        similar_score = (similar_matches) * 2    # Adjusted weight for similar matches
+        summary_bonus = 5 if document_relevance else 0  # Adjusted summary bonus
+        
+        # Calculate total
+        total_score = context_score + keyword_score + similar_score + summary_bonus
+        final_score = min(total_score, 100.0)
+        
+        print("[DocumentSearcher] Score components:")
+        print(f"  Context score: {context_score:.2f}")
+        print(f"  Keyword score: {keyword_score:.2f}")
+        print(f"  similar concepts score: {similar_score:.2f}")
+        print(f"  Summary bonus: {summary_bonus}")
+        print(f"  Final score: {final_score:.2f}")
+        
+        return final_score
+
+    def check_summary_relevance(
+        self,
+        summary: str,
+        context: str
+    ) -> bool:
+        """Check summary relevance with monitoring"""
+        print("\n[DocumentSearcher] Checking summary relevance")
+        print(f"[DocumentSearcher] Summary length: {len(summary)}")
+        print(f"[DocumentSearcher] Context length: {len(context)}")
+        
+        prompt = f"""
+            Analyze if this academic document summary is relevant to the given context.
+            
+            Summary: {summary}
+            Context: {context}
+            
+            Return 'true' only if there is a clear topical match between the context
+            and the summary. Return 'false' if unclear or no match.
+        """
+        
+        response = self.llm.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "system", "content": prompt}],
+            temperature=0.3
+        )
+        print(f"[DocumentSearcher] API response summary relevance received:" , response)
+        # In check_summary_relevance method, update monitoring:
+        prompt_tokens = response.usage.prompt_tokens
+        completion_tokens = response.usage.completion_tokens
+        total_tokens = response.usage.total_tokens
+        # Track API usage
+        self.total_tokens_used += total_tokens
+        self.total_api_calls += 1
+
+        print(f"[DocumentSearcher] API call completed, tokens used: {response.usage.total_tokens}")
+        print(f"[DocumentSearcher] prompt_tokens", prompt_tokens)
+        print(f"[DocumentSearcher] completion_tokens", completion_tokens)
+        print(f"[DocumentSearcher] total_tokens", self.total_tokens_used)
+        print(f"[DocumentSearcher] estimated_cost", AIModelCosts.calculate_cost(
+            total_tokens, 
+            "gpt4-mini",
+            is_cached=False,
+            is_batch=False
+        ))
+
+        
+        is_relevant = response.choices[0].message.content.strip().lower() == "true"
+        print(f"[DocumentSearcher] Summary relevance result: {is_relevant}")
+        
+        return is_relevant
+
+
+    def search_document(
+    self,
+    sections: List[Dict],
+    context: str,
+    keywords: List[str],
+    summary: str,  
+    reference_data: Dict
+    ) -> Dict:
+        """Search document with page-based sections"""
+        print("\n[DocumentSearcher] Starting document search")
+        print(f"[DocumentSearcher] Processing {len(sections)} pages")
+
+        matches = {
+            "context": 0,
+            "keyword": 0,
+            "similar": 0,
+            "relevant_sections": [],
+            "relevance_score": 0,
+            "total_matches": 0
+        }
+
+        # Process each section
+        for section in sections:
+            results = self.analyze_section(
+                section=section,
+                context=context,
+                keywords=keywords,
+                summary=summary
+            )
+            print("[DocumentSearcher] Search Results: ", results)
+
+            # Initialize section data
+            section_matches = {
+
+                'page_number': section['page_number'],
+                'section_id': section['section_id'],
+                'start_text': section['start_text'],
+                'context_matches': [],    # Separate array for context matches
+                'keyword_matches': [],    # Separate array for keyword matches
+                'similar_matches': []     # Separate array for similar matches
+            }
+
+            # Process each match type separately
+            for match in results.get('responses', []):
+                # Context matches
+                if match['has_context']:
+                    print("Has Matching Context ")
+                    matches["context"] += 1
+                    print("Has Matching Context Text: \n", match["context"])
+                    section_matches['context_matches'].append({
+                        'text': match["context"],
+                        'citations': self._extract_citations(match['context'], reference_data)
+                    })
+
+                # Keyword matches
+                if match['has_keyword']:
+                    matches["keyword"] += 1
+                    print("Has Matching Keywords ")
+                    print("Has Matching Keywords Text:  ", match['keyword'] )
+                    section_matches['keyword_matches'].append({
+                        'keyword': match['keyword'],
+                        'text': match['keyword_context']
+                    })
+
+
+                # Similar keyword matches
+                if match['has_similar_keyword']:
+                    matches["similar"] += 1
+                    section_matches['similar_matches'].append({
+                        'similar_keyword': match['similar_keyword'],
+                        'text': match['keyword_context']
+                    })
+
+            # Only add sections with matches
+            if (section_matches['context_matches'] or 
+                section_matches['keyword_matches'] or 
+                section_matches['similar_matches']):
+                matches["relevant_sections"].append(section_matches)
+
+        # Calculate relevance
+        
+        is_relevant = self.check_summary_relevance(summary, context)
+        relevance_score = self.calculate_relevance_score(
+            total_sections=len(sections),
+            context_matches=matches["context"],
+            keyword_matches=matches["keyword"],
+            similar_matches=matches["similar"],
+            document_relevance=is_relevant
+        )
+
+        matches["relevance_score"] = relevance_score
+        matches["total_matches"] = sum([
+            len(section['context_matches']) +
+            len(section['keyword_matches']) +
+            len(section['similar_matches'])
+            for section in matches["relevant_sections"]
+        ])
+
+        return matches
+    
+
+    def _extract_citations(self, text: str, reference_data: Dict) -> List[Dict]:
+        """Extract citations from text and link to references
+        
+        Input:
+            text: str - Text containing citations
+            reference_data: Dict - Reference data dictionary
+            
+        Output:
+            List[Dict] - List of found citations with references in same format as document processor
+        """
+        try:
+            # Use the cleaned text approach
+            cleaned_text = re.sub(r'\s+', ' ', text).strip()
+            citations = []
+            
+            # Extract numbered citations with comma separation - matching document processor format
+            for match in re.finditer(r'\[(\d+(?:,\s*\d+)*)\]', cleaned_text):
+                citation_text = match.group(0)
+                ref_numbers = [num.strip() for num in match.group(1).split(',')]
+                
+                citation_data = {
+                    'text': citation_text,
+                    'type': 'numbered',
+                    'position': match.span(),
+                    'ref_numbers': ref_numbers,
+                    'references': []
+                }
+                
+                # Match references just like document processor
+                if reference_data and 'entries' in reference_data:
+                    for ref_num in ref_numbers:
+                        if ref_num in reference_data['entries']:
+                            citation_data['references'].append(
+                                reference_data['entries'][ref_num]
+                            )
+                
+                citations.append(citation_data)
+            print("search citations: \n", citations)
+            return citations
+            
+        except Exception as e:
+            print(f"[DocumentSearcher] Citation extraction error: {str(e)}")
+            return []
+
+         
+
+
+        
+--- End of services/document_searcher.py ---
+

@@ -12,5 +12,5 @@ class UserSerializer(serializers.ModelSerializer):
 class AdminUserSerializer(serializers.ModelSerializer):
   class Meta:
       model = AdminUser
-      fields = ['id', 'username', 'email', 'is_staff', 'is_superuser', 'date_joined']
+      fields = ['id', 'email', 'is_staff', 'is_superuser', 'date_joined']
       read_only_fields = ['id', 'date_joined', 'is_staff', 'is_superuser']
