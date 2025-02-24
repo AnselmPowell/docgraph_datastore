@@ -52,12 +52,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    'api',
-    # 'document_analysis',
-    # 'vector_store',
-    # 'pgvector',
-     'research_assistant',
-     'auth_api',
+    'research_assistant',
+    'auth_api',
 ]
 
 
@@ -65,6 +61,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -114,7 +111,11 @@ CORS_ALLOW_ALL_ORIGINS = False
 print("--------- DATABASE URL  ", app_config['DATABASE_URL'])
 
 DATABASES = {
-    'default': dj_database_url.config(default=app_config['DATABASE_URL'])
+    'default': dj_database_url.config(
+        default=app_config['DATABASE_URL'],
+        conn_max_age=600,
+        conn_health_checks=True,
+        )
 }
 
 # Governance-specific settings
@@ -166,8 +167,8 @@ JWT_SETTINGS = {
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,
     'VERIFYING_KEY': None,
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=31),
 }
 
 
@@ -204,10 +205,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 if app_config['STATIC_ROOT']:
     STATIC_ROOT = app_config['STATIC_ROOT']
+
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
