@@ -1,6 +1,5 @@
 from pdf2docx import Converter
 import pdfplumber
-import tempfile
 import fitz
 import os
 import json
@@ -38,10 +37,10 @@ class PDFParser:
         self.pdf_name = os.path.splitext(os.path.basename(pdf_path))[0]
         
         # Setup output structure
-        self.output_dir = tempfile.mkdtemp()
-        self.output_text_dir = os.path.join(self.output_dir, 'text')
-        self.output_tables_dir = os.path.join(self.output_dir, 'tables')
-        self.output_images_dir = os.path.join(self.output_dir, 'images')
+        self.output_dir = os.path.join('output')
+        self.output_text_dir = os.path.join(self.output_dir, 'text', self.pdf_name)
+        self.output_tables_dir = os.path.join(self.output_dir, 'tables', self.pdf_name)
+        self.output_images_dir = os.path.join(self.output_dir, 'images', self.pdf_name)
         
         # Create output directories
         for dir_path in [self.output_text_dir, self.output_tables_dir, self.output_images_dir]:
@@ -261,16 +260,3 @@ class PDFParser:
         except Exception as e:
             logger.error(f"Error parsing PDF: {str(e)}")
             raise
-        finally:
-            # Always clean up temporary files, even if there's an exception
-            self.cleanup()
-
-    
-    def cleanup(self):
-        """Remove temporary files after processing."""
-        try:
-            import shutil
-            shutil.rmtree(self.output_dir, ignore_errors=True)
-            logger.info(f"Cleaned up temporary directory: {self.output_dir}")
-        except Exception as e:
-            logger.error(f"Error cleaning up temporary files: {str(e)}")

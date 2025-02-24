@@ -1,56 +1,92 @@
-Django
-djangorestframework
-django-cors-headers
-dj-database-url
-python-dotenv
-psycopg[binary]
-rav
-python-decouple
-gunicorn
+# Django
+# djangorestframework
+# django-cors-headers
+# dj-database-url
+# python-dotenv
+# psycopg[binary]
+# rav
+# python-decouple
+# gunicorn
 
-PyPDF2==3.0.1
-python-docx==0.8.11
-odfpy==1.4.1
-nltk==3.8.1
-requests==2.31.0
-
-
-
-# requirements.txt
-
-openai
-pandas
-psycopg[binary]
-pgvector
-python-dotenv
-python-docx
-odfpy   
-
-pymupdf
-
-
-python-magic-bin
-unstructured[local-inference]
-unstructured-inference
+# PyPDF2==3.0.1
+# python-docx==0.8.11
+# odfpy==1.4.1
+# nltk==3.8.1
+# requests==2.31.0
 
 
 
-lxml
+# # requirements.txt
 
-# PDF Processing
-PyMuPDF==1.23.8
-pdf2image==1.16.3
-pytesseract==0.3.10
-PyPDF2==3.0.1
- pdfminer.six
+# openai
+# pandas
+# psycopg[binary]
+# pgvector
+# python-dotenv
+# python-docx
+# odfpy   
+
+# pymupdf
+
+
+# python-magic-bin
+# unstructured[local-inference]
+# unstructured-inference
+
+
+
+# lxml
+
+# # PDF Processing
+# PyMuPDF==1.23.8
+# pdf2image==1.16.3
+# pytesseract==0.3.10
+# PyPDF2==3.0.1
+#  pdfminer.six
+
+# # Document Processing
+# python-docx==0.8.11
+# python-pptx==0.6.21
+# unstructured==0.12.0
+# pandas==2.1.4
+# numpy==1.26.3
+
+# # OCR and Image Processing
+# Pillow==10.2.0
+# pytesseract==0.3.10
+
+
+
+# Django & REST Framework
+django==4.2.7
+djangorestframework==3.14.0
+django-cors-headers==4.3.1
+
+# Database
+dj-database-url==2.1.0
+psycopg2-binary==2.9.9
+
+# Environment & Configuration
+python-dotenv==1.0.0
+python-decouple==3.8
+
+# Authentication & Security
+PyJWT==2.8.0
 
 # Document Processing
-python-docx==0.8.11
-python-pptx==0.6.21
-unstructured==0.12.0
-pandas==2.1.4
-numpy==1.26.3
+openai==1.3.0
+pdf2docx==0.5.6
+pdfplumber==0.10.3
+PyMuPDF==1.22.3  # Specific version to avoid compatibility issues
 
-# OCR and Image Processing
-Pillow==10.2.0
-pytesseract==0.3.10
+# Data Analysis
+pandas==2.1.1
+numpy==1.26.0
+
+# Web Server
+gunicorn==21.2.0
+whitenoise==6.6.0
+
+# Utils
+requests==2.31.0
+python-dateutil==2.8.2
