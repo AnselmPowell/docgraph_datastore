@@ -14,7 +14,7 @@ config = {
         'https://baseinterfacev1-production.up.railway.app'
     ],
     'DATABASE_URL': os.environ.get('POSTGRES_URL') if IS_PRODUCTION_BACKEND else os.environ.get('POSTGRES_URL_DEV'),
-    'STATIC_ROOT': BASE_DIR / 'staticfiles' if IS_PRODUCTION_BACKEND else None,
+    'STATIC_ROOT': BASE_DIR / 'staticfiles',
 }
 
 
