@@ -20,6 +20,8 @@ RUN apt-get update && apt-get install -y \
     libmagic1 \
     libxml2-dev \
     libxslt-dev \
+    make \
+    build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 # Set up code directory
@@ -28,6 +30,9 @@ WORKDIR /code
 
 # Copy requirements and install dependencies
 COPY requirements.txt /tmp/requirements.txt
+
+# Modify requirements to use a pre-compiled version of PyMuPDF
+RUN sed -i 's/PyMuPDF==1.22.3/pymupdf-binary==1.22.3/g' /tmp/requirements.txt
 
 # Install dependencies
 RUN pip install -r /tmp/requirements.txt
