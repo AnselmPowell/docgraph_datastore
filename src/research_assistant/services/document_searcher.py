@@ -6,7 +6,7 @@ import json
 from openai import OpenAI
 from django.conf import settings
 from pydantic import BaseModel, Field
-from .monitoring.system_monitor import AIModelCosts
+# from .monitoring.system_monitor import AIModelCosts
 from research_assistant.services.document_processor import DocumentProcessor
 from ..models import DocumentMetadata
 from .search.relevance_scorer import RelevanceScorer
@@ -285,12 +285,12 @@ class DocumentSearcher:
             print(f"[DocumentSearcher] prompt_tokens", prompt_tokens)
             print(f"[DocumentSearcher] completion_tokens", completion_tokens)
             print(f"[DocumentSearcher] total_tokens", self.total_tokens_used)
-            print(f"[DocumentSearcher] estimated_cost", AIModelCosts.calculate_cost(
-                total_tokens, 
-                "gpt4-mini",
-                is_cached=False,
-                is_batch=False
-            ))
+            # print(f"[DocumentSearcher] estimated_cost", AIModelCosts.calculate_cost(
+            #     total_tokens, 
+            #     "gpt4-mini",
+            #     is_cached=False,
+            #     is_batch=False
+            # ))
         
             # print("full Response: ", response)
             results = json.loads(response.choices[0].message.function_call.arguments)
@@ -383,12 +383,12 @@ class DocumentSearcher:
         print(f"[DocumentSearcher] prompt_tokens", prompt_tokens)
         print(f"[DocumentSearcher] completion_tokens", completion_tokens)
         print(f"[DocumentSearcher] total_tokens", self.total_tokens_used)
-        print(f"[DocumentSearcher] estimated_cost", AIModelCosts.calculate_cost(
-            total_tokens, 
-            "gpt4-mini",
-            is_cached=False,
-            is_batch=False
-        ))
+        # print(f"[DocumentSearcher] estimated_cost", AIModelCosts.calculate_cost(
+        #     total_tokens, 
+        #     "gpt4-mini",
+        #     is_cached=False,
+        #     is_batch=False
+        # ))
 
         
         is_relevant = response.choices[0].message.content.strip().lower() == "true"
