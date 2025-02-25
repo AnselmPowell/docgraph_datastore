@@ -35,6 +35,7 @@ LLAMA_PARSE_KEY = config('LLAMA_PARSE_KEY', default='')
 
 
 CSRF_TRUSTED_ORIGINS = [
+    "https://docgraph.up.railway.app/"
     "http://*.railway.app",
     "https://*.railway.app",
 ]
