@@ -12,7 +12,7 @@ config = {
     # if not IS_PRODUCTION_BACKEND else ['https://docgraphapi.up.railway.app','https://docgraph.up.railway.app'],
     'CORS_ALLOWED_ORIGINS': [
         'https://docgraph.up.railway.app',
-        # 'http://localhost:3000',
+        'http://localhost:3000',
     ],
     'DATABASE_URL': os.environ.get('POSTGRES_URL') if IS_PRODUCTION_BACKEND else os.environ.get('POSTGRES_URL_DEV'),
     'STATIC_ROOT': BASE_DIR / 'staticfiles',
