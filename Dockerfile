@@ -34,9 +34,14 @@ COPY requirements.txt /tmp/requirements.txt
 # Modify requirements to use a pre-compiled version of PyMuPDF
 RUN sed -i 's/PyMuPDF==1.22.3/pymupdf-binary==1.22.3/g' /tmp/requirements.txt
 
+RUN apt-get update && apt-get install -y \
+    libgl1-mesa-glx \
+    libglib2.0-0
+
 # Install dependencies
 RUN pip install -r /tmp/requirements.txt
 RUN pip install gunicorn whitenoise
+
 
 # Copy project code
 COPY ./src /code
