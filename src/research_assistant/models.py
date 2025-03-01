@@ -161,26 +161,6 @@ class SearchQuery(models.Model):
             models.Index(fields=['created_at'])
         ]
 
-# class SearchResult(models.Model):
-#     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-#     search_query = models.ForeignKey(SearchQuery, on_delete=models.CASCADE, related_name='results')
-#     # user = models.ForeignKey( User, on_delete=models.CASCADE, related_name='search_queries', null=True, blank=True )
-#     document = models.ForeignKey(DocumentMetadata, on_delete=models.CASCADE)
-#     relevance_score = models.FloatField()
-#     matching_sections = models.JSONField(default=list)
-#     context_matches = models.JSONField(default=list)
-#     keyword_matches = models.JSONField(default=list)
-#     citation_matches = models.JSONField(default=list)
-#     created_at = models.DateTimeField(auto_now_add=True)
-
-#     class Meta:
-#         db_table = 'search_results'
-#         indexes = [
-#             models.Index(fields=['search_query', 'document']),
-#             models.Index(fields=['relevance_score']),
-#             models.Index(fields=['created_at'])
-#         ]
-
 
 
 class SearchResult(models.Model):
