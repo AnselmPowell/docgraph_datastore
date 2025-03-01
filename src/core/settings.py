@@ -34,11 +34,14 @@ LLAMA_PARSE_KEY = config('LLAMA_PARSE_KEY', default='')
 
 
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://docgraph.up.railway.app/"
-    "http://*.railway.app",
-    "https://*.railway.app",
-]
+CSRF_TRUSTED_ORIGINS = ['https://docgraph.up.railway.app', 'https://docgraphapi.up.railway.app']
+
+
+# CSRF_TRUSTED_ORIGINS = [
+#     "https://docgraph.up.railway.app/"
+#     "http://*.railway.app",
+#     "https://*.railway.app",
+# ]
 
 CORS_ALLOWED_ORIGINS = app_config['CORS_ALLOWED_ORIGINS']
 
@@ -133,6 +136,20 @@ MONITORING_SETTINGS = {
     'ENABLE_PERFORMANCE_TRACKING': True,
     'ENABLE_RICH_LOGGING': True,
     'TRACK_DOCUMENT_METRICS': True
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
 }
 
 
