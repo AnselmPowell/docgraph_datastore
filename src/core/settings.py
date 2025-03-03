@@ -34,7 +34,7 @@ LLAMA_PARSE_KEY = config('LLAMA_PARSE_KEY', default='')
 
 
 
-CSRF_TRUSTED_ORIGINS = ['https://docgraph.up.railway.app', 'https://docgraphapi.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8001', 'http://127.0.0.1:8000', 'https://docgraph.up.railway.app', 'https://docgraphapi.up.railway.app']
 
 
 # CSRF_TRUSTED_ORIGINS = [
@@ -227,7 +227,8 @@ STATIC_URL = '/static/'
 
 if app_config['STATIC_ROOT']:
     STATIC_ROOT = app_config['STATIC_ROOT']
-
+else:
+    STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
