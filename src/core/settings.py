@@ -25,7 +25,9 @@ SECRET_KEY = app_config['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = app_config['DEBUG']
 
+
 ALLOWED_HOSTS = app_config['ALLOWED_HOSTS']
+
 
 # Make sure OpenAI API key is set
 OPENAI_API_KEY = config('OPENAI_API_KEY', default='')
@@ -137,6 +139,7 @@ MONITORING_SETTINGS = {
     'ENABLE_RICH_LOGGING': True,
     'TRACK_DOCUMENT_METRICS': True
 }
+
 
 LOGGING = {
     'version': 1,

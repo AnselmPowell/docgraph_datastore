@@ -9,6 +9,9 @@ __pycache__/
 db.sqlite3
 media/
 
+output.txt
+merge_file_commands.txt
+
 # Environments
 .env
 .venv

@@ -9,6 +9,7 @@ from rest_framework.response import Response
 def api_root(request):
     return Response({"message": "Welcome to the Django API DataStore"})
 
+
 urlpatterns = [
     # path('', RedirectView.as_view(url='/api/', permanent=False)),
     path('', api_root, name='api-root'),
