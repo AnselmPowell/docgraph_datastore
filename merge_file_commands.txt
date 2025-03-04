@@ -7,7 +7,6 @@ Matching files merged into output.txt
 
 
 
-
-bash merge_files.sh Dockerfile .env config.py core/urls.py  core/settings.py research_assistant/services/pdf_parser.py
+bash merge_files.sh Dockerfile .env config.py core/urls.py core/settings.py research_assistant/services/pdf_parser.py
 
 File not found
