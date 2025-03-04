@@ -76,19 +76,19 @@ class DocumentManagementViewSet(viewsets.ViewSet):
         print(f"[_process_document] user: {user}")
         print(f"[_process_document] file_data['file_url']: {file_data['file_url']}")
         # print(f"[_process_document] Creating new document: {file_data['file_name']}")
-        try:
-            document = await sync_to_async(DocumentMetadata.objects.create)(
-                # id= uuid.uuid4(),
-                # id= file_data['file_id'],
-                user=user, 
-                file_name=file_data['file_name'],
-                url=file_data['file_url'],
-                processing_status='processing'
-            )
-            print(f"[_process_document] Created document: {document}")
-        except Exception as e:
-            print(f"[_process_document] Processing error for {file_data['file_name']}: {str(e)}")
-            raise
+        # try:
+        document = await sync_to_async(DocumentMetadata.objects.create)(
+            # id= uuid.uuid4(),
+            # id= file_data['file_id'],
+            user=user, 
+            file_name=file_data['file_name'],
+            url=file_data['file_url'],
+            processing_status='processing'
+        )
+        print(f"[_process_document] Created document: {document}")
+        # except Exception as e:
+        #     print(f"[_process_document] Processing error for {file_data['file_name']}: {str(e)}")
+        #     raise
 
         # try:
             
