@@ -6,7 +6,6 @@ bash merge_files.sh auth_api/urls.py auth_api/models.py auth_api/serializers.py 
 Matching files merged into output.txt
 
 
-
 bash merge_files.sh Dockerfile .env config.py core/urls.py core/settings.py research_assistant/services/pdf_parser.py
 
 File not found

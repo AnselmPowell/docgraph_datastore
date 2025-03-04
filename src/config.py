@@ -9,7 +9,6 @@ config = {
     'DEBUG': not IS_PRODUCTION_BACKEND,
     'SECRET_KEY': os.environ.get('DJANGO_SECRET_KEY', 'dev-secret-key'),
     'ALLOWED_HOSTS': ['docgraphapi.up.railway.app', 'localhost', '127.0.0.1', '*'],
-    # if not IS_PRODUCTION_BACKEND else ['https://docgraphapi.up.railway.app','https://docgraph.up.railway.app'],
     'CORS_ALLOWED_ORIGINS': [
         'https://docgraph.up.railway.app',
         'http://localhost:3000',
