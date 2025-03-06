@@ -29,12 +29,12 @@ class DocumentManagementViewSet(viewsets.ViewSet):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
        
-        print("[DocumentManagementViewSet] Initialized")
+        # print("[DocumentManagementViewSet] Initialized")
 
     async def _process_document(self, file_data: Dict, user) -> Dict:
         """Process single document and return metadata"""
-        print(f"[_process_document] Processing document for user: {user.email}")
-        print(f"[_process_document] Processing document: {file_data['file_name']}")
+        # print(f"[_process_document] Processing document for user: {user.email}")
+        # print(f"[_process_document] Processing document: {file_data['file_name']}")
         
 
        # Check for existing document using model query
@@ -65,17 +65,17 @@ class DocumentManagementViewSet(viewsets.ViewSet):
         )
         
         # Process document
-        print(f"[_process_document] Processing document: {file_data['file_name']}")
+        # print(f"[_process_document] Processing document: {file_data['file_name']}")
         sections, reference_data = await sync_to_async(doc_processor.process_document_from_url)(
             file_data['file_url']
         )
 
         # Create new document
-        print(f"[_process_document] Creating new document: {file_data['file_name']}")
-        print(f"[_process_document] file_data['file_id']: {file_data['file_id']}")
-        print(f"[_process_document] user: {user}")
-        print(f"[_process_document] file_data['file_url']: {file_data['file_url']}")
         # print(f"[_process_document] Creating new document: {file_data['file_name']}")
+        # print(f"[_process_document] file_data['file_id']: {file_data['file_id']}")
+        # print(f"[_process_document] user: {user}")
+        # print(f"[_process_document] file_data['file_url']: {file_data['file_url']}")
+       
         # try:
         document = await sync_to_async(DocumentMetadata.objects.create)(
             # id= uuid.uuid4(),
@@ -85,26 +85,27 @@ class DocumentManagementViewSet(viewsets.ViewSet):
             url=file_data['file_url'],
             processing_status='processing'
         )
-        print(f"[_process_document] Created document: {document}")
+        # print(f"[_process_document] Created document: {document}")
+
         # except Exception as e:
         #     print(f"[_process_document] Processing error for {file_data['file_name']}: {str(e)}")
         #     raise
 
         # try:
             
-        print("Init summarizer document")
+        # print("Init summarizer document")
         summarizer = DocumentSummarizer()
         
         total_pages = await sync_to_async(doc_processor.get_total_pages)()
-        print(f"[_process_document] Total Pages {total_pages}")
-        print(f"[_process_document] Processed {len(sections)} sections")
+        # print(f"[_process_document] Total Pages {total_pages}")
+        # print(f"[_process_document] Processed {len(sections)} sections")
 
         # Get metadata
         metadata = await sync_to_async(summarizer.generate_summary)(
             sections[:2],  # Pass first two sections instead of just first page text
             document.id 
         )
-        print("Done summarising document")
+        # print("Done summarising document")
         # Update document metadata
         for field, value in metadata.items():
             setattr(document, field, value)
@@ -113,7 +114,7 @@ class DocumentManagementViewSet(viewsets.ViewSet):
         await sync_to_async(document.save)()
 
         # Store sections
-        print("Upload Sections Data")
+        # print("Upload Sections Data")
         for section_data in sections:
             try:
                 section = await sync_to_async(DocumentSection.objects.create)(
@@ -273,10 +274,10 @@ class DocumentManagementViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['DELETE'])
     def delete_documents(self, request):
         """Delete document and all related data"""
-        print("[DELETE] Starting document deletion")
+        # print("[DELETE] Starting document deletion")
         try:
             document_id = request.data.get('document_id')
-            print(f"[DELETE] Attempting to delete document: {document_id}")
+            # print(f"[DELETE] Attempting to delete document: {document_id}")
 
 
             if not document_id:
@@ -333,7 +334,8 @@ class DocumentManagementViewSet(viewsets.ViewSet):
                 'detail': 'The requested document could not be found or may have been already deleted'
             }, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            print(f"[DELETE] Critical error: {str(e)}")
+            # print(f"[DELETE] Critical error: {str(e)}")
+            
             return Response({
                 'status': 'error',
                 'message': 'Unable to delete document',
