@@ -98,8 +98,8 @@ class DocumentManagementViewSet(viewsets.ViewSet):
 
         summarizer = DocumentSummarizer()
         
-        total_pages = await sync_to_async(doc_processor.get_total_pages)()
-        print(f"[_process_document] Total Pages {total_pages}")
+        # total_pages = await sync_to_async(doc_processor.get_total_pages)()
+        # print(f"[_process_document] Total Pages {total_pages}")
         print(f"[_process_document] Processed {len(sections)} sections")
 
         # Get metadata
@@ -146,7 +146,8 @@ class DocumentManagementViewSet(viewsets.ViewSet):
             'document_id': str(document.id),
             'title': document.title,
             'authors': document.authors,
-            'pages': total_pages,
+            # 'pages': total_pages,
+            'pages': "6",
             'summary': document.summary,
             'references': document.reference,
             'processing_status': document.processing_status,
