@@ -133,6 +133,10 @@ class DocumentSummarizer:
         }
 
         print("Call Openai to Summaries...")
+        print("Call Openai to Summaries...")
+        print("Call Openai to Summaries...")
+        print("Call Openai to Summaries...")
+        print("Call Openai to Summaries...")
         
 
         response = self.llm.chat.completions.create(
@@ -148,6 +152,17 @@ class DocumentSummarizer:
         
         metadata = json.loads(response.choices[0].message.function_call.arguments)
 
+        print("OpenAI Summary complete")
+        print("OpenAI Summary complete")
+        print("OpenAI Summary complete")
+        print("OpenAI Summary complete")
+        print("OpenAI Summary complete")
+        print("OpenAI Summary complete")
+        print("OpenAI Summary complete")
+        print("OpenAI Summary complete")
+        print("OpenAI Summary complete")
+        print("OpenAI Summary complete")
+        print("OpenAI Summary complete")
         print("OpenAI Summary complete")
         
         # Process publication date if present
