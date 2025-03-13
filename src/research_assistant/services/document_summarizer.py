@@ -14,7 +14,7 @@ class MetadataSchema(BaseModel):
     publication_date: str = Field(None, description="Publication date if available")
     publisher: str = Field(None, description="Publisher name if available") 
     doi: str = Field(None, description="DOI if available")
-    citation: str = Field(..., description="Full citation in academic format")
+    citation: str = Field(..., description="Full Harvard citation/reference of this paper/book in aacademic format")
     reference: str = Field(..., description="Full reference entry")
     summary: str = Field(..., description="2-3 sentence summary")
     total_pages: int = Field(default=1, description="Total number of pages")

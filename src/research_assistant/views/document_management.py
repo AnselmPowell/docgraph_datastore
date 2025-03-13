@@ -96,21 +96,29 @@ class DocumentManagementViewSet(viewsets.ViewSet):
         print("Init summarizer document")
         print("Init summarizer document")
         print("Init summarizer document")
-        summarizer = DocumentSummarizer()
+
+        # summarizer = DocumentSummarizer()
         
         total_pages = await sync_to_async(doc_processor.get_total_pages)()
         # print(f"[_process_document] Total Pages {total_pages}")
         # print(f"[_process_document] Processed {len(sections)} sections")
 
         # Get metadata
-        metadata = await sync_to_async(summarizer.generate_summary)(
-            sections[:2],  # Pass first two sections instead of just first page text
-            document.id 
-        )
+        # metadata = await sync_to_async(summarizer.generate_summary)(
+        #     sections[:2],  # Pass first two sections instead of just first page text
+        #     document.id 
+        # )
+        print("Done summarising document")
+        print("Done summarising document")
+        print("Done summarising document")
+        print("Done summarising document")
+        print("Done summarising document")
         print("Done summarising document")
         # Update document metadata
-        for field, value in metadata.items():
-            setattr(document, field, value)
+        # for field, value in metadata.items():
+        #     setattr(document, field, value)
+        
+        print("Store reference data")
         document.reference = reference_data
         document.processing_status = 'completed'
         await sync_to_async(document.save)()
@@ -139,12 +147,23 @@ class DocumentManagementViewSet(viewsets.ViewSet):
             #     continue
         
         print("[Document process]Complete section, Create Document ")
+        # return {
+        #     'document_id': str(document.id),
+        #     'title': document.title,
+        #     'authors': document.authors,
+        #     'pages': total_pages,
+        #     'summary': document.summary,
+        #     'references': document.reference,
+        #     'processing_status': document.processing_status,
+        #     'file_name': file_data['file_name'],
+        #     'file_url': file_data['file_url'],
+        # }
         return {
             'document_id': str(document.id),
-            'title': document.title,
-            'authors': document.authors,
+            'title': 'test',
+            'authors': ['test'],
             'pages': total_pages,
-            'summary': document.summary,
+            'summary': 'test summary',
             'references': document.reference,
             'processing_status': document.processing_status,
             'file_name': file_data['file_name'],
@@ -165,8 +184,6 @@ class DocumentManagementViewSet(viewsets.ViewSet):
         return async_to_sync(self._upload_documents)(request)
 
     async def _upload_documents(self, request):
-
-
 
         
         data = request.data
