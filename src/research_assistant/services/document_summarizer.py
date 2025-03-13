@@ -5,6 +5,7 @@ from django.conf import settings
 import json
 import time
 import logging
+import traceback
 from pydantic import BaseModel, Field
 import re
 from datetime import datetime
@@ -27,10 +28,19 @@ class DocumentSummarizer:
     """Generate document summary and extract metadata"""
     
     def __init__(self):
-        self.llm = OpenAI(
-            api_key=settings.OPENAI_API_KEY,
-             timeout=120.0
-            )
+        try:
+            print("[DocumentSummarizer] Initializing OpenAI client...")
+            print(f"[DocumentSummarizer] API Key Set: {bool(settings.OPENAI_API_KEY)}")
+            print(f"[DocumentSummarizer] API Key Length: {len(settings.OPENAI_API_KEY) if settings.OPENAI_API_KEY else 0}")
+            self.llm = OpenAI(api_key=settings.OPENAI_API_KEY)
+            print("[DocumentSummarizer] OpenAI client initialized successfully")
+        except Exception as e:
+            print(f"[DocumentSummarizer] CRITICAL ERROR initializing OpenAI client: {str(e)}")
+            logger.error(f"OpenAI initialization error: {str(e)}")
+            logger.error(traceback.format_exc())
+            # Continue without crashing, we'll handle it in generate_summary
+            self.llm = None
+            self.init_error = str(e)
 
 
     def _construct_prompt(self, pages_text: list[str]) -> str:
@@ -114,6 +124,8 @@ class DocumentSummarizer:
     def generate_summary(self, document_sections: list[Dict], document_id: str) -> Dict:
         """Generate document summary and extract metadata from first two pages"""
         logger.info(f"Starting document summary generation for document: {document_id}")
+
+    
         
         # Get text from first two pages
         first_two_pages = []
