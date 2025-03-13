@@ -97,7 +97,7 @@ class DocumentManagementViewSet(viewsets.ViewSet):
         print("Init summarizer document")
         print("Init summarizer document 2 --")
 
-        summarizer = DocumentSummarizer()
+        # summarizer = DocumentSummarizer()
         
         print("Init summarizer document 3")
         print("Init summarizer document 3")
@@ -105,20 +105,20 @@ class DocumentManagementViewSet(viewsets.ViewSet):
         print("Init summarizer document 3")
         print("Init summarizer document 3")
         print("Init summarizer document 3")
-        # total_pages = await sync_to_async(doc_processor.get_total_pages)()
+        total_pages = await sync_to_async(doc_processor.get_total_pages)()
         # print(f"[_process_document] Total Pages {total_pages}")
         print(f"[_process_document] Processed {len(sections)} sections")
 
         # Get metadata
-        metadata = await sync_to_async(summarizer.generate_summary)(
-            sections[:2],  # Pass first two sections instead of just first page text
-            document.id 
-        )
+        # metadata = await sync_to_async(summarizer.generate_summary)(
+        #     sections[:2],  # Pass first two sections instead of just first page text
+        #     document.id 
+        # )
         print("Done summarising document")
        
         # Update document metadata
-        for field, value in metadata.items():
-            setattr(document, field, value)
+        # for field, value in metadata.items():
+        #     setattr(document, field, value)
         
         print("Store reference data")
         document.reference = reference_data
@@ -149,29 +149,29 @@ class DocumentManagementViewSet(viewsets.ViewSet):
             #     continue
         
         print("[Document process]Complete section, Create Document ")
-        return {
-            'document_id': str(document.id),
-            'title': document.title,
-            'authors': document.authors,
-            # 'pages': total_pages,
-            'pages': "6",
-            'summary': document.summary,
-            'references': document.reference,
-            'processing_status': document.processing_status,
-            'file_name': file_data['file_name'],
-            'file_url': file_data['file_url'],
-        }
         # return {
         #     'document_id': str(document.id),
-        #     'title': 'test',
-        #     'authors': ['test'],
-        #     'pages': total_pages,
-        #     'summary': 'test summary',
+        #     'title': document.title,
+        #     'authors': document.authors,
+        #     # 'pages': total_pages,
+        #     'pages': "6",
+        #     'summary': document.summary,
         #     'references': document.reference,
         #     'processing_status': document.processing_status,
         #     'file_name': file_data['file_name'],
         #     'file_url': file_data['file_url'],
         # }
+        return {
+            'document_id': str(document.id),
+            'title': 'test',
+            'authors': ['test'],
+            'pages': total_pages,
+            'summary': 'test summary',
+            'references': document.reference,
+            'processing_status': document.processing_status,
+            'file_name': file_data['file_name'],
+            'file_url': file_data['file_url'],
+        }
             
         # except Exception as e:
         #     print(f"[_process_document] Processing error for {file_data['file_name']}: {str(e)}")
