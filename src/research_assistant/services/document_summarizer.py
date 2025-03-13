@@ -1,11 +1,15 @@
 # src/research_assistant/services/document_summarizer.py
 from typing import Dict
-from openai import OpenAI
+from openai import OpenAI, APIError, RateLimitError, APITimeoutError
 from django.conf import settings
 import json
+import time
+import logging
 from pydantic import BaseModel, Field
 import re
 from datetime import datetime
+
+logger = logging.getLogger(__name__)
 
 class MetadataSchema(BaseModel): 
     """Schema for document metadata extraction"""
@@ -23,7 +27,10 @@ class DocumentSummarizer:
     """Generate document summary and extract metadata"""
     
     def __init__(self):
-        self.llm = OpenAI(api_key=settings.OPENAI_API_KEY)
+        self.llm = OpenAI(
+            api_key=settings.OPENAI_API_KEY,
+             timeout=120.0
+            )
 
 
     def _construct_prompt(self, pages_text: list[str]) -> str:
@@ -105,17 +112,8 @@ class DocumentSummarizer:
             return None
 
     def generate_summary(self, document_sections: list[Dict], document_id: str) -> Dict:
-        """Generate document summary and extract metadata from first two pages
-        
-        Input:
-            document_sections: list[Dict] - List of document sections/pages
-            document_id: str - Document identifier
-            
-        Output:
-            Dict - Extracted metadata and summary
-        """
-
-
+        """Generate document summary and extract metadata from first two pages"""
+        logger.info(f"Starting document summary generation for document: {document_id}")
         
         # Get text from first two pages
         first_two_pages = []
@@ -124,52 +122,91 @@ class DocumentSummarizer:
                 cleaned_text = self._clean_text(section['content']['text'])
                 first_two_pages.append(cleaned_text)
         
-
+        # Fallback metadata if OpenAI fails
+        fallback_metadata = {
+            'title': document_sections[0].get('document_id', 'Unknown Document'),
+            'authors': ['Unknown Author'],
+            'publication_date': None,
+            'publisher': None,
+            'doi': None,
+            'citation': f"Unknown ({datetime.now().year}). Document ID: {document_id}",
+            'reference': f"Unknown ({datetime.now().year}). Document ID: {document_id}",
+            'summary': "This document could not be automatically summarized.",
+            'total_pages': len(document_sections)
+        }
+        
+        if not first_two_pages:
+            logger.warning(f"No page content available for document: {document_id}")
+            return fallback_metadata
         
         # Create function schema for LLM
         function_schema = {
             "name": "extract_document_metadata",
             "parameters": MetadataSchema.schema()
         }
-
-        print("Call Openai to Summaries...")
-        print("Call Openai to Summaries...")
-        print("Call Openai to Summaries...")
-        print("Call Openai to Summaries...")
-        print("Call Openai to Summaries...")
         
-
-        response = self.llm.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[{
-                "role": "system",
-                "content": self._construct_prompt(first_two_pages)
-            }],
-            temperature=0.3,
-            functions=[function_schema],
-            function_call={"name": "extract_document_metadata"}
-        )
+        logger.info("Calling OpenAI API for metadata extraction...")
+        print("Calling OpenAI API with timeout=120s...")
         
-        metadata = json.loads(response.choices[0].message.function_call.arguments)
-
-        print("OpenAI Summary complete")
-        print("OpenAI Summary complete")
-        print("OpenAI Summary complete")
-        print("OpenAI Summary complete")
-        print("OpenAI Summary complete")
-        print("OpenAI Summary complete")
-        print("OpenAI Summary complete")
-        print("OpenAI Summary complete")
-        print("OpenAI Summary complete")
-        print("OpenAI Summary complete")
-        print("OpenAI Summary complete")
-        print("OpenAI Summary complete")
+        # Maximum retry attempts
+        max_retries = 3
+        retry_delay = 5  # seconds
         
-        # Process publication date if present
-        if metadata.get('publication_date'):
-            metadata['publication_date'] = self._parse_date(metadata['publication_date'])
+        for attempt in range(max_retries):
+            try:
+                start_time = time.time()
 
+                response = self.llm.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=[{
+                        "role": "system",
+                        "content": self._construct_prompt(first_two_pages)
+                    }],
+                    temperature=0.3,
+                    functions=[function_schema],
+                    function_call={"name": "extract_document_metadata"}
+                )
+                
+                metadata = json.loads(response.choices[0].message.function_call.arguments)
 
+                duration = time.time() - start_time
+                logger.info(f"OpenAI response received in {duration:.2f}s")
+                print(f"OpenAI response received in {duration:.2f}s")
+                
+                metadata = json.loads(response.choices[0].message.function_call.arguments)
+                
+                # Process publication date if present
+                if metadata.get('publication_date'):
+                    metadata['publication_date'] = self._parse_date(metadata['publication_date'])
+                
+                logger.info(f"Metadata extraction complete: {list(metadata.keys())}")
+                print("OpenAI summary complete!")
+                return metadata
 
-        
-        return metadata
+            except RateLimitError as e:
+                    logger.warning(f"OpenAI rate limit error (attempt {attempt+1}/{max_retries}): {str(e)}")
+                    print(f"OpenAI rate limit error (attempt {attempt+1}/{max_retries})")
+                    if attempt < max_retries - 1:
+                        time.sleep(retry_delay)
+                    else:
+                        logger.error(f"Max retries reached for OpenAI API. Using fallback metadata.")
+                        return fallback_metadata
+                    
+            except APITimeoutError as e:
+                logger.warning(f"OpenAI timeout error (attempt {attempt+1}/{max_retries}): {str(e)}")
+                print(f"OpenAI timeout error (attempt {attempt+1}/{max_retries})")
+                if attempt < max_retries - 1:
+                    time.sleep(retry_delay)
+                else:
+                    logger.error(f"Max retries reached for OpenAI API. Using fallback metadata.")
+                    return fallback_metadata
+                    
+            except APIError as e:
+                logger.error(f"OpenAI API error: {str(e)}")
+                print(f"OpenAI API error: {str(e)}")
+                return fallback_metadata
+                
+            except Exception as e:
+                logger.error(f"Unexpected error during metadata extraction: {str(e)}", exc_info=True)
+                print(f"Error during metadata extraction: {str(e)}")
+                return fallback_metadata
