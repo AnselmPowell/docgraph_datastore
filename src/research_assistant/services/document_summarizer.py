@@ -27,18 +27,45 @@ class MetadataSchema(BaseModel):
 class DocumentSummarizer:
     """Generate document summary and extract metadata"""
     
+    # def __init__(self):
+    #     try:
+    #         print("[DocumentSummarizer] Initializing OpenAI client...")
+    #         print(f"[DocumentSummarizer] API Key Set: {bool(settings.OPENAI_API_KEY)}")
+    #         print(f"[DocumentSummarizer] API Key Length: {len(settings.OPENAI_API_KEY) if settings.OPENAI_API_KEY else 0}")
+    #         self.llm = OpenAI(api_key=settings.OPENAI_API_KEY)
+    #         print("[DocumentSummarizer] OpenAI client initialized successfully")
+    #     except Exception as e:
+    #         print(f"[DocumentSummarizer] CRITICAL ERROR initializing OpenAI client: {str(e)}")
+    #         logger.error(f"OpenAI initialization error: {str(e)}")
+    #         logger.error(traceback.format_exc())
+    #         # Continue without crashing, we'll handle it in generate_summary
+    #         self.llm = None
+    #         self.init_error = str(e)
+
     def __init__(self):
         try:
             print("[DocumentSummarizer] Initializing OpenAI client...")
             print(f"[DocumentSummarizer] API Key Set: {bool(settings.OPENAI_API_KEY)}")
             print(f"[DocumentSummarizer] API Key Length: {len(settings.OPENAI_API_KEY) if settings.OPENAI_API_KEY else 0}")
-            self.llm = OpenAI(api_key=settings.OPENAI_API_KEY)
+            
+            # Version-compatible initialization
+            try:
+                # Try the newer initialization method first
+                self.llm = OpenAI(api_key=settings.OPENAI_API_KEY)
+            except TypeError as e:
+                if 'proxies' in str(e):
+                    # Handle older OpenAI library versions
+                    import openai
+                    openai.api_key = settings.OPENAI_API_KEY
+                    self.llm = openai
+                    print("[DocumentSummarizer] Using older OpenAI API initialization")
+                else:
+                    raise
+                    
             print("[DocumentSummarizer] OpenAI client initialized successfully")
         except Exception as e:
             print(f"[DocumentSummarizer] CRITICAL ERROR initializing OpenAI client: {str(e)}")
-            logger.error(f"OpenAI initialization error: {str(e)}")
-            logger.error(traceback.format_exc())
-            # Continue without crashing, we'll handle it in generate_summary
+            # Continue without crashing
             self.llm = None
             self.init_error = str(e)
 
@@ -123,17 +150,6 @@ class DocumentSummarizer:
 
     def generate_summary(self, document_sections: list[Dict], document_id: str) -> Dict:
         """Generate document summary and extract metadata from first two pages"""
-        logger.info(f"Starting document summary generation for document: {document_id}")
-
-    
-        
-        # Get text from first two pages
-        first_two_pages = []
-        for section in document_sections[:2]:  # Only process first two sections/pages
-            if section['content']['text']:
-                cleaned_text = self._clean_text(section['content']['text'])
-                first_two_pages.append(cleaned_text)
-        
         # Fallback metadata if OpenAI fails
         fallback_metadata = {
             'title': document_sections[0].get('document_id', 'Unknown Document'),
@@ -146,6 +162,20 @@ class DocumentSummarizer:
             'summary': "This document could not be automatically summarized.",
             'total_pages': len(document_sections)
         }
+        logger.info(f"Starting document summary generation for document: {document_id}")
+
+        if self.llm is None:
+            print(f"[DocumentSummarizer] Using fallback due to initialization error: {getattr(self, 'init_error', 'Unknown error')}")
+    
+        
+        # Get text from first two pages
+        first_two_pages = []
+        for section in document_sections[:2]:  # Only process first two sections/pages
+            if section['content']['text']:
+                cleaned_text = self._clean_text(section['content']['text'])
+                first_two_pages.append(cleaned_text)
+        
+        
         
         if not first_two_pages:
             logger.warning(f"No page content available for document: {document_id}")
