@@ -33,8 +33,8 @@ class DocumentManagementViewSet(viewsets.ViewSet):
 
     async def _process_document(self, file_data: Dict, user) -> Dict:
         """Process single document and return metadata"""
-        # print(f"[_process_document] Processing document for user: {user.email}")
-        # print(f"[_process_document] Processing document: {file_data['file_name']}")
+        print(f"[_process_document] Processing document for user: {user.email}")
+        print(f"[_process_document] Processing document: {file_data['file_name']}")
         
 
        # Check for existing document using model query
@@ -134,10 +134,10 @@ class DocumentManagementViewSet(viewsets.ViewSet):
                     await sync_to_async(section.save)()
 
             except Exception as e:
-                print(f"[_process_document] Error creating section: {str(e)}")
+
                 continue
         
-        print("return document data")
+
         return {
             'document_id': str(document.id),
             'title': document.title,
@@ -164,9 +164,9 @@ class DocumentManagementViewSet(viewsets.ViewSet):
         return async_to_sync(self._upload_documents)(request)
 
     async def _upload_documents(self, request):
-        print(f"[_upload_documents] User: {request.user.email}")
-        print("[_upload_documents] Starting document upload")
-        print("[_upload_documents] request data", request.data)
+
+
+
         
         data = request.data
         if not isinstance(data, list):
@@ -233,7 +233,7 @@ class DocumentManagementViewSet(viewsets.ViewSet):
         try:
             
             # Filter documents by user
-            print(f"[get_documents] Fetching for user: {request.user.email}")
+
             documents = DocumentMetadata.objects.filter(
                 user=request.user
             ).order_by('-created_at')

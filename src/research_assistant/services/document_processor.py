@@ -738,36 +738,25 @@ class DocumentProcessor:
     """Enhanced document processor with custom PDF parsing"""
     
     def __init__(self, document_id: str = None, document_url: str = None):
-        """Initialize document processor
-        
-        Input:
-            document_id: Optional[str] - Unique document identifier
-            document_url: Optional[str] - URL to PDF document
-            
-        Output: None
-        
-        Creates processing pipeline with:
-        - document_id: str
-        - document_url: str  
-        - data_dir: Path
-        - sections: List[Section]
-        """
-        print("\n[DocumentProcessor] Initializing document processor")
+        import tempfile
         self.document_id = document_id
         self.document_url = document_url
-        self.data_dir = Path("research_assistant/data")
-        self.data_dir.mkdir(parents=True, exist_ok=True)
-        self.sections = [],
-        self.total_pages = 0,
-        self.reference_data ={}
         
-        print(f"[DocumentProcessor] Initialized for document {self.document_id}")
-        print(f"[DocumentProcessor] Document URL: {document_url}")
-        print(f"[DocumentProcessor] Data directory: {self.data_dir}")
+        # Use system temp directory instead
+        self.data_dir = Path(tempfile.gettempdir()) / "research_assistant_data"
+        self.data_dir.mkdir(parents=True, exist_ok=True)
+        
+        self.sections = []
+        self.total_pages = 0
+        self.reference_data = {}
+            
+
+
+
 
     def _download_file(self, url: str) -> str:
         """Download file from URL with better error handling"""
-        print(f"[DocumentProcessor] Starting file download: {url}")
+
         
         try:
             # Use a timeout to prevent hanging
@@ -782,27 +771,28 @@ class DocumentProcessor:
             with os.fdopen(fd, 'wb') as f:
                 f.write(response.content)
             
-            print(f"[DocumentProcessor] File downloaded: {file_path}")
+
             return file_path
         except requests.exceptions.RequestException as e:
-            print(f"[DocumentProcessor] Download error: {str(e)}")
+
             raise
         except IOError as e:
-            print(f"[DocumentProcessor] File write error: {str(e)}")
+
             raise
 
     def _cleanup_temp_file(self, file_path):
         """Delete temporary PDF file."""
         try:
             Path(file_path).unlink()
-            print(f"[DocumentProcessor] Temporary file deleted: {file_path}")
+
         except Exception as e:
-            print(f"[DocumentProcessor] Error deleting temporary file: {e}")
+            print("Error:", e)
+
 
     
 
     def get_total_pages(self):
-        print("Get total number of Pages:", self.total_pages)
+
         return self.total_pages
 
     def process_document_from_url(self, url: str) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
@@ -831,87 +821,78 @@ class DocumentProcessor:
             'reference_data': Dict
         }
         """
-        print(f"\n[DocumentProcessor] Processing document from URL: {url}")
-        print(f"[DocumentProcessor] Starting URL processing")
+
+
         file_path = self._download_file(url)
         sections, reference_data = self.process_document(file_path)
         self._cleanup_temp_file(file_path)
-        print(f"[DocumentProcessor] Retrieved {len(sections)} sections")
+
 
 
         return sections, reference_data
 
+    # In DocumentProcessor.process_document
     def process_document(self, file_path: str) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
-        """Process PDF document to extract content and structure
-        
-        Input:
-            file_path: str - Path to PDF file
-            
-        Output:
-            Tuple[List[Dict], Dict]:
-            - List of section data (one per page)
-            - Reference data dictionary
-            
-        Processing steps:
-        1. Parse PDF with custom parser
-        2. Extract references
-        3. Create sections with page overlays
-        4. Process citations
-        """
-        print(f"\n[DocumentProcessor] Starting document processing: {self.document_id}")
+        """Process PDF with memory management and error handling"""
+
         
         start_time = time.time()
         
-        # Initialize custom PDF parser
-        parser = PDFParser(file_path)
-        
-        # Extract all content
-        result = parser.parse()
-        
-        # Process pages into sections
-        processed_sections = []
-        
-        # Extract references
-        reference_data = self._extract_reference_section([p for p in result["pages"].values()])
-        self.reference_data = reference_data
-        
-        # Get page texts with context overlays 
-        pages_data = []
-        for page_num, page_text in result["pages"].items():
-            prev_text = result["pages"].get(page_num - 1)
-            next_text = result["pages"].get(page_num + 1)
+        try:
+            # Initialize custom PDF parser
+            parser = PDFParser(file_path)
             
-            # Get any tables/images for this page
-            tables = result["tables"].get(page_num, [])
-            images = result["images"].get(page_num, [])
+            # Extract all content with memory limits
+            result = parser.parse()
             
-            # Create section
-            section = Section(
-                text=page_text,
-                section_type='text',
-                section_start_page_number=page_num,
-                document_id=self.document_id,
-                prev_page_text=prev_text,
-                next_page_text=next_text,
-                tables=tables, 
-                images=images
-            )
-            # Process section data
-            section_data = self._create_section_data(section)
-            processed_sections.append(section_data)
+            # Process pages into sections
+            processed_sections = []
+            
+            # Extract references
+            reference_data = self._extract_reference_section([p for p in result["pages"].values()])
+            self.reference_data = reference_data
+            
+            # Free memory by processing pages one by one
+            for page_num, page_text in result["pages"].items():
+                prev_text = result["pages"].get(page_num - 1)
+                next_text = result["pages"].get(page_num + 1)
+                
+                # Get any tables/images for this page
+                tables = result["tables"].get(page_num, [])
+                images = result["images"].get(page_num, [])
+                
+                # Create section
+                section = Section(
+                    text=page_text,
+                    section_type='text',
+                    section_start_page_number=page_num,
+                    document_id=self.document_id,
+                    prev_page_text=prev_text,
+                    next_page_text=next_text,
+                    tables=tables, 
+                    images=images
+                )
+                
+                # Process section data
+                section_data = self._create_section_data(section)
+                processed_sections.append(section_data)
+                
+                # Clear references to conserve memory
+                del section
+                del tables
+                del images
+            
+            self.total_pages = len(processed_sections)
+            
+            # Ensure cleanup happens
+            self._cleanup_temp_file(file_path)
+            
+            return processed_sections, reference_data
+        
+        except Exception as e:
 
-        
-        print(f"\n[DocumentProcessor] Processing completed:")
-        print(f"Total pages: {len(processed_sections)}")
-        print(f"Processing time: {time.time() - start_time:.2f}s")
-        
-        self.total_pages = len(processed_sections)
-        # # Cleanup
-        # if os.path.exists(file_path):
-        #     os.remove(file_path)
-        #     print(f"[DocumentProcessor] Cleaned up temporary file: {file_path}")
-        
-        return processed_sections, reference_data
+            self._cleanup_temp_file(file_path)
+            raise
 
 
 
@@ -938,15 +919,15 @@ class DocumentProcessor:
             }
         """
 
-        print("[Create Section] get text context")
+
         # Get context-aware text
         section_text = section.get_context_text()
 
-        print("section text: \n" , section_text)
+
         # Extract citations
         citations = self._extract_citations(section_text, self.reference_data)
 
-        print("Citation extraction: ", citations)
+
 
         
         # Build elements list from tables and images
@@ -954,8 +935,8 @@ class DocumentProcessor:
         
         # Add tables
         for table in section.tables:
-            print("[Create Section] Found a table")
-            print("table data:", table)
+
+
             elements.append({
                 'type': 'table',
                 'content': table
@@ -963,8 +944,8 @@ class DocumentProcessor:
             
             # Add images
         for image in section.images:
-            print("[Create Section] Found an image")
-            print("image data:", image)
+
+
             elements.append({
                 'type': 'image',
                 'page_number': image['page_number'],
@@ -976,7 +957,7 @@ class DocumentProcessor:
                 'extraction_date': image['extraction_date']
             })
         
-        print("[Create Section] Create section data ")
+
         section_data = {
             'document_id': section.document_id,
             'section_id': section.section_id,
@@ -990,7 +971,7 @@ class DocumentProcessor:
             'citations': citations,
             'elements': elements
         }
-        print("[Create Section] Section created ")
+
         
         return section_data
     
@@ -1030,8 +1011,8 @@ class DocumentProcessor:
 
     def _extract_citations(self, text: str, reference_data: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Extract citations and match with references"""
-        print(f"\n[Citation Extraction] Starting citation extraction")
-        print(f"[Citation Extraction] Text length: {len(text)}")
+
+
         
         citations = []
         cleaned_text = re.sub(r'\s+', ' ', text).strip()
@@ -1074,17 +1055,17 @@ class DocumentProcessor:
                 }
                 citations.append(citation_data)
         
-        print(f"[Citation Extraction] Found {len(citations)} citations")
-        print(f"[Citation Extraction] Citations matched with references: {citations}")
+
+
         
         return citations
 
     def _extract_reference_section(self, page_texts: List[str]) -> Dict[str, Any]:
         """Extract reference section and entries from document"""
-        print("\n[DocumentProcessor] Starting reference section extraction")
+
 
         page_texts = self._preprocess_reference_text(page_texts)
-        print(" page text: \n", page_texts)
+
         
         reference_data = {
             'entries': {},
@@ -1095,7 +1076,7 @@ class DocumentProcessor:
 
         def is_likely_reference_entry(line: str) -> bool:
             """Check if line looks like a reference entry"""
-            print("Line of text:", line)
+
             if not line.strip():
                 return False
                 
@@ -1149,7 +1130,7 @@ class DocumentProcessor:
             for line_idx, line in enumerate(lines):
                 for pattern in REFERENCE_SECTION_TITLES:
                     if re.search(pattern, line.lower().strip()):
-                        print(f"[DocumentProcessor] Found potential reference marker on page {page_idx + 1}")
+
                         reference_section_found = True
                         if reference_data['start_page'] is None:
                             reference_data['start_page'] = page_idx + 1
@@ -1214,8 +1195,9 @@ class DocumentProcessor:
                 reference_data['end_page'] = page_idx + 1
 
         if reference_data['entries']:
-            print(f"[DocumentProcessor] Found {len(reference_data['entries'])} references!")
-            print("reference_data \n:", reference_data['entries'])
+            print("We have reference data")
+
+
         
         return reference_data
     
