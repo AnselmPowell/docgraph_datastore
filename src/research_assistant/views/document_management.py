@@ -97,7 +97,7 @@ class DocumentManagementViewSet(viewsets.ViewSet):
         print("Init summarizer document")
         print("Init summarizer document 2 --")
 
-        # summarizer = DocumentSummarizer()
+        summarizer = DocumentSummarizer()
         
         print("Init summarizer document 3")
         print("Init summarizer document 3")
