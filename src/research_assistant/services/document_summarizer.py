@@ -52,21 +52,24 @@ class DocumentSummarizer:
             try:
                 # Try the newer initialization method first
                 self.llm = OpenAI(api_key=settings.OPENAI_API_KEY)
+                self.api_version = "new"
+                print("[DocumentSummarizer] Using new OpenAI API v1.x")
             except TypeError as e:
                 if 'proxies' in str(e):
                     # Handle older OpenAI library versions
                     import openai
                     openai.api_key = settings.OPENAI_API_KEY
                     self.llm = openai
-                    print("[DocumentSummarizer] Using older OpenAI API initialization")
+                    self.api_version = "old"
+                    print("[DocumentSummarizer] Using older OpenAI API v0.x")
                 else:
                     raise
                     
             print("[DocumentSummarizer] OpenAI client initialized successfully")
         except Exception as e:
             print(f"[DocumentSummarizer] CRITICAL ERROR initializing OpenAI client: {str(e)}")
-            # Continue without crashing
             self.llm = None
+            self.api_version = None
             self.init_error = str(e)
 
 
@@ -149,10 +152,10 @@ class DocumentSummarizer:
             return None
 
     def generate_summary(self, document_sections: list[Dict], document_id: str) -> Dict:
-        """Generate document summary and extract metadata from first two pages"""
+        """Generate document summary with proper API version handling"""
         # Fallback metadata if OpenAI fails
         fallback_metadata = {
-            'title': document_sections[0].get('document_id', 'Unknown Document'),
+            'title': "Document " + document_id,
             'authors': ['Unknown Author'],
             'publication_date': None,
             'publisher': None,
@@ -162,20 +165,20 @@ class DocumentSummarizer:
             'summary': "This document could not be automatically summarized.",
             'total_pages': len(document_sections)
         }
+        
         logger.info(f"Starting document summary generation for document: {document_id}")
+        print(f"Starting summary generation, API version: {self.api_version}")
 
         if self.llm is None:
             print(f"[DocumentSummarizer] Using fallback due to initialization error: {getattr(self, 'init_error', 'Unknown error')}")
-    
+            return fallback_metadata
         
         # Get text from first two pages
         first_two_pages = []
-        for section in document_sections[:2]:  # Only process first two sections/pages
+        for section in document_sections[:2]:
             if section['content']['text']:
                 cleaned_text = self._clean_text(section['content']['text'])
                 first_two_pages.append(cleaned_text)
-        
-        
         
         if not first_two_pages:
             logger.warning(f"No page content available for document: {document_id}")
@@ -188,7 +191,7 @@ class DocumentSummarizer:
         }
         
         logger.info("Calling OpenAI API for metadata extraction...")
-        print("Calling OpenAI API with timeout=120s...")
+        print(f"Calling OpenAI API with version {self.api_version}...")
         
         # Maximum retry attempts
         max_retries = 3
@@ -197,25 +200,39 @@ class DocumentSummarizer:
         for attempt in range(max_retries):
             try:
                 start_time = time.time()
-
-                response = self.llm.chat.completions.create(
-                    model="gpt-4o-mini",
-                    messages=[{
-                        "role": "system",
-                        "content": self._construct_prompt(first_two_pages)
-                    }],
-                    temperature=0.3,
-                    functions=[function_schema],
-                    function_call={"name": "extract_document_metadata"}
-                )
                 
-                metadata = json.loads(response.choices[0].message.function_call.arguments)
-
+                # Choose API call style based on detected version
+                if self.api_version == "new":
+                    print("Using new OpenAI API style")
+                    response = self.llm.chat.completions.create(
+                        model="gpt-4o-mini",
+                        messages=[{
+                            "role": "system",
+                            "content": self._construct_prompt(first_two_pages)
+                        }],
+                        temperature=0.3,
+                        functions=[function_schema],
+                        function_call={"name": "extract_document_metadata"}
+                    )
+                    metadata = json.loads(response.choices[0].message.function_call.arguments)
+                else:
+                    print("Using old OpenAI API style")
+                    # Old API style uses different parameters and response format
+                    response = self.llm.ChatCompletion.create(
+                        model="gpt-3.5-turbo-0613",  # Old API model that supports function calling
+                        messages=[{
+                            "role": "system",
+                            "content": self._construct_prompt(first_two_pages)
+                        }],
+                        temperature=0.3,
+                        functions=[function_schema],
+                        function_call={"name": "extract_document_metadata"}
+                    )
+                    metadata = json.loads(response["choices"][0]["message"]["function_call"]["arguments"])
+                
                 duration = time.time() - start_time
                 logger.info(f"OpenAI response received in {duration:.2f}s")
                 print(f"OpenAI response received in {duration:.2f}s")
-                
-                metadata = json.loads(response.choices[0].message.function_call.arguments)
                 
                 # Process publication date if present
                 if metadata.get('publication_date'):
@@ -225,30 +242,12 @@ class DocumentSummarizer:
                 print("OpenAI summary complete!")
                 return metadata
 
-            except RateLimitError as e:
-                    logger.warning(f"OpenAI rate limit error (attempt {attempt+1}/{max_retries}): {str(e)}")
-                    print(f"OpenAI rate limit error (attempt {attempt+1}/{max_retries})")
-                    if attempt < max_retries - 1:
-                        time.sleep(retry_delay)
-                    else:
-                        logger.error(f"Max retries reached for OpenAI API. Using fallback metadata.")
-                        return fallback_metadata
-                    
-            except APITimeoutError as e:
-                logger.warning(f"OpenAI timeout error (attempt {attempt+1}/{max_retries}): {str(e)}")
-                print(f"OpenAI timeout error (attempt {attempt+1}/{max_retries})")
+            except Exception as e:
+                logger.error(f"Error during API call (attempt {attempt+1}/{max_retries}): {str(e)}", exc_info=True)
+                print(f"Error during API call: {str(e)}")
                 if attempt < max_retries - 1:
+                    print(f"Retrying in {retry_delay} seconds...")
                     time.sleep(retry_delay)
                 else:
-                    logger.error(f"Max retries reached for OpenAI API. Using fallback metadata.")
+                    print("Max retries reached, using fallback metadata")
                     return fallback_metadata
-                    
-            except APIError as e:
-                logger.error(f"OpenAI API error: {str(e)}")
-                print(f"OpenAI API error: {str(e)}")
-                return fallback_metadata
-                
-            except Exception as e:
-                logger.error(f"Unexpected error during metadata extraction: {str(e)}", exc_info=True)
-                print(f"Error during metadata extraction: {str(e)}")
-                return fallback_metadata
