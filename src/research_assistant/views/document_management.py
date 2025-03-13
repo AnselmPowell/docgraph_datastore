@@ -105,7 +105,7 @@ class DocumentManagementViewSet(viewsets.ViewSet):
             sections[:2],  # Pass first two sections instead of just first page text
             document.id 
         )
-        # print("Done summarising document")
+        print("Done summarising document")
         # Update document metadata
         for field, value in metadata.items():
             setattr(document, field, value)
@@ -114,30 +114,29 @@ class DocumentManagementViewSet(viewsets.ViewSet):
         await sync_to_async(document.save)()
 
         # Store sections
-        # print("Upload Sections Data")
+        print("Start Upload Sections Data")
         for section_data in sections:
-            try:
-                section = await sync_to_async(DocumentSection.objects.create)(
-                    document=document,
-                    section_type=section_data['content'].get('type', 'text'),  # Added default
-                    content=section_data['content'].get('text', ''),  # Added safety
-                    section_start_page_number=int(section_data['section_start_page_number']),  # Ensure int
-                    prev_page_text=section_data.get('prev_page_text'),
-                    next_page_text=section_data.get('next_page_text'),
-                    has_citations=bool(section_data['content'].get('has_citations', False)),
-                    citations=section_data.get('citations', {})  # Added default
-                )
+            # try:
+            section = await sync_to_async(DocumentSection.objects.create)(
+                document=document,
+                section_type=section_data['content'].get('type', 'text'),  # Added default
+                content=section_data['content'].get('text', ''),  # Added safety
+                section_start_page_number=int(section_data['section_start_page_number']),  # Ensure int
+                prev_page_text=section_data.get('prev_page_text'),
+                next_page_text=section_data.get('next_page_text'),
+                has_citations=bool(section_data['content'].get('has_citations', False)),
+                citations=section_data.get('citations', {})  # Added default
+            )
 
-                # Handle tables and images
-                if 'elements' in section_data:
-                    section.set_elements(section_data['elements'])
-                    await sync_to_async(section.save)()
+            # Handle tables and images
+            if 'elements' in section_data:
+                section.set_elements(section_data['elements'])
+                await sync_to_async(section.save)()
 
-            except Exception as e:
-
-                continue
+            # except Exception as e:
+            #     continue
         
-
+        print("[Document process]Complete section, Create Document ")
         return {
             'document_id': str(document.id),
             'title': document.title,
@@ -197,7 +196,7 @@ class DocumentManagementViewSet(viewsets.ViewSet):
 
         try:
             results = await asyncio.gather(*tasks, return_exceptions=True)
-            
+            print("Check Document Success ...")
             # Filter out errors
             successful_results = [
                 result for result in results 
@@ -212,7 +211,8 @@ class DocumentManagementViewSet(viewsets.ViewSet):
                     },
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
-
+            
+            print(" Documents Are Successful!")
             return Response({
                 'status': 'success',
                 'documents': successful_results
