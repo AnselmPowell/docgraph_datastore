@@ -42,7 +42,6 @@ RUN apt-get update && apt-get install -y \
 RUN pip install -r /tmp/requirements.txt
 RUN pip install gunicorn whitenoise
 
-
 # Copy project code
 COPY ./src /code
 

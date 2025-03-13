@@ -153,25 +153,25 @@ class DocumentSummarizer:
 
     def generate_summary(self, document_sections: list[Dict], document_id: str) -> Dict:
         """Generate document summary with proper API version handling"""
-        # Fallback metadata if OpenAI fails
-        fallback_metadata = {
-            'title': "Document " + document_id,
-            'authors': ['Unknown Author'],
-            'publication_date': None,
-            'publisher': None,
-            'doi': None,
-            'citation': f"Unknown ({datetime.now().year}). Document ID: {document_id}",
-            'reference': f"Unknown ({datetime.now().year}). Document ID: {document_id}",
-            'summary': "This document could not be automatically summarized.",
-            'total_pages': len(document_sections)
-        }
-        
         logger.info(f"Starting document summary generation for document: {document_id}")
         print(f"Starting summary generation, API version: {self.api_version}")
-
+        # Fallback metadata if OpenAI fails
+        # fallback_metadata = {
+        #     'title': "Document " + document_id,
+        #     'authors': ['Unknown Author'],
+        #     'publication_date': None,
+        #     'publisher': None,
+        #     'doi': None,
+        #     'citation': f"Unknown (). Document ID: {document_id}",
+        #     'reference': f"Unknown (). Document ID: {document_id}",
+        #     'summary': "This document could not be automatically summarized.",
+        #     'total_pages': len(document_sections)
+        # }
+        
+        print(" Is Self LLM")
         if self.llm is None:
             print(f"[DocumentSummarizer] Using fallback due to initialization error: {getattr(self, 'init_error', 'Unknown error')}")
-            return fallback_metadata
+            # return fallback_metadata
         
         # Get text from first two pages
         first_two_pages = []
@@ -182,7 +182,7 @@ class DocumentSummarizer:
         
         if not first_two_pages:
             logger.warning(f"No page content available for document: {document_id}")
-            return fallback_metadata
+            # return fallback_metadata
         
         # Create function schema for LLM
         function_schema = {
@@ -250,4 +250,4 @@ class DocumentSummarizer:
                     time.sleep(retry_delay)
                 else:
                     print("Max retries reached, using fallback metadata")
-                    return fallback_metadata
+                    # return fallback_metadata
