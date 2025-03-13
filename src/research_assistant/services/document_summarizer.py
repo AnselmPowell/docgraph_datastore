@@ -24,7 +24,7 @@ class DocumentSummarizer:
     
     def __init__(self):
         self.llm = OpenAI(api_key=settings.OPENAI_API_KEY)
-        print("[DocumentSummarizer] Initialized")
+
 
     def _construct_prompt(self, pages_text: list[str]) -> str:
         """Construct metadata extraction prompt using first two pages
@@ -35,11 +35,11 @@ class DocumentSummarizer:
         Output:
             str - Constructed prompt for LLM
         """
-        print("[DocumentSummarizer] Constructing prompt")
+
         
         # Combine first two pages with separator
         combined_text = "\n---PAGE BREAK---\n".join(pages_text)
-        print(f"[DocumentSummarizer] Combined text length: {len(combined_text)}")
+
         
         prompt = f"""
         Academic Document Text (First Two Pages):
@@ -65,43 +65,43 @@ class DocumentSummarizer:
 
         Respond in JSON format matching the MetadataSchema.
         """
-        print(f"[DocumentSummarizer] Prompt constructed, length: {len(prompt)}")
+
         return prompt
 
     def _clean_text(self, text: str) -> str:
         """Clean and normalize text"""
-        print(f"[DocumentSummarizer] Cleaning text, original length: {len(text)}")
+
         text = re.sub(r'\s+', ' ', text)
         text = text.strip()
-        print(f"[DocumentSummarizer] Text cleaned, new length: {len(text)}")
+
         return text
 
     def _parse_date(self, date_str: str) -> str:
         """Parse and validate publication date"""
         if not date_str:
-            print("[DocumentSummarizer] No date provided")
+
             return None
             
-        print(f"[DocumentSummarizer] Attempting to parse date: {date_str}")
+
         
         for fmt in ('%Y-%m-%d', '%Y/%m/%d', '%d-%m-%Y', '%Y'):
             if parsed_date := self._try_parse_date(date_str, fmt):
-                print(f"[DocumentSummarizer] Successfully parsed date: {parsed_date}")
+
                 return parsed_date
         
-        print(f"[DocumentSummarizer] Failed to parse date: {date_str}")
+
         return None
 
     def _try_parse_date(self, date_str: str, fmt: str) -> str:
         """Helper function to try parsing a date with a specific format"""
         try:
             if isinstance(date_str, str):
-                print(f"[DocumentSummarizer] Attempting format {fmt}")
+
                 parsed_date = datetime.strptime(date_str, fmt).strftime('%Y-%m-%d')
-                print(f"[DocumentSummarizer] Date parsed: {parsed_date}")
+
                 return parsed_date
         except Exception as e:
-            print(f"[DocumentSummarizer] Date parse error: {str(e)}")
+
             return None
 
     def generate_summary(self, document_sections: list[Dict], document_id: str) -> Dict:
@@ -114,8 +114,8 @@ class DocumentSummarizer:
         Output:
             Dict - Extracted metadata and summary
         """
-        print("[DocumentSummarizer] Starting document summary generation")
-        print(f"[DocumentSummarizer] Processing first two pages for document: {document_id}")
+
+
         
         # Get text from first two pages
         first_two_pages = []
@@ -124,7 +124,7 @@ class DocumentSummarizer:
                 cleaned_text = self._clean_text(section['content']['text'])
                 first_two_pages.append(cleaned_text)
         
-        print(f"[DocumentSummarizer] Got {len(first_two_pages)} pages for analysis")
+
         
         # Create function schema for LLM
         function_schema = {
@@ -132,7 +132,7 @@ class DocumentSummarizer:
             "parameters": MetadataSchema.schema()
         }
         
-        print("[DocumentSummarizer] Calling OpenAI API for metadata extraction")
+
         response = self.llm.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{
@@ -150,11 +150,11 @@ class DocumentSummarizer:
         if metadata.get('publication_date'):
             metadata['publication_date'] = self._parse_date(metadata['publication_date'])
 
-        print("[DocumentSummarizer] Metadata extraction complete")
-        print(f"[DocumentSummarizer] Found {len(metadata)} metadata fields")
-        print(f"[DocumentSummarizer] Title: {metadata.get('title', 'Not found')}")
-        print(f"[DocumentSummarizer] Authors: {len(metadata.get('authors', []))} found")
-        print(f"[DocumentSummarizer] summary: {metadata.get('summary', [])} ")
+
+
+
+
+
 
         
         return metadata
