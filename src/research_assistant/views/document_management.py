@@ -95,10 +95,15 @@ class DocumentManagementViewSet(viewsets.ViewSet):
             
     
         print("Init summarizer document")
-        print("Init summarizer document 2")
+        print("Init summarizer document 2 --")
 
         summarizer = DocumentSummarizer()
         
+        print("Init summarizer document 3")
+        print("Init summarizer document 3")
+        print("Init summarizer document 3")
+        print("Init summarizer document 3")
+        print("Init summarizer document 3")
         print("Init summarizer document 3")
         # total_pages = await sync_to_async(doc_processor.get_total_pages)()
         # print(f"[_process_document] Total Pages {total_pages}")
