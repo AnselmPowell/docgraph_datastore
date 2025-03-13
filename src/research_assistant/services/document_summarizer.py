@@ -131,6 +131,8 @@ class DocumentSummarizer:
             "name": "extract_document_metadata",
             "parameters": MetadataSchema.schema()
         }
+
+        print("Call Openai to Summaries...")
         
 
         response = self.llm.chat.completions.create(
@@ -145,14 +147,12 @@ class DocumentSummarizer:
         )
         
         metadata = json.loads(response.choices[0].message.function_call.arguments)
+
+        print("OpenAI Summary complete")
         
         # Process publication date if present
         if metadata.get('publication_date'):
             metadata['publication_date'] = self._parse_date(metadata['publication_date'])
-
-
-
-
 
 
 

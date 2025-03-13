@@ -85,7 +85,7 @@ class DocumentManagementViewSet(viewsets.ViewSet):
             url=file_data['file_url'],
             processing_status='processing'
         )
-        # print(f"[_process_document] Created document: {document}")
+        print(f"[_process_document] Created document: {document}")
 
         # except Exception as e:
         #     print(f"[_process_document] Processing error for {file_data['file_name']}: {str(e)}")
@@ -93,7 +93,9 @@ class DocumentManagementViewSet(viewsets.ViewSet):
 
         # try:
             
-        # print("Init summarizer document")
+        print("Init summarizer document")
+        print("Init summarizer document")
+        print("Init summarizer document")
         summarizer = DocumentSummarizer()
         
         total_pages = await sync_to_async(doc_processor.get_total_pages)()
