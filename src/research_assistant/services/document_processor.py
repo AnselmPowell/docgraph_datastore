@@ -825,7 +825,7 @@ class DocumentProcessor:
 
         file_path = self._download_file(url)
         sections, reference_data = self.process_document(file_path)
-        self._cleanup_temp_file(file_path)
+        # self._cleanup_temp_file(file_path)
 
 
 
@@ -885,13 +885,13 @@ class DocumentProcessor:
             self.total_pages = len(processed_sections)
             
             # Ensure cleanup happens
-            self._cleanup_temp_file(file_path)
+            # self._cleanup_temp_file(file_path)
             
             return processed_sections, reference_data
         
         except Exception as e:
 
-            self._cleanup_temp_file(file_path)
+            # self._cleanup_temp_file(file_path)
             raise
 
 
