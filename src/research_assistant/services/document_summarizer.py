@@ -48,32 +48,33 @@ class DocumentSummarizer:
             print(f"[DocumentSummarizer] API Key Set: {bool(settings.OPENAI_API_KEY)}")
             print(f"[DocumentSummarizer] API Key Length: {len(settings.OPENAI_API_KEY) if settings.OPENAI_API_KEY else 0}")
             
-            # FIXED VERSION DETECTION: Use package version number directly
+            # Import to check version
+            import openai
+            import importlib.metadata
+            version = importlib.metadata.version("openai")
+            major_version = int(version.split('.')[0])
+            print(f"[DocumentSummarizer] Detected OpenAI version: {version}")
+            
+            # Initialize with proxy handling for Railway
             try:
-                # Import to check version
-                import openai
-                import importlib.metadata
-                version = importlib.metadata.version("openai")
-                major_version = int(version.split('.')[0])
-                print(f"[DocumentSummarizer] Detected OpenAI version: {version}")
-                
-                # Always use new API for 1.x
-                if major_version >= 1:
-                    self.llm = OpenAI(api_key=settings.OPENAI_API_KEY)
-                    self.api_version = "new"
-                    print(f"[DocumentSummarizer] Using new OpenAI API v{major_version}.x")
-                else:
-                    # Only for 0.x versions (unlikely)
-                    import openai
-                    openai.api_key = settings.OPENAI_API_KEY
-                    self.llm = openai
-                    self.api_version = "old"
-                    print(f"[DocumentSummarizer] Using older OpenAI API v{major_version}.x")
-            except Exception as e:
-                # Fallback if version detection fails - always use new API with v1.3.0
-                print(f"[DocumentSummarizer] Version detection failed: {str(e)}, defaulting to new API")
+                # Standard initialization that fails with 'proxies' parameter in Railway
                 self.llm = OpenAI(api_key=settings.OPENAI_API_KEY)
                 self.api_version = "new"
+                print(f"[DocumentSummarizer] Using new OpenAI API v{major_version}.x")
+            except TypeError as e:
+                # Specifically handle the proxies error in Railway
+                if 'proxies' in str(e):
+                    print("[DocumentSummarizer] Detected proxy configuration, using alternate initialization")
+                    import httpx
+                    # Create a custom HTTP client without proxies
+                    http_client = httpx.Client(timeout=120)
+                    self.llm = OpenAI(
+                        api_key=settings.OPENAI_API_KEY,
+                        http_client=http_client  # Use custom client without proxies
+                    )
+                    self.api_version = "new"
+                else:
+                    raise
                     
             print("[DocumentSummarizer] OpenAI client initialized successfully")
         except Exception as e:
@@ -81,7 +82,6 @@ class DocumentSummarizer:
             self.llm = None
             self.api_version = None
             self.init_error = str(e)
-
 
     def _construct_prompt(self, pages_text: list[str]) -> str:
         """Construct metadata extraction prompt using first two pages

@@ -115,6 +115,9 @@ COPY --from=builder /opt/venv /opt/venv
 ENV PATH=/opt/venv/bin:$PATH
 ENV PYTHONDONTWRITEBYTECODE=1 
 ENV PYTHONUNBUFFERED=1
+ENV HTTPX_PROXY=""
+ENV HTTP_PROXY=""
+ENV HTTPS_PROXY=""
 
 # Install minimal runtime dependencies
 RUN apt-get update && apt-get install -y \
