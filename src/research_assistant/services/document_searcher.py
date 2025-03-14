@@ -28,9 +28,42 @@ class SearchResults(BaseModel):
 
 class DocumentSearcher:
     """Search document sections for relevant content with enhanced monitoring""" 
+
     def __init__(self):
         print("\n[DocumentSearcher] Initializing searcher")
-        self.llm = OpenAI(api_key=settings.OPENAI_API_KEY)
+        try:
+            # Import to check version
+            import openai
+            import importlib.metadata
+            version = importlib.metadata.version("openai")
+            major_version = int(version.split('.')[0])
+            print(f"[DocumentSearcher] Detected OpenAI version: {version}")
+            
+            # Initialize with proxy handling for Railway
+            try:
+                # Standard initialization that might fail with 'proxies' parameter in Railway
+                self.llm = OpenAI(api_key=settings.OPENAI_API_KEY)
+                print(f"[DocumentSearcher] Using OpenAI API v{major_version}.x")
+            except TypeError as e:
+                # Specifically handle the proxies error in Railway
+                if 'proxies' in str(e):
+                    print("[DocumentSearcher] Detected proxy configuration, using alternate initialization")
+                    import httpx
+                    # Create a custom HTTP client without proxies
+                    http_client = httpx.Client(timeout=120)
+                    self.llm = OpenAI(
+                        api_key=settings.OPENAI_API_KEY,
+                        http_client=http_client  # Use custom client without proxies
+                    )
+                else:
+                    raise
+                    
+            print("[DocumentSearcher] OpenAI client initialized successfully")
+        except Exception as e:
+            print(f"[DocumentSearcher] CRITICAL ERROR initializing OpenAI client: {str(e)}")
+            self.llm = None
+            self._init_error = str(e)
+        
         self.total_tokens_used = 0
         self.total_api_calls = 0
         self.relevance_scorer = RelevanceScorer()
@@ -354,6 +387,10 @@ class DocumentSearcher:
         print("\n[DocumentSearcher] Checking summary relevance")
         print(f"[DocumentSearcher] Summary length: {len(summary)}")
         print(f"[DocumentSearcher] Context length: {len(context)}")
+
+        if self.llm is None:
+            print(f"[DocumentSearcher] Cannot check summary relevance: OpenAI client initialization failed: {getattr(self, '_init_error', 'Unknown error')}")
+            return False
         
         prompt = f"""
             Analyze if this academic document summary is relevant to the given context.
