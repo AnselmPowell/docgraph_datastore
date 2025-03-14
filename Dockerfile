@@ -102,7 +102,7 @@ RUN pip install -r /tmp/requirements.txt
 RUN pip install gunicorn whitenoise
 
 # CRITICAL FIX: Force reinstall OpenAI package to ensure correct version
-RUN pip uninstall -y openai && pip install openai==1.3.0
+RUN pip uninstall -y openai && pip install openai==1.6.0
 
 # Verify OpenAI version
 RUN python -c "import openai; print(f'OpenAI version installed: {openai.__version__}')" 

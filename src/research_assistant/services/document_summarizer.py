@@ -48,22 +48,32 @@ class DocumentSummarizer:
             print(f"[DocumentSummarizer] API Key Set: {bool(settings.OPENAI_API_KEY)}")
             print(f"[DocumentSummarizer] API Key Length: {len(settings.OPENAI_API_KEY) if settings.OPENAI_API_KEY else 0}")
             
-            # Version-compatible initialization
+            # FIXED VERSION DETECTION: Use package version number directly
             try:
-                # Try the newer initialization method first
-                self.llm = OpenAI(api_key=settings.OPENAI_API_KEY)
-                self.api_version = "new"
-                print("[DocumentSummarizer] Using new OpenAI API v1.x")
-            except TypeError as e:
-                if 'proxies' in str(e):
-                    # Handle older OpenAI library versions
+                # Import to check version
+                import openai
+                import importlib.metadata
+                version = importlib.metadata.version("openai")
+                major_version = int(version.split('.')[0])
+                print(f"[DocumentSummarizer] Detected OpenAI version: {version}")
+                
+                # Always use new API for 1.x
+                if major_version >= 1:
+                    self.llm = OpenAI(api_key=settings.OPENAI_API_KEY)
+                    self.api_version = "new"
+                    print(f"[DocumentSummarizer] Using new OpenAI API v{major_version}.x")
+                else:
+                    # Only for 0.x versions (unlikely)
                     import openai
                     openai.api_key = settings.OPENAI_API_KEY
                     self.llm = openai
                     self.api_version = "old"
-                    print("[DocumentSummarizer] Using older OpenAI API v0.x")
-                else:
-                    raise
+                    print(f"[DocumentSummarizer] Using older OpenAI API v{major_version}.x")
+            except Exception as e:
+                # Fallback if version detection fails - always use new API with v1.3.0
+                print(f"[DocumentSummarizer] Version detection failed: {str(e)}, defaulting to new API")
+                self.llm = OpenAI(api_key=settings.OPENAI_API_KEY)
+                self.api_version = "new"
                     
             print("[DocumentSummarizer] OpenAI client initialized successfully")
         except Exception as e:
