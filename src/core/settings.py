@@ -104,25 +104,27 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 CORS_ALLOW_ALL_ORIGINS = False
 
-# DATABASES = {
-#     'default': {
-#             'ENGINE': 'django.db.backends.sqlite3',
-#             'NAME': BASE_DIR / 'db.sqlite3',
-#         }
-# }
+DATABASES = {
+    'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-print("--------- DATABASE URL  ", app_config['DATABASE_URL'])
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=app_config['DATABASE_URL'],
-        conn_max_age=600,
-        conn_health_checks=True,
-        )
-}
+
+# print("--------- DATABASE URL  ", app_config['DATABASE_URL'])
+
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         default=app_config['DATABASE_URL'],
+#         conn_max_age=600,
+#         conn_health_checks=True,
+#         )
+# }
 
 # Governance-specific settings
 GOVERNANCE_SETTINGS = {

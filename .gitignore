@@ -11,6 +11,7 @@ media/
 
 output.txt
 merge_file_commands.txt
+merge_files.sh
 
 # Environments
 .env

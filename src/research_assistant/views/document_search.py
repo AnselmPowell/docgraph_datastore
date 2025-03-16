@@ -1,5 +1,339 @@
-# src/research_assistant/views/document_search.py
+# # src/research_assistant/views/document_search.py
 
+# from rest_framework.permissions import IsAuthenticated
+# from rest_framework import viewsets, status
+# from rest_framework.decorators import action
+# from rest_framework.response import Response
+# from django.views.decorators.csrf import csrf_exempt 
+# from django.utils.decorators import method_decorator
+# from asgiref.sync import sync_to_async
+# from django.db import transaction
+# import asyncio
+# import threading
+# import time
+# from threading import Lock
+# import uuid
+
+# from ..models import SearchResult, DocumentMetadata
+# from ..services.search.search_manager import SearchManager
+
+# @method_decorator(csrf_exempt, name='dispatch')
+# class DocumentSearchViewSet(viewsets.ViewSet):
+#     permission_classes = [IsAuthenticated]
+    
+#     def __init__(self, **kwargs):
+#         super().__init__(**kwargs)
+#         self.search_manager = SearchManager()
+#         self.search_threads = {}
+#         self.thread_lock = Lock()
+#         self.max_concurrent_searches = 3  # Limit concurrent searches
+#         print("[DocumentSearchViewSet] Initialized")
+
+#     def _process_search_background(self, search_id, document, context, keywords, user):
+#         """Background processing task for a single document search"""
+#         search_id_str = str(search_id)
+#         try:
+#             print(f"[_process_search_background] Starting search for document: {document.file_name}")
+            
+#             # Get the search result
+#             search_result = SearchResult.objects.get(id=search_id)
+#             search_result.processing_status = 'processing'
+#             search_result.save()
+            
+#             # Create search data for the manager
+#             search_data = {
+#                 'file_name': document.file_name,
+#                 'context': context,
+#                 'keywords': keywords,
+#                 'user': user
+#             }
+            
+#             # Perform search on a single document
+#             result = self.search_manager.search_single_document(search_data)
+            
+#             # Update search result with data
+#             search_result.relevance_score = result.get('relevance_score', 0)
+#             search_result.matching_sections = result.get('matching_sections', [])
+#             search_result.processing_status = 'completed'
+#             search_result.save()
+            
+#             print(f"[_process_search_background] Completed search for document: {document.file_name}")
+            
+#         except Exception as e:
+#             print(f"[_process_search_background] Error processing search: {str(e)}")
+#             try:
+#                 search_result = SearchResult.objects.get(id=search_id)
+#                 search_result.processing_status = 'failed'
+#                 search_result.error_message = str(e)
+#                 search_result.save()
+#             except Exception as inner_e:
+#                 print(f"[_process_search_background] Failed to update search status: {str(inner_e)}")
+#         finally:
+#             # Remove thread from tracking with thread safety
+#             with self.thread_lock:
+#                 if search_id_str in self.search_threads:
+#                     del self.search_threads[search_id_str]
+
+#     @action(detail=False, methods=['POST'])
+#     def search_results(self, request):
+#         """Handle search requests with immediate response and background processing"""
+#         print(f"[search_results] Starting search for user: {request.user.email}")
+        
+#         try:
+#             data = request.data
+#             context = data.get('context')
+#             keywords = data.get('keywords', [])
+#             file_names = data.get('file_name', [])
+            
+#             if not file_names:
+#                 return Response({
+#                     'status': 'error',
+#                     'message': 'No documents selected for search'
+#                 }, status=status.HTTP_400_BAD_REQUEST)
+                
+#             if not context:
+#                 return Response({
+#                     'status': 'error',
+#                     'message': 'Search context is required'
+#                 }, status=status.HTTP_400_BAD_REQUEST)
+                
+#             # Create pending search results for all documents
+#             pending_results = []
+            
+#             for file_name in file_names:
+#                 try:
+#                     # Find the document
+#                     document = DocumentMetadata.objects.get(
+#                         file_name=file_name,
+#                         user=request.user
+#                     )
+                    
+#                     # Create pending search result
+#                     search_id = uuid.uuid4()
+#                     search_result = SearchResult.objects.create(
+#                         id=search_id,
+#                         user=request.user,
+#                         document=document,
+#                         query_context=context,
+#                         keywords=keywords,
+#                         document_title=document.title or document.file_name,
+#                         document_authors=document.authors or [],
+#                         document_summary=document.summary,
+#                         relevance_score=0,  # Will be updated
+#                         processing_status='pending',
+#                         matching_sections=[]  # Will be populated
+#                     )
+                    
+#                     # Format for response
+#                     pending_result = {
+#                         'search_results_id': str(search_id),
+#                         'document_id': str(document.id),
+#                         'title': document.title or document.file_name,
+#                         'question': context,
+#                         'keywords': keywords,
+#                         'authors': document.authors or [],
+#                         'summary': document.summary,
+#                         'relevance_score': 0,
+#                         'processing_status': 'pending',
+#                         'matching_sections': []
+#                     }
+                    
+#                     pending_results.append(pending_result)
+                    
+#                     # Start background processing
+#                     with self.thread_lock:
+#                         current_thread_count = len(self.search_threads)
+                    
+#                     while current_thread_count >= self.max_concurrent_searches:
+#                         time.sleep(0.5)
+#                         with self.thread_lock:
+#                             current_thread_count = len(self.search_threads)
+                    
+#                     # Create thread for processing
+#                     thread = threading.Thread(
+#                         target=self._process_search_background,
+#                         args=(search_id, document, context, keywords, request.user)
+#                     )
+#                     thread.daemon = True
+                    
+#                     # Add to tracking
+#                     with self.thread_lock:
+#                         self.search_threads[str(search_id)] = thread
+                    
+#                     thread.start()
+                    
+#                 except DocumentMetadata.DoesNotExist:
+#                     print(f"[search_results] Document not found: {file_name}")
+#                     continue
+#                 except Exception as e:
+#                     print(f"[search_results] Error creating search result: {str(e)}")
+#                     continue
+                    
+#             if not pending_results:
+#                 return Response({
+#                     'status': 'error',
+#                     'message': 'No valid documents found'
+#                 }, status=status.HTTP_400_BAD_REQUEST)
+                
+#             # Return pending results immediately
+#             return Response({
+#                 'status': 'success',
+#                 'results': pending_results,
+#                 'total_matches': len(pending_results)
+#             })
+                
+#         except Exception as e:
+#             print(f"[search_results] Error: {str(e)}")
+#             return Response({
+#                 'status': 'error',
+#                 'message': 'Search failed',
+#                 'detail': 'Unable to complete search. Please try again'
+#             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+#     def _prepare_search_data(self, request):
+#         """Prepare and validate search data"""
+#         print("[Prepare Search] Prepare and validate search data")
+#         data = request.data
+#         if not isinstance(data, dict):
+#             data = {'file_name': data}
+
+#         print("[Prepare Search] Search data: ", data)
+#         data['user'] = request.user
+        
+#         file_names = data.get('file_name')
+#         # if isinstance(file_name, list):
+#         #     file_name = file_name[0]
+
+#         searchResults = []
+#         for file_name in file_names:  
+
+#             context = data.get('context')
+#             keywords = data.get('keywords', [])
+            
+#             searchResults.append({
+#                 'file_name': file_name,
+#                 'context': context,
+#                 'keywords': keywords,
+#                 'user': request.user
+#             })
+#         print("[prepare_search]  Done Preparing:", searchResults)
+#         return searchResults
+
+#     @sync_to_async
+#     def _save_search_results(self, user, context, keywords, results):
+#         """Save search results with transaction"""
+       
+#         with transaction.atomic():
+#             for result in results.get('results', []):
+#                 document = DocumentMetadata.objects.get(id=result['document_id'])
+#                 print("Matching Section Results: \n", result['matching_sections'])
+#                 SearchResult.objects.create(
+#                     id=result['search_results_id'],
+#                     user=user,
+#                     document=document,
+#                     query_context=context,
+#                     keywords=keywords,
+#                     document_title=result['title'],
+#                     document_authors=result['authors'],
+#                     document_summary=result['summary'],
+#                     relevance_score=result['relevance_score'],
+#                     matching_sections=result['matching_sections']
+#                 )
+
+#     @action(detail=False, methods=['GET'])
+#     def get_search_results(self, request):
+#         """Retrieve search results for user synchronously"""
+#         print(f"[get_search_results] Fetching results for user: {request.user.email}")
+        
+#         try:
+#             results = SearchResult.objects.filter(
+#                 user=request.user
+#             ).order_by('-created_at')
+            
+#             formatted_results = []
+#             for result in results:
+#                 formatted_result = {
+#                     'search_results_id': result.id,
+#                     'document_id': str(result.document.id),
+#                     'title': result.document_title,
+#                     'question': result.query_context,
+#                     'keywords': result.keywords,
+#                     'authors': result.document_authors,
+#                     'summary': result.document_summary,
+#                     'relevance_score': result.relevance_score,
+#                     'matching_sections': result.matching_sections
+#                 }
+#                 formatted_results.append(formatted_result)
+            
+#             return Response({
+#                 'status': 'success',
+#                 'results': formatted_results,
+#                 'total_matches': len(formatted_results)
+#             })
+                
+#         except Exception as e:
+#             print(f"[get_search_results] Error: {str(e)}")
+#             return Response({
+#                 'status': 'error',
+#                 'message': str(e)
+#             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+
+#     @action(detail=False, methods=['DELETE'])
+#     def remove_search_result(self, request):
+#         """Remove a specific search result"""
+#         print("[remove_search_result] Starting removal")
+        
+#         try:
+#             search_result_id = request.data.get('search_result_id')
+            
+#             if not search_result_id:
+#                 return Response({
+#                     'status': 'error',
+#                     'message': 'No search result ID provided'
+#                 }, status=status.HTTP_400_BAD_REQUEST)
+            
+
+#             # Get the search result and verify ownership
+#             try:
+#                 search_result = SearchResult.objects.get(
+#                     id=search_result_id,
+#                     user=request.user
+#                 )
+#             except SearchResult.DoesNotExist:
+#                 return Response({
+#                     'status': 'error',
+#                     'message': 'Search result not found'
+#                 }, status=status.HTTP_404_NOT_FOUND)
+
+#             # Delete the search result
+#             search_result.delete()
+#             print(f"[remove_search_result] Successfully removed result: {search_result_id}")
+
+#             return Response({
+#                 'status': 'success',
+#                 'message': 'Search result removed successfully'
+#             })
+
+#         except Exception as e:
+#             print(f"[remove_search_result] Error: {str(e)}")
+#             return Response({
+#                 'status': 'error',
+#                 'message': 'Failed to remove search result'
+#             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+
+
+
+
+
+
+
+# src/research_assistant/views/document_search.py
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
@@ -9,6 +343,9 @@ from django.utils.decorators import method_decorator
 from asgiref.sync import sync_to_async
 from django.db import transaction
 import asyncio
+import threading
+import uuid
+from threading import Lock
 
 from ..models import SearchResult, DocumentMetadata
 from ..services.search.search_manager import SearchManager
@@ -20,98 +357,260 @@ class DocumentSearchViewSet(viewsets.ViewSet):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.search_manager = SearchManager()
+        self.search_threads = {}
+        self.thread_lock = Lock()
+        self.max_concurrent_searches = 3  # Limit concurrent search operations
         print("[DocumentSearchViewSet] Initialized")
 
     @action(detail=False, methods=['POST'])
     def search_results(self, request):
-        # Use synchronous wrapper for async function
-        return asyncio.run(self._handle_search(request))
-
-    async def _handle_search(self, request):
-        print(f"[_handle_search] Starting search for email: {request.user.email}")
-        data  = request.data
+        """Create a search with background processing"""
+        print(f"[search_results] Starting search for user: {request.user.email}")
+        
+        data = request.data
         context = data.get('context')
         keywords = data.get('keywords', [])
-
-        try:
-            # Validate input data
-            data = self._prepare_search_data(request)
-            print("Search Results: retured")
-
-            # Perform search using sync_to_async
-            print("Search Results: Init search manager ")
-            search_func = sync_to_async(self.search_manager.search_documents)
-
-            results = await search_func(
-                search_data=data,
-                context=context,
-                keywords=keywords,
-                user=request.user
-            )
-            print("Save Search ")
-            # Save results using sync_to_async with transaction
-            await self._save_search_results(request.user, context, 
-                                         keywords, results)
-
-            return Response(results)
-
-        except Exception as e:
-            print(f"[Search] Error performing search: {str(e)}")
+        file_names = data.get('file_name')
+        
+        if not context or not file_names:
             return Response({
                 'status': 'error',
-                'message': 'Search failed',
-                'detail': 'Unable to complete search. Please try again'
-            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    def _prepare_search_data(self, request):
-        """Prepare and validate search data"""
-        print("[Prepare Search] Prepare and validate search data")
-        data = request.data
-        if not isinstance(data, dict):
-            data = {'file_name': data}
-
-        print("[Prepare Search] Search data: ", data)
-        data['user'] = request.user
+                'message': 'Missing required fields',
+                'detail': 'Both context and file_name are required'
+            }, status=status.HTTP_400_BAD_REQUEST)
         
-        file_names = data.get('file_name')
-        # if isinstance(file_name, list):
-        #     file_name = file_name[0]
-
-        searchResults = []
-        for file_name in file_names:  
-
-            context = data.get('context')
-            keywords = data.get('keywords', [])
-            
-            searchResults.append({
-                'file_name': file_name,
-                'context': context,
-                'keywords': keywords,
-                'user': request.user
-            })
-        print("[prepare_search]  Done Preparing:", searchResults)
-        return searchResults
-
-    @sync_to_async
-    def _save_search_results(self, user, context, keywords, results):
-        """Save search results with transaction"""
-       
-        with transaction.atomic():
-            for result in results.get('results', []):
-                document = DocumentMetadata.objects.get(id=result['document_id'])
-                print("Matching Section Results: \n", result['matching_sections'])
-                SearchResult.objects.create(
-                    id=result['search_results_id'],
-                    user=user,
+        # Immediately create pending search results
+        pending_results = []
+        
+        try:
+            for file_name in file_names:
+                # Get document
+                document = DocumentMetadata.objects.filter(
+                    file_name=file_name,
+                    user=request.user,
+                    processing_status='completed'  # Only search completed documents
+                ).first()
+                
+                if not document:
+                    continue
+                
+                # Create pending search result
+                search_id = uuid.uuid4()
+                search_result = SearchResult.objects.create(
+                    id=search_id,
+                    user=request.user,
                     document=document,
                     query_context=context,
                     keywords=keywords,
-                    document_title=result['title'],
-                    document_authors=result['authors'],
-                    document_summary=result['summary'],
-                    relevance_score=result['relevance_score'],
-                    matching_sections=result['matching_sections']
+                    document_title=document.title or document.file_name,
+                    document_authors=document.authors or [],
+                    document_summary=document.summary,
+                    relevance_score=0,  # Will be updated
+                    matching_sections=[],  # Will be updated
+                    processing_status='pending'
                 )
+                
+                pending_result = {
+                    'search_results_id': str(search_id),
+                    'document_id': str(document.id),
+                    'title': document.title or document.file_name,
+                    'question': context,
+                    'keywords': keywords,
+                    'authors': document.authors or [],
+                    'summary': document.summary,
+                    'relevance_score': 0,
+                    'matching_sections': [],
+                    'processing_status': 'pending'
+                }
+                
+                pending_results.append(pending_result)
+                
+                # Start background processing
+                with self.thread_lock:
+                    if len(self.search_threads) < self.max_concurrent_searches:
+                        thread = threading.Thread(
+                            target=self._process_search_background,
+                            args=(search_id, document, context, keywords, request.user)
+                        )
+                        thread.daemon = True
+                        self.search_threads[str(search_id)] = thread
+                        thread.start()
+                    else:
+                        # Mark for later processing
+                        print(f"[search_results] Search {search_id} queued for later processing")
+            
+            return Response({
+                'status': 'success',
+                'results': pending_results,
+                'total_matches': len(pending_results)
+            })
+            
+        except Exception as e:
+            print(f"[search_results] Error creating search: {str(e)}")
+            return Response({
+                'status': 'error',
+                'message': 'Search creation failed',
+                'detail': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def _process_search_background(self, search_id, document, context, keywords, user):
+        """Process search in background thread"""
+        search_id_str = str(search_id)
+        try:
+            print(f"[_process_search_background] Processing search {search_id} for document: {document.file_name}")
+            
+            # Update status to processing
+            search_result = SearchResult.objects.get(id=search_id)
+            search_result.processing_status = 'processing'
+            search_result.save()
+            
+            # Prepare search data
+            search_data = [{
+                'file_name': document.file_name,
+                'context': context,
+                'keywords': keywords,
+                'user': user
+            }]
+            
+            # Perform search
+            results = self.search_manager.search_documents(
+                search_data=search_data,
+                context=context,
+                keywords=keywords,
+                user=user
+            )
+            
+            # Get the result for this document
+            for result in results.get('results', []):
+                if str(result['document_id']) == str(document.id):
+                    # Update search result with actual data
+                    search_result.matching_sections = result['matching_sections']
+                    search_result.relevance_score = result['relevance_score']
+                    search_result.processing_status = 'completed'
+                    search_result.save()
+                    break
+            
+            print(f"[_process_search_background] Completed search {search_id}")
+            
+        except Exception as e:
+            print(f"[_process_search_background] Error processing search {search_id}: {str(e)}")
+            
+            try:
+                # Update status to failed
+                search_result = SearchResult.objects.get(id=search_id)
+                search_result.processing_status = 'failed'
+                search_result.error_message = str(e)
+                search_result.save()
+            except Exception as inner_e:
+                print(f"[_process_search_background] Failed to update search status: {str(inner_e)}")
+                
+        finally:
+            # Remove thread from tracking with thread safety
+            with self.thread_lock:
+                if search_id_str in self.search_threads:
+                    del self.search_threads[search_id_str]
+                    print(f"[_process_search_background] Removed thread for search {search_id_str}")
+            
+            # Start next pending search after removing the current thread
+            # Call outside the lock to avoid deadlocks
+            self._process_next_pending_search(user)
+            print(f"[_process_search_background] Checked for next pending search")
+    
+    def _process_next_pending_search(self, user):
+        """Process the next pending search if we have capacity"""
+        print(f"[_process_next_pending_search] Current thread count: {len(self.search_threads)}")
+        
+        with self.thread_lock:
+            # Skip if at capacity
+            if len(self.search_threads) >= self.max_concurrent_searches:
+                print(f"[_process_next_pending_search] At capacity ({self.max_concurrent_searches}), not starting new searches")
+                return
+                    
+            # Find pending searches - get ALL pending searches first
+            pending_searches = SearchResult.objects.filter(
+                processing_status='pending'
+            ).order_by('created_at')[:5]  # Limit query size but get multiple
+            
+            print(f"[_process_next_pending_search] Found {pending_searches.count()} pending searches")
+            
+            # Try to start as many searches as we have capacity for
+            started = 0
+            for pending_search in pending_searches:
+                # Skip if we reached capacity during this loop
+                if len(self.search_threads) >= self.max_concurrent_searches:
+                    print(f"[_process_next_pending_search] Reached capacity during processing")
+                    break
+                    
+                search_id = pending_search.id
+                document = pending_search.document
+                context = pending_search.query_context
+                keywords = pending_search.keywords
+                search_user = pending_search.user
+                
+                # Skip if already being processed
+                if str(search_id) in self.search_threads:
+                    print(f"[_process_next_pending_search] Search {search_id} already being processed")
+                    continue
+                    
+                # Start thread
+                thread = threading.Thread(
+                    target=self._process_search_background,
+                    args=(search_id, document, context, keywords, search_user)
+                )
+                thread.daemon = True
+                self.search_threads[str(search_id)] = thread
+                thread.start()
+                started += 1
+                print(f"[_process_next_pending_search] Started processing search {search_id}")
+                
+            print(f"[_process_next_pending_search] Started {started} new searches")
+
+    @action(detail=False, methods=['POST'], url_path='check-status')
+    def check_search_status(self, request):
+        """Check status of search results"""
+        search_ids = request.data.get('search_ids', [])
+        
+        if not search_ids:
+            return Response({
+                'status': 'error',
+                'message': 'No search IDs provided'
+            }, status=status.HTTP_400_BAD_REQUEST)
+            
+        try:
+            # Query search results with provided IDs
+            search_results = SearchResult.objects.filter(
+                id__in=search_ids,
+                user=request.user
+            )
+            
+            formatted_results = []
+            for result in search_results:
+                formatted_result = {
+                    'search_results_id': str(result.id),
+                    'document_id': str(result.document.id),
+                    'title': result.document_title,
+                    'question': result.query_context,
+                    'keywords': result.keywords,
+                    'authors': result.document_authors,
+                    'summary': result.document_summary,
+                    'relevance_score': result.relevance_score,
+                    'matching_sections': result.matching_sections,
+                    'processing_status': result.processing_status,
+                    'error_message': result.error_message
+                }
+                formatted_results.append(formatted_result)
+                
+            return Response({
+                'status': 'success',
+                'results': formatted_results
+            })
+            
+        except Exception as e:
+            print(f"[check_search_status] Error: {str(e)}")
+            return Response({
+                'status': 'error',
+                'message': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @action(detail=False, methods=['GET'])
     def get_search_results(self, request):
@@ -126,7 +625,7 @@ class DocumentSearchViewSet(viewsets.ViewSet):
             formatted_results = []
             for result in results:
                 formatted_result = {
-                    'search_results_id': result.id,
+                    'search_results_id': str(result.id),
                     'document_id': str(result.document.id),
                     'title': result.document_title,
                     'question': result.query_context,
@@ -134,7 +633,9 @@ class DocumentSearchViewSet(viewsets.ViewSet):
                     'authors': result.document_authors,
                     'summary': result.document_summary,
                     'relevance_score': result.relevance_score,
-                    'matching_sections': result.matching_sections
+                    'matching_sections': result.matching_sections,
+                    'processing_status': result.processing_status,
+                    'error_message': result.error_message
                 }
                 formatted_results.append(formatted_result)
             
@@ -151,8 +652,6 @@ class DocumentSearchViewSet(viewsets.ViewSet):
                 'message': str(e)
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-
-
     @action(detail=False, methods=['DELETE'])
     def remove_search_result(self, request):
         """Remove a specific search result"""
@@ -167,6 +666,11 @@ class DocumentSearchViewSet(viewsets.ViewSet):
                     'message': 'No search result ID provided'
                 }, status=status.HTTP_400_BAD_REQUEST)
             
+            # Cancel any ongoing processing
+            with self.thread_lock:
+                if str(search_result_id) in self.search_threads:
+                    # We can't actually kill the thread, but we'll remove it from tracking
+                    del self.search_threads[str(search_result_id)]
 
             # Get the search result and verify ownership
             try:

@@ -163,6 +163,7 @@ class SearchQuery(models.Model):
 
 
 
+
 class SearchResult(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='search_results')
@@ -177,6 +178,19 @@ class SearchResult(models.Model):
     document_authors = models.JSONField(default=list)
     document_summary = models.TextField(null=True)
     relevance_score = models.FloatField()
+    
+    # Add processing status field
+    processing_status = models.CharField(
+        max_length=50,
+        choices=[
+            ('pending', 'Pending'),
+            ('processing', 'Processing'),
+            ('completed', 'Completed'),
+            ('failed', 'Failed')
+        ],
+        default='pending'
+    )
+    error_message = models.TextField(null=True, blank=True)
     
     # Matching Sections
     matching_sections = models.JSONField(default=list)
@@ -207,8 +221,10 @@ class SearchResult(models.Model):
             models.Index(fields=['user']),
             models.Index(fields=['document']),
             models.Index(fields=['created_at']),
-            models.Index(fields=['relevance_score'])
+            models.Index(fields=['relevance_score']),
+            models.Index(fields=['processing_status'])  # Add index for status
         ]
+
 
         
 class LLMResponseCache(models.Model):
