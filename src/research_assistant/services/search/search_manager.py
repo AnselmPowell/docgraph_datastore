@@ -141,7 +141,7 @@ class SearchManager:
             print("RETURN")
         
         print(" final results: \n", results)
-        # print(x)
+
         return {
             'status': 'success',
             'total_matches': len(results),

@@ -20,7 +20,7 @@ class DocumentMetadata(models.Model):
     doi = models.CharField(max_length=100, null=True)
     url = models.URLField(null=True, max_length=500)
     file_name = models.CharField(max_length=200, null=True)
-    citation = models.TextField(null=True)
+    citation = models.CharField(max_length=800, null=True)
     reference = models.JSONField(null=True, default=dict)
     summary = models.TextField(null=True)
     total_pages = models.IntegerField(null=True)

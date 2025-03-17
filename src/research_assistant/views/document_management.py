@@ -504,6 +504,7 @@ class DocumentManagementViewSet(viewsets.ViewSet):
                     'authors': [],
                     'pages': 0,
                     'summary': "Document processing...",
+                    'citation': "Document processing...",
                     'references': {},
                     'processing_status': 'pending',
                     'file_name': document.file_name,
@@ -576,6 +577,7 @@ class DocumentManagementViewSet(viewsets.ViewSet):
                     'summary': doc.summary,
                     'pages': doc.total_pages or 0,
                     'references': doc.reference or {},
+                    'citation': doc.citation,
                     'processing_status': doc.processing_status,
                     'file_name': doc.file_name,
                     'file_url': doc.url,
@@ -611,7 +613,8 @@ class DocumentManagementViewSet(viewsets.ViewSet):
                 id__in=document_ids,
                 user=request.user
             )
-            
+            print(documents[0].citation)
+            # print(x)
             # Format response
             return Response({
                 'status': 'success',
@@ -622,6 +625,7 @@ class DocumentManagementViewSet(viewsets.ViewSet):
                     'summary': doc.summary,
                     'pages': doc.total_pages or 0,
                     'references': doc.reference or {},
+                    'citation': doc.citation,
                     'processing_status': doc.processing_status,
                     'file_name': doc.file_name,
                     'file_url': doc.url,

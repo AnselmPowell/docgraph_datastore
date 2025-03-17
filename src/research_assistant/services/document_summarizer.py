@@ -247,7 +247,9 @@ class DocumentSummarizer:
                 # Process publication date if present
                 if metadata.get('publication_date'):
                     metadata['publication_date'] = self._parse_date(metadata['publication_date'])
-                
+                # print("metadata", metadata)
+                # print(x)
+
                 logger.info(f"Metadata extraction complete: {list(metadata.keys())}")
                 print("OpenAI summary complete!")
                 return metadata
