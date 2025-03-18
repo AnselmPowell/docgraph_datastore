@@ -53,13 +53,14 @@
 
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import DocumentManagementViewSet, DocumentSearchViewSet
+from .views import DocumentManagementViewSet, DocumentSearchViewSet, NoteManagerViewSet
 from rest_framework.permissions import IsAuthenticated
 
 # Initialize router
 router = DefaultRouter()
 router.register(r'documents', DocumentManagementViewSet, basename='documents')
 router.register(r'search', DocumentSearchViewSet, basename='search')
+router.register(r'notes', NoteManagerViewSet, basename='notes')
 
 # Define URL patterns
 urlpatterns = [
@@ -96,10 +97,23 @@ urlpatterns = [
          }, permission_classes=[IsAuthenticated]),
          name='search-documents'),
          
-    # Add this new path for check-status
+   
     path('documents/search/check-status/',
          DocumentSearchViewSet.as_view({
              'post': 'check_search_status'
          }, permission_classes=[IsAuthenticated]),
          name='check-search-status'),
+
+         path('notes/',
+         NoteManagerViewSet.as_view({
+             'get': 'list',
+             'post': 'create'
+         }, permission_classes=[IsAuthenticated]),
+         name='notes-list-create'),
+         
+    path('notes/<str:pk>/',
+         NoteManagerViewSet.as_view({
+             'delete': 'destroy'
+         }, permission_classes=[IsAuthenticated]),
+         name='notes-detail'),
 ]

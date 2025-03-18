@@ -226,6 +226,38 @@ class SearchResult(models.Model):
         ]
 
 
+
+class Note(models.Model):
+    """Store user notes with references to documents"""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notes')
+    
+    # Note content
+    title = models.CharField(max_length=500)
+    content = models.TextField()
+    
+    # Document metadata
+    document_id = models.CharField(max_length=500, null=True, blank=True)
+    page_number = models.IntegerField(null=True, blank=True)
+    source = models.CharField(max_length=500, null=True, blank=True)
+    
+    # Citations and references stored as JSON
+    citations = models.JSONField(default=list)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = 'notes'
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['user', '-created_at']),
+            models.Index(fields=['document_id'])
+        ]
+    
+    def __str__(self):
+        return f"Note: {self.title[:50]}"
+
         
 class LLMResponseCache(models.Model):
     """Store LLM responses for caching"""

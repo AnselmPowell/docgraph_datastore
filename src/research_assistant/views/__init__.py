@@ -2,5 +2,5 @@
 
 from .document_management import DocumentManagementViewSet
 from .document_search import DocumentSearchViewSet
-
-__all__ = ['DocumentManagementViewSet', 'DocumentSearchViewSet']
+from .note_manager import NoteManagerViewSet
+__all__ = ['DocumentManagementViewSet', 'DocumentSearchViewSet', 'NoteManagerViewSet' ]
