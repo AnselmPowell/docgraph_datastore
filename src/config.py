@@ -10,6 +10,7 @@ config = {
     'SECRET_KEY': os.environ.get('DJANGO_SECRET_KEY', 'dev-secret-key'),
     'ALLOWED_HOSTS': ['docgraphapi.up.railway.app', 'localhost', '127.0.0.1', '*'],
     'CORS_ALLOWED_ORIGINS': [
+        'https://studygrapgh.co.uk',
         'https://docgraph.up.railway.app',
         'http://localhost:3000',
     ],
