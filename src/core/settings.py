@@ -36,11 +36,11 @@ LLAMA_PARSE_KEY = config('LLAMA_PARSE_KEY', default='')
 
 
 
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8001', 'http://127.0.0.1:8000', 'https://studygrapgh.co.uk' 'https://docgraph.up.railway.app', 'https://docgraphapi.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8001', 'http://127.0.0.1:8000', 'https://studygraph.co.uk' 'https://docgraph.up.railway.app', 'https://docgraphapi.up.railway.app']
 
 
 # CSRF_TRUSTED_ORIGINS = [
-#     "https://studygrapgh.co.uk/",
+#     "https://studygraph.co.uk/",
 #     "https://docgraph.up.railway.app/",
 #     "http://*.railway.app",
 #     "https://*.railway.app",
