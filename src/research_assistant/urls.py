@@ -53,7 +53,7 @@
 
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import DocumentManagementViewSet, DocumentSearchViewSet, NoteManagerViewSet
+from .views import DocumentManagementViewSet, DocumentSearchViewSet, NoteManagerViewSet, ResearchContextViewSet, ArxivSearchViewSet
 from rest_framework.permissions import IsAuthenticated
 
 # Initialize router
@@ -61,6 +61,8 @@ router = DefaultRouter()
 router.register(r'documents', DocumentManagementViewSet, basename='documents')
 router.register(r'search', DocumentSearchViewSet, basename='search')
 router.register(r'notes', NoteManagerViewSet, basename='notes')
+router.register(r'research-context', ResearchContextViewSet, basename='research-context')
+router.register(r'arxiv-search', ArxivSearchViewSet, basename='arxiv-search')
 
 # Define URL patterns
 urlpatterns = [
@@ -116,4 +118,29 @@ urlpatterns = [
              'delete': 'destroy'
          }, permission_classes=[IsAuthenticated]),
          name='notes-detail'),
+
+    path('research-context/',
+         ResearchContextViewSet.as_view({
+             'get': 'list',
+             'post': 'create',
+         }, permission_classes=[IsAuthenticated]),
+         name='research-context'),
+         
+    path('research-context/clear/',
+         ResearchContextViewSet.as_view({
+             'delete': 'clear'
+         }, permission_classes=[IsAuthenticated]),
+         name='research-context-clear'),
+
+     path('arxiv-search/direct/',
+         ArxivSearchViewSet.as_view({
+             'post': 'direct_search'
+         }, permission_classes=[IsAuthenticated]),
+         name='arxiv-direct-search'),
+         
+    path('arxiv-search/context/',
+         ArxivSearchViewSet.as_view({
+             'post': 'context_search'
+         }, permission_classes=[IsAuthenticated]),
+         name='arxiv-context-search'),
 ]

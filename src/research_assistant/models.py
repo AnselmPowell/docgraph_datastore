@@ -257,6 +257,26 @@ class Note(models.Model):
     
     def __str__(self):
         return f"Note: {self.title[:50]}"
+    
+
+
+class ResearchContext(models.Model):
+    """Store user research context - only one per user"""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='research_context')
+    content = models.TextField()  # Will store up to 1200 words of context
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = 'research_contexts'
+        # Enforce one context per user
+        constraints = [
+            models.UniqueConstraint(fields=['user'], name='one_context_per_user')
+        ]
+    
+    def __str__(self):
+        return f"Research Context for {self.user.username}"
 
         
 class LLMResponseCache(models.Model):

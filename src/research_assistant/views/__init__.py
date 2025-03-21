@@ -3,4 +3,6 @@
 from .document_management import DocumentManagementViewSet
 from .document_search import DocumentSearchViewSet
 from .note_manager import NoteManagerViewSet
-__all__ = ['DocumentManagementViewSet', 'DocumentSearchViewSet', 'NoteManagerViewSet' ]
+from .research_context import ResearchContextViewSet
+from .arxiv_search import ArxivSearchViewSet
+__all__ = ['DocumentManagementViewSet', 'DocumentSearchViewSet', 'NoteManagerViewSet', 'ResearchContextViewSet', 'ArxivSearchViewSet' ]

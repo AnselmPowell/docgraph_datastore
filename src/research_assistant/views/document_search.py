@@ -372,6 +372,8 @@ class DocumentSearchViewSet(viewsets.ViewSet):
         keywords = data.get('keywords', [])
         file_names = data.get('file_name')
         
+        print("Does it have context")
+       
         if not context or not file_names:
             return Response({
                 'status': 'error',
@@ -379,21 +381,25 @@ class DocumentSearchViewSet(viewsets.ViewSet):
                 'detail': 'Both context and file_name are required'
             }, status=status.HTTP_400_BAD_REQUEST)
         
+        print("Context: ", context)
+        
         # Immediately create pending search results
         pending_results = []
         
         try:
             for file_name in file_names:
+                print("get document ", file_name)
                 # Get document
                 document = DocumentMetadata.objects.filter(
-                    file_name=file_name,
+                    title=file_name,
                     user=request.user,
-                    processing_status='completed'  # Only search completed documents
                 ).first()
                 
                 if not document:
+                    print("document not found")
                     continue
                 
+                print("document found", document)
                 # Create pending search result
                 search_id = uuid.uuid4()
                 search_result = SearchResult.objects.create(

@@ -27,20 +27,6 @@ class MetadataSchema(BaseModel):
 class DocumentSummarizer:
     """Generate document summary and extract metadata"""
     
-    # def __init__(self):
-    #     try:
-    #         print("[DocumentSummarizer] Initializing OpenAI client...")
-    #         print(f"[DocumentSummarizer] API Key Set: {bool(settings.OPENAI_API_KEY)}")
-    #         print(f"[DocumentSummarizer] API Key Length: {len(settings.OPENAI_API_KEY) if settings.OPENAI_API_KEY else 0}")
-    #         self.llm = OpenAI(api_key=settings.OPENAI_API_KEY)
-    #         print("[DocumentSummarizer] OpenAI client initialized successfully")
-    #     except Exception as e:
-    #         print(f"[DocumentSummarizer] CRITICAL ERROR initializing OpenAI client: {str(e)}")
-    #         logger.error(f"OpenAI initialization error: {str(e)}")
-    #         logger.error(traceback.format_exc())
-    #         # Continue without crashing, we'll handle it in generate_summary
-    #         self.llm = None
-    #         self.init_error = str(e)
 
     def __init__(self):
         try:
@@ -165,23 +151,12 @@ class DocumentSummarizer:
         """Generate document summary with proper API version handling"""
         logger.info(f"Starting document summary generation for document: {document_id}")
         print(f"Starting summary generation, API version: {self.api_version}")
-        # Fallback metadata if OpenAI fails
-        # fallback_metadata = {
-        #     'title': "Document " + document_id,
-        #     'authors': ['Unknown Author'],
-        #     'publication_date': None,
-        #     'publisher': None,
-        #     'doi': None,
-        #     'citation': f"Unknown (). Document ID: {document_id}",
-        #     'reference': f"Unknown (). Document ID: {document_id}",
-        #     'summary': "This document could not be automatically summarized.",
-        #     'total_pages': len(document_sections)
-        # }
+        
         
         print(" Is Self LLM")
         if self.llm is None:
             print(f"[DocumentSummarizer] Using fallback due to initialization error: {getattr(self, 'init_error', 'Unknown error')}")
-            # return fallback_metadata
+            
         
         # Get text from first two pages
         first_two_pages = []
@@ -192,7 +167,7 @@ class DocumentSummarizer:
         
         if not first_two_pages:
             logger.warning(f"No page content available for document: {document_id}")
-            # return fallback_metadata
+          
         
         # Create function schema for LLM
         function_schema = {
@@ -262,4 +237,4 @@ class DocumentSummarizer:
                     time.sleep(retry_delay)
                 else:
                     print("Max retries reached, using fallback metadata")
-                    # return fallback_metadata
+                
