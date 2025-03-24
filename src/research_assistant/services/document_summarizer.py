@@ -94,14 +94,15 @@ class DocumentSummarizer:
         Focus on identifying:
         1. Title (required)
         2. Authors (required)
-        3. Publication date (if available, format: YYYY-MM-DD)
+        3. Publication date (if available, format must be: YYYY-MM-DD)
         4. Publisher (if available)
         5. DOI (if available)
         6. Generate proper academic citation (required)
         7. Create full reference entry (required) HARVARD REFERENCE FORMAT
         8. Write 2-3 sentence summary of main topic/findings (required)
-        9. Total pages (default to 1 if not found)
+        9. Total pages (default to 1 if not found) \n
         
+        date format. It must be in YYYY-MM-DD format for Publication date 
         Extract ALL available information but leave optional fields empty if not found.
         Ensure citation and reference follow academic format standards.
         For missing dates, use logical inference from content or citations if possible.
@@ -187,7 +188,7 @@ class DocumentSummarizer:
                 start_time = time.time()
                 
                 # Choose API call style based on detected version
-                if self.api_version == "new":
+                if self.api_version == "news":
                     print("Using new OpenAI API style")
                     response = self.llm.chat.completions.create(
                         model="gpt-4o-mini",
@@ -195,7 +196,7 @@ class DocumentSummarizer:
                             "role": "system",
                             "content": self._construct_prompt(first_two_pages)
                         }],
-                        temperature=0.3,
+                        temperature=0.7,
                         functions=[function_schema],
                         function_call={"name": "extract_document_metadata"}
                     )
@@ -203,13 +204,14 @@ class DocumentSummarizer:
                 else:
                     print("Using old OpenAI API style")
                     # Old API style uses different parameters and response format
-                    response = self.llm.ChatCompletion.create(
-                        model="gpt-3.5-turbo-0613",  # Old API model that supports function calling
+                    client = OpenAI(api_key=settings.OPENAI_API_KEY)
+                    response = client.chat.completions.create(
+                        model="gpt-3.5-turbo-0613",
                         messages=[{
                             "role": "system",
                             "content": self._construct_prompt(first_two_pages)
                         }],
-                        temperature=0.3,
+                        temperature=0.7,
                         functions=[function_schema],
                         function_call={"name": "extract_document_metadata"}
                     )

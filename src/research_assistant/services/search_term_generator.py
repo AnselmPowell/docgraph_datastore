@@ -122,22 +122,23 @@ class SearchTermGenerator:
                             "role": "system",
                             "content": self._construct_prompt(context)
                         }],
-                        temperature=0.7,
+                        temperature=0.9,
                         functions=[function_schema],
                         function_call={"name": "generate_search_terms"}
                     )
             else:
                 print("Using old OpenAI API style")
                 # Old API style uses different parameters and response format
-                response = self.llm.ChatCompletion.create(
-                    model="gpt-3.5-turbo-0613",  # Old API model that supports function calling
+                client = OpenAI(api_key=settings.OPENAI_API_KEY)
+                response = client.chat.completions.create(
+                    model="gpt-3.5-turbo-0613",
                     messages=[{
                         "role": "system",
-                        "content": self._construct_prompt(context)
+                        "content": self._construct_prompt(first_two_pages)
                     }],
                     temperature=0.7,
-                        functions=[function_schema],
-                        function_call={"name": "generate_search_terms"}
+                    functions=[function_schema],
+                    function_call={"name": "extract_document_metadata"}
                 )
 
             duration = time.time() - start_time
