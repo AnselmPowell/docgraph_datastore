@@ -71,15 +71,16 @@ class SearchTermGenerator:
         {context} \n \n
 
         ## Task\n
-        Analyze the research context above and identify key themes for academic literature searches.
-        Generate 6 distinct categories of search terms with 4 search queries each (24 total search terms).
+        Analyse the research context above and identify key themes for academic literature searches, It needs to cover all relevant and significant research related to the main context topics .
+        You need to Center your search queries around the main themes and concepts of the context provided.
+        Generate between 4 to 10 distinct categories of search terms with 4 search queries each (24 total search terms).
         \n
-        For each category:
+        For each category (min 4 - max 10) :
         1. Provide a descriptive category name
         2. Include a brief description of what this category aims to find
-        3. Generate 3 specific search queries tailored for arXiv academic search
-        
-        Make search terms specific enough to return relevant results but not too narrow.
+        3. Generate 4 specific search queries tailored towards the contexts to get the most relevant results
+    
+        Make search terms specific enough to return relevant results but not too narrow, focus on all the main aspect of the research contexxt.
         Follow academic search conventions (e.g., "machine learning classification algorithms").
         
         ## Response Format
