@@ -91,7 +91,7 @@ class ArxivSearchViewSet(viewsets.ViewSet):
                 # Search for each term in the category
                 for term in category['search_terms']:
                     papers = self.arxiv_searcher.search(term, max_results=max_results_per_term)
-                    print("search results:", papers)
+                    # print("search results:", papers)
                     
                     # Add search term to each paper result
                     for paper in papers:

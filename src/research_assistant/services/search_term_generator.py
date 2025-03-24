@@ -40,7 +40,7 @@ class SearchTermGenerator:
 
         ## Task\n
         Analyze the research context above and identify key themes for academic literature searches.
-        Generate 3 distinct categories of search terms with 3 search queries each (9 total search terms).
+        Generate 6 distinct categories of search terms with 4 search queries each (24 total search terms).
         \n
         For each category:
         1. Provide a descriptive category name
@@ -58,6 +58,8 @@ class SearchTermGenerator:
     def generate_search_terms(self, context: str) -> Dict[str, Any]:
         """Generate search terms from research context"""
         print("[SearchTermGenerator] Generating search terms from context")
+
+        print('context:', context)
         
         if self.llm is None:
             print(f"[SearchTermGenerator] Cannot generate search terms: OpenAI client initialization failed: {getattr(self, '_init_error', 'Unknown error')}")
