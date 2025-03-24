@@ -9,6 +9,7 @@ import traceback
 from pydantic import BaseModel, Field
 import re
 from datetime import datetime
+import httpx
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +52,7 @@ class DocumentSummarizer:
                 # Specifically handle the proxies error in Railway
                 if 'proxies' in str(e):
                     print("[DocumentSummarizer] Detected proxy configuration, using alternate initialization")
-                    import httpx
+                    
                     # Create a custom HTTP client without proxies
                     http_client = httpx.Client(timeout=120)
                     self.llm = OpenAI(
@@ -188,7 +189,7 @@ class DocumentSummarizer:
                 start_time = time.time()
                 
                 # Choose API call style based on detected version
-                if self.api_version == "news":
+                if self.api_version == "new":
                     print("Using new OpenAI API style")
                     response = self.llm.chat.completions.create(
                         model="gpt-4o-mini",
@@ -203,8 +204,10 @@ class DocumentSummarizer:
                     metadata = json.loads(response.choices[0].message.function_call.arguments)
                 else:
                     print("Using old OpenAI API style")
+                    http_client = httpx.Client(timeout=120)
+                    
                     # Old API style uses different parameters and response format
-                    client = OpenAI(api_key=settings.OPENAI_API_KEY)
+                    client = OpenAI(api_key=settings.OPENAI_API_KEY, http_client=http_client)
                     response = client.chat.completions.create(
                         model="gpt-3.5-turbo-0613",
                         messages=[{
