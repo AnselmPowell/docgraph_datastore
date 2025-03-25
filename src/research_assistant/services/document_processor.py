@@ -35,15 +35,6 @@ REFERENCE_SECTION_TITLES = [
     r'^\s*acknowledgements?\s*$',
 ]
 
-# Reference section markers - keeping your existing ones
-REFERENCE_SECTION_TITLES = [
-    r'^\s*references?\s*$',
-    r'^\s*bibliography\s*$', 
-    r'^\s*works\s+cited\s*$',
-    r'^\s*reference\s+list\s*$',
-    r'^[-_*=]{2,}\s*references?\s*[-_*=]{2,}$',
-    r'^\d+\.\s*references?\s*$'
-]
 
 # Define reference patterns
 REFERENCE_PATTERNS = {
