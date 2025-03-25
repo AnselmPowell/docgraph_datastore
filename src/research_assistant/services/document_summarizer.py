@@ -35,8 +35,6 @@ class DocumentSummarizer:
             print(f"[DocumentSummarizer] API Key Set: {bool(settings.OPENAI_API_KEY)}")
             print(f"[DocumentSummarizer] API Key Length: {len(settings.OPENAI_API_KEY) if settings.OPENAI_API_KEY else 0}")
             
-            # Import to check version
-            import openai
             import importlib.metadata
             version = importlib.metadata.version("openai")
             major_version = int(version.split('.')[0])

@@ -130,8 +130,6 @@ class ReferenceExtractor:
                             "content": self._construct_prompt(cleaned_text)
                         }],
                         temperature=0.9,
-                        
-                        function_call={"name": "extract_document_metadata"}
                     )
             else:
                 print("Using old OpenAI API style")
@@ -146,7 +144,6 @@ class ReferenceExtractor:
                         "content": self._construct_prompt(cleaned_text)
                     }],
                     temperature=0.9,
-                    function_call={"name": "extract_document_metadata"}
                 )
             
             print("reference extraction complete")
