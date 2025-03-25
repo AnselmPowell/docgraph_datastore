@@ -6,6 +6,7 @@ import json
 from openai import OpenAI
 from django.conf import settings
 from pydantic import BaseModel, Field
+import httpx
 
 class ReferenceEntry(BaseModel):
     """Schema for an individual reference entry"""
@@ -22,12 +23,38 @@ class ReferenceExtractor:
     
     def __init__(self):
         print("[ReferenceExtractor] Initializing reference extractor")
+        import importlib.metadata
+        version = importlib.metadata.version("openai")
+        major_version = int(version.split('.')[0])
+        print(f"[DocumentSummarizer] Detected OpenAI version: {version}")
+        
+        # Initialize with proxy handling for Railway
         try:
+            # Standard initialization that fails with 'proxies' parameter in Railway
             self.llm = OpenAI(api_key=settings.OPENAI_API_KEY)
-            print("[ReferenceExtractor] OpenAI client initialized successfully")
+            self.api_version = "new"
+            print(f"[DocumentSummarizer] Using new OpenAI API v{major_version}.x")
+        except TypeError as e:
+            # Specifically handle the proxies error in Railway
+            if 'proxies' in str(e):
+                print("[DocumentSummarizer] Detected proxy configuration, using alternate initialization")
+                
+                # Create a custom HTTP client without proxies
+                http_client = httpx.Client(timeout=120)
+                self.llm = OpenAI(
+                    api_key=settings.OPENAI_API_KEY,
+                    http_client=http_client  # Use custom client without proxies
+                )
+                self.api_version = "new"
+            else:
+                raise
+                
+            print("[DocumentSummarizer] OpenAI client initialized successfully")
         except Exception as e:
-            print(f"[ReferenceExtractor] Error initializing OpenAI client: {str(e)}")
+            print(f"[DocumentSummarizer] CRITICAL ERROR initializing OpenAI client: {str(e)}")
             self.llm = None
+            self.api_version = None
+            self.init_error = str(e)
     
     def _construct_prompt(self, reference_text: str) -> str:
         """Construct prompt for reference extraction"""
@@ -94,15 +121,34 @@ class ReferenceExtractor:
         
         try:
             print("Start Openai reference extraction... ")
-            response = self.llm.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[{
-                    "role": "system",
-                    "content": self._construct_prompt(cleaned_text)
-                }],
-                temperature=0.3,
-                response_format={"type": "json_object"}
-            )
+            if self.api_version == "new":
+                    print("Using new OpenAI API style")
+                    response = self.llm.chat.completions.create(
+                        model="gpt-4o-mini",
+                        messages=[{
+                            "role": "system",
+                            "content": self._construct_prompt(cleaned_text)
+                        }],
+                        temperature=0.9,
+                        
+                        function_call={"name": "extract_document_metadata"}
+                    )
+            else:
+                print("Using old OpenAI API style")
+                http_client = httpx.Client(timeout=120)
+                
+                # Old API style uses different parameters and response format
+                client = OpenAI(api_key=settings.OPENAI_API_KEY, http_client=http_client)
+                response = client.chat.completions.create(
+                    model="gpt-3.5-turbo-0613",
+                    messages=[{
+                        "role": "system",
+                        "content": self._construct_prompt(cleaned_text)
+                    }],
+                    temperature=0.9,
+                    function_call={"name": "extract_document_metadata"}
+                )
+            
             print("reference extraction complete")
             # Parse the response
             content = response.choices[0].message.content
