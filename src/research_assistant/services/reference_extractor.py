@@ -251,7 +251,7 @@ class ReferenceExtractor:
         # Task: Extract and structure academic references \n
         
         Below is a list of academic references. Please extract each reference and identify its format, the list is mostlikely unstructured,and spaced incorrectly.
-        With your understanding of what a single reference looks like please extract each reference in full the extact wording. \n
+        With your understanding of what a single reference looks like please extract each reference in full the extact wording in the exact same order. \n
         
         ## Reference List:
         {reference_text} \n \n
@@ -275,7 +275,8 @@ class ReferenceExtractor:
 
         IMPORTANT: The reference list could be a mess it your job to discern what is the full reference, when it starts and when it ends. KEY TIP nearly all reference start with the authors.  
         Each reference list is different You must recognise the patterns to discern what the start and when it ends to extract the reference correctly. 
-        
+        \n
+        You must keep the reference list in the same order as it was pasted. \n
         ## Output Format:
         {{
             "entries": [
@@ -291,141 +292,122 @@ class ReferenceExtractor:
         return prompt
 
     def _split_reference_list(self, text: str, max_chunk_size: int = 8000) -> List[str]:
-        """Split long reference list into manageable chunks"""
-        # Initial clean
-        cleaned_text = self._preprocess_reference_text(text)
-        
-        # Split by common reference patterns
-        pattern = r'(?=\[\d+\]|\d+\.|^\[?[A-Z][a-z]+,|\(\d{4}\))'
-        references = re.split(pattern, cleaned_text)
-        references = [ref.strip() for ref in references if ref.strip()]
-        
+        """Split long reference list into manageable chunks."""
         chunks = []
         current_chunk = ""
-        
+
+        # Split references by newline
+        references = text.splitlines()
+
         for ref in references:
-            if len(current_chunk) + len(ref) > max_chunk_size and current_chunk:
+            # Add newline to ref if not empty
+            ref = ref.strip()
+            if not ref:
+                continue
+
+            # If adding the next reference exceeds the max chunk size, start a new chunk
+            if len(current_chunk) + len(ref) + 1 > max_chunk_size:
                 chunks.append(current_chunk)
                 current_chunk = ref
             else:
-                current_chunk += "\n" + ref if current_chunk else ref
-        
+                current_chunk += ("\n" + ref) if current_chunk else ref
+
+        # Add any remaining chunk
         if current_chunk:
             chunks.append(current_chunk)
-        
+
         print(f"[ReferenceExtractor] Split reference list into {len(chunks)} chunks")
         return chunks
 
-    def _preprocess_reference_text(self, text: str) -> str:
-        """Clean and normalize reference text"""
-        # Remove excessive whitespace
-        text = re.sub(r'\s+', ' ', text)
-        # Split on likely reference boundaries but preserve the content
-        lines = re.split(r'(?=\[\d+\]|\d+\.|^\[?[A-Z][a-z]+,)', text)
-        # Clean up each line
-        lines = [line.strip() for line in lines if line.strip()]
-        # Rejoin with clear separation
-        return '\n'.join(lines)
 
     def extract_references(self, reference_text: str) -> Dict[str, Any]:
         """Extract structured references from pasted text"""
         
         print("Starting reference extraction")
-        print("[ReferenceExtractor] Starting reference extraction")
+        print("[ReferenceExtractor] Starting reference extraction:\n\n", reference_text)
         
         if not reference_text or not self.llm:
             return {'entries': {}}
         
-        # Split long texts into chunks
-        chunks = self._split_reference_list(reference_text)
+      
         
         # Process each chunk and combine results
         all_entries = []
         ref_id_counter = 1
         
-        for i, chunk in enumerate(chunks):
-            print(f"[ReferenceExtractor] Processing chunk {i+1}/{len(chunks)}")
+      
+        try:
+            start_time = time.time()
             
-            # Maximum retry attempts
-            max_retries = 3
-            retry_delay = 5  # seconds
+            # Choose API call style based on detected version
+            if self.api_version == "new":
+                print("[ReferenceExtractor] Using new OpenAI API style")
+                
+                # Create fresh client with timeout for reliability
+                http_client = httpx.Client(timeout=180)  # 3 minutes
+                client = OpenAI(
+                    api_key=settings.OPENAI_API_KEY,
+                    http_client=http_client
+                )
+                
+                response = client.chat.completions.create(
+                    model="gpt-3.5-turbo-0125",  # Use a stable model for parsing
+                    messages=[{
+                        "role": "system",
+                        "content": self._construct_prompt(reference_text)
+                    }],
+                    temperature=0.2  # Lower temperature for consistency
+                )
+                content = response.choices[0].message.content
+            else:
+                print("[ReferenceExtractor] Using old OpenAI API style")
+                http_client = httpx.Client(timeout=180)
+                
+                # Old API style uses different parameters
+                client = OpenAI(api_key=settings.OPENAI_API_KEY, http_client=http_client)
+                response = client.chat.completions.create(
+                    model="gpt-3.5-turbo-0613",
+                    messages=[{
+                        "role": "system",
+                        "content": self._construct_prompt(reference_text)
+                    }],
+                    temperature=0.2
+                )
             
-            for attempt in range(max_retries):
-                try:
-                    start_time = time.time()
+                content = response.choices[0].message.content
+            
+            duration = time.time() - start_time
+            print(f"OpenAI response received in {duration:.2f}s")
+            
+            print(f"[ReferenceExtractor] Response content: {content}")
+            
+            # Parse the JSON response
+            reference_data = json.loads(content)
+            
+            # Add entries from this chunk
+            entries = reference_data.get('entries', [])
+            
+            # Check for duplicate IDs
+            existing_ids = {e.get('ref_id') for e in all_entries}
+            
+            for entry in entries:
+                ref_id = entry.get('ref_id')
+                if ref_id in existing_ids:
+                    # Generate a new unique ID
+                    while f"ref{ref_id_counter}" in existing_ids:
+                        ref_id_counter += 1
+                    entry['ref_id'] = f"{ref_id_counter}"
+                    ref_id_counter += 1
+                
+                all_entries.append(entry)
+            
+            
+            
+        except Exception as e:
+            
+            print(f"[ReferenceExtractor] Error during API call: {str(e)}")
                     
-                    # Choose API call style based on detected version
-                    if self.api_version == "new":
-                        print("[ReferenceExtractor] Using new OpenAI API style")
-                        
-                        # Create fresh client with timeout for reliability
-                        http_client = httpx.Client(timeout=180)  # 3 minutes
-                        client = OpenAI(
-                            api_key=settings.OPENAI_API_KEY,
-                            http_client=http_client
-                        )
-                        
-                        response = client.chat.completions.create(
-                            model="gpt-3.5-turbo-0125",  # Use a stable model for parsing
-                            messages=[{
-                                "role": "system",
-                                "content": self._construct_prompt(chunk)
-                            }],
-                            temperature=0.2  # Lower temperature for consistency
-                        )
-                        content = response.choices[0].message.content
-                    else:
-                        print("[ReferenceExtractor] Using old OpenAI API style")
-                        http_client = httpx.Client(timeout=180)
-                        
-                        # Old API style uses different parameters
-                        client = OpenAI(api_key=settings.OPENAI_API_KEY, http_client=http_client)
-                        response = client.chat.completions.create(
-                            model="gpt-3.5-turbo-0613",
-                            messages=[{
-                                "role": "system",
-                                "content": self._construct_prompt(chunk)
-                            }],
-                            temperature=0.2
-                        )
-                        content = response.choices[0].message.content
-                    
-                    duration = time.time() - start_time
-                    print(f"OpenAI response received in {duration:.2f}s")
-                    print(f"[ReferenceExtractor] OpenAI response received in {duration:.2f}s")
-                    
-                    # Parse the JSON response
-                    reference_data = json.loads(content)
-                    
-                    # Add entries from this chunk
-                    entries = reference_data.get('entries', [])
-                    
-                    # Check for duplicate IDs
-                    existing_ids = {e.get('ref_id') for e in all_entries}
-                    
-                    for entry in entries:
-                        ref_id = entry.get('ref_id')
-                        if ref_id in existing_ids:
-                            # Generate a new unique ID
-                            while f"ref{ref_id_counter}" in existing_ids:
-                                ref_id_counter += 1
-                            entry['ref_id'] = f"{ref_id_counter}"
-                            ref_id_counter += 1
-                        
-                        all_entries.append(entry)
-                    
-                    # Break the retry loop on success
-                    break
-                    
-                except Exception as e:
-                    print(f"Error during API call (attempt {attempt+1}/{max_retries}): {str(e)}")
-                    print(f"[ReferenceExtractor] Error during API call: {str(e)}")
-                    
-                    if attempt < max_retries - 1:
-                        print(f"[ReferenceExtractor] Retrying in {retry_delay} seconds...")
-                        time.sleep(retry_delay)
-                    else:
-                        print("[ReferenceExtractor] Max retries reached for this chunk")
+                
         
         # Convert to the expected dictionary structure
         structured_references = {
@@ -434,6 +416,8 @@ class ReferenceExtractor:
             'start_page': None,
             'end_page': None
         }
+
+        print("\n All entries:\n ", all_entries)
         
         # Process all entries
         for entry in all_entries:
@@ -443,6 +427,8 @@ class ReferenceExtractor:
                     'text': entry.get('text', ''),
                     'type': entry.get('type', 'standard')
                 }
+
+        print("Return reference data", structured_references)        
         
         print(f"[ReferenceExtractor] Extracted {len(structured_references['entries'])} references")
         return structured_references

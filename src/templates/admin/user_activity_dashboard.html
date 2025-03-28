@@ -1,0 +1,187 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block title %}User Activity Dashboard{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style type="text/css">
+  .dashboard-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 20px;
+  }
+  
+  .dashboard-card {
+    flex: 1;
+    min-width: 300px;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background-color: #fff;
+  }
+  
+  .dashboard-card h2 {
+    margin-top: 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    color: #447e9b;
+  }
+  
+  .stat-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .stat-box {
+    flex: 1;
+    min-width: 120px;
+    padding: 15px;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+    text-align: center;
+  }
+  
+  .stat-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .stat-label {
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px;
+  }
+  
+  .method-standard { background-color: #e8f5e9; }
+  .method-google { background-color: #e3f2fd; }
+  .method-microsoft { background-color: #e8eaf6; }
+  
+  .activity-good { background-color: #e8f5e9; }
+  .activity-warning { background-color: #fff8e1; }
+  .activity-danger { background-color: #ffebee; }
+  
+  #login-chart {
+    height: 300px;
+    margin-top: 20px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+  <div class="dashboard-card">
+    <h2>User Statistics</h2>
+    <div class="stat-container">
+      <div class="stat-box">
+        <div class="stat-value" id="total-users">--</div>
+        <div class="stat-label">Total Users</div>
+      </div>
+    </div>
+    
+    <h3>Authentication Methods</h3>
+    <div class="stat-container">
+      <div class="stat-box method-standard">
+        <div class="stat-value" id="auth-standard">--</div>
+        <div class="stat-label">Standard</div>
+      </div>
+      <div class="stat-box method-google">
+        <div class="stat-value" id="auth-google">--</div>
+        <div class="stat-label">Google</div>
+      </div>
+      <div class="stat-box method-microsoft">
+        <div class="stat-value" id="auth-microsoft">--</div>
+        <div class="stat-label">Microsoft</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="dashboard-card">
+    <h2>Recent Activity</h2>
+    <div class="stat-container">
+      <div class="stat-box activity-good">
+        <div class="stat-value" id="recent-logins">--</div>
+        <div class="stat-label">Successful Logins (24h)</div>
+      </div>
+      <div class="stat-box activity-warning">
+        <div class="stat-value" id="active-sessions">--</div>
+        <div class="stat-label">Active Sessions</div>
+      </div>
+      <div class="stat-box activity-danger">
+        <div class="stat-value" id="failed-logins">--</div>
+        <div class="stat-label">Failed Logins (24h)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="dashboard-container">
+  <div class="dashboard-card">
+    <h2>Login Activity (Last 7 Days)</h2>
+    <div id="login-chart"></div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extrajs %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Fetch dashboard data
+    fetch('{% url "admin:user-activity-api" %}')
+      .then(response => response.json())
+      .then(data => {
+        // Update user stats
+        document.getElementById('total-users').textContent = data.user_stats.total_users;
+        document.getElementById('auth-standard').textContent = data.user_stats.auth_methods.standard;
+        document.getElementById('auth-google').textContent = data.user_stats.auth_methods.google;
+        document.getElementById('auth-microsoft').textContent = data.user_stats.auth_methods.microsoft;
+        
+        // Update activity stats
+        document.getElementById('recent-logins').textContent = data.activity.recent_logins;
+        document.getElementById('failed-logins').textContent = data.activity.recent_failed_logins;
+        document.getElementById('active-sessions').textContent = data.activity.active_sessions;
+        
+        // Create login activity chart
+        const timeSeriesData = data.time_series.daily_logins;
+        const labels = timeSeriesData.map(entry => entry.attempt_time__date);
+        const values = timeSeriesData.map(entry => entry.count);
+        
+        const ctx = document.getElementById('login-chart').getContext('2d');
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Daily Logins',
+              data: values,
+              backgroundColor: 'rgba(54, 162, 235, 0.2)',
+              borderColor: 'rgba(54, 162, 235, 1)',
+              borderWidth: 2,
+              tension: 0.3
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  stepSize: 1
+                }
+              }
+            }
+          }
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching dashboard data:', error);
+      });
+  });
+</script>
+{% endblock %}

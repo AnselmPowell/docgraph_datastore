@@ -50,7 +50,7 @@ class ReferenceManagementViewSet(viewsets.ViewSet):
             if document.reference and 'entries' in document.reference:
                 # Create a new dictionary to avoid modifying the existing one directly
                 updated_references = {
-                    'entries': {**document.reference.get('entries', {}), **references.get('entries', {})},
+                    'entries': {**references.get('entries', {})},
                     'type': 'manual',
                     'start_page': document.reference.get('start_page'),
                     'end_page': document.reference.get('end_page')
