@@ -11,6 +11,7 @@ from research_assistant.services.document_processor import DocumentProcessor
 from ..models import DocumentMetadata
 from .search.relevance_scorer import RelevanceScorer
 from .document_processor import DocumentProcessor
+from django.utils import timezone
 
 class SearchMatch(BaseModel):
     """Individual search match result"""
@@ -28,6 +29,46 @@ class SearchResults(BaseModel):
 
 class DocumentSearcher:
     """Search document sections for relevant content with enhanced monitoring""" 
+
+    # def __init__(self):
+    #     print("\n[DocumentSearcher] Initializing searcher")
+    #     try:
+    #         # Import to check version
+    #         import openai
+    #         import importlib.metadata
+    #         version = importlib.metadata.version("openai")
+    #         major_version = int(version.split('.')[0])
+    #         print(f"[DocumentSearcher] Detected OpenAI version: {version}")
+            
+    #         # Initialize with proxy handling for Railway
+    #         try:
+    #             # Standard initialization that might fail with 'proxies' parameter in Railway
+    #             self.llm = OpenAI(api_key=settings.OPENAI_API_KEY)
+    #             print(f"[DocumentSearcher] Using OpenAI API v{major_version}.x")
+    #         except TypeError as e:
+    #             # Specifically handle the proxies error in Railway
+    #             if 'proxies' in str(e):
+    #                 print("[DocumentSearcher] Detected proxy configuration, using alternate initialization")
+    #                 import httpx
+    #                 # Create a custom HTTP client without proxies
+    #                 http_client = httpx.Client(timeout=120)
+    #                 self.llm = OpenAI(
+    #                     api_key=settings.OPENAI_API_KEY,
+    #                     http_client=http_client  # Use custom client without proxies
+    #                 )
+    #             else:
+    #                 raise
+                    
+    #         print("[DocumentSearcher] OpenAI client initialized successfully")
+    #     except Exception as e:
+    #         print(f"[DocumentSearcher] CRITICAL ERROR initializing OpenAI client: {str(e)}")
+    #         self.llm = None
+    #         self._init_error = str(e)
+        
+    #     self.total_tokens_used = 0
+    #     self.total_api_calls = 0
+    #     self.relevance_scorer = RelevanceScorer()
+    #     print("[DocumentSearcher] Initialization complete")
 
     def __init__(self):
         print("\n[DocumentSearcher] Initializing searcher")
@@ -66,6 +107,7 @@ class DocumentSearcher:
         
         self.total_tokens_used = 0
         self.total_api_calls = 0
+        self.api_usage_records = []  # Add this to track usage
         self.relevance_scorer = RelevanceScorer()
         print("[DocumentSearcher] Initialization complete")
 
@@ -254,40 +296,118 @@ class DocumentSearcher:
         return prompt
 
 
+    # def analyze_section(
+    #     self,
+    #     section: Dict,
+    #     context: str,
+    #     keywords: List[str],
+    #     summary: str,
+    #     ) -> Dict:
+    #         """Analyze section with context awareness
+            
+    #         Input:
+    #             section: {
+    #                 'content': {
+    #                     'text': str,
+    #                     'type': str,
+    #                     'has_citations': bool
+    #                 },
+    #                 'prev_page_text': Optional[str],
+    #                 'next_page_text': Optional[str]
+    #             }
+    #         """
+    #         print("\n[DocumentSearcher] Starting section analysis: \n", section )
+
+    #         # Get main text with context
+    #         analysis_text = []
+                
+    #         analysis_text.append(section['text'])
+            
+    #         full_text = "\n".join(analysis_text)
+            
+    #         prompt = self._construct_search_prompt(
+    #             full_text, context, keywords, summary
+    #         )
+    #         print(f"[DocumentSearcher] Search prompt: \n {prompt}")
+
+                
+    #         function_schema = {
+    #             "name": "analyse_section_content",
+    #             "parameters": SearchResults.schema()
+    #         }
+
+    #         print("[DocumentSearcher] Calling OpenAI API")
+    #         response = self.llm.chat.completions.create(
+    #             model="gpt-4o-mini",
+    #             messages=[{
+    #                 "role": "system",
+    #                 "content": prompt
+    #             }],
+    #             temperature=0.3,
+    #             functions=[function_schema],
+    #             function_call={"name": "analyse_section_content"}
+    #         )
+                
+            
+    #         prompt_tokens = response.usage.prompt_tokens
+    #         completion_tokens = response.usage.completion_tokens
+    #         total_tokens = response.usage.total_tokens
+    #         # Track API usage
+    #         self.total_tokens_used += total_tokens
+    #         self.total_api_calls += 1
+
+    #         print(f"[DocumentSearcher] API call completed, tokens used: {response.usage.total_tokens}")
+    #         print(f"[DocumentSearcher] prompt_tokens", prompt_tokens)
+    #         print(f"[DocumentSearcher] completion_tokens", completion_tokens)
+    #         print(f"[DocumentSearcher] total_tokens", self.total_tokens_used)
+    #         # print(f"[DocumentSearcher] estimated_cost", AIModelCosts.calculate_cost(
+    #         #     total_tokens, 
+    #         #     "gpt4-mini",
+    #         #     is_cached=False,
+    #         #     is_batch=False
+    #         # ))
+        
+    #         # print("full Response: ", response)
+    #         results = json.loads(response.choices[0].message.function_call.arguments)
+    #         print(f"[DocumentSearcher] API response received:", results)
+    #         validated_results = SearchResults(**results)
+
+    #         for idx, match in enumerate(validated_results.responses):
+    #             print(f"Match {idx + 1}:")
+    #             if match.has_context:
+    #                 print(f"  Context: {match.context}")
+    #             if match.has_keyword:
+    #                 print(f"  Keyword: {match.keyword}")
+    #                 print(f"  Keyword Context: {match.keyword_context}")
+    #             if match.has_similar_keyword:
+    #                 print(f"  Similar Keyword: {match.similar_keyword}")
+                
+                
+    #         return validated_results.model_dump()
+
     def analyze_section(
         self,
         section: Dict,
         context: str,
         keywords: List[str],
         summary: str,
+        document_id: str = None  # Add document_id parameter
         ) -> Dict:
-            """Analyze section with context awareness
+            """Analyze section with context awareness"""
+            print("\n[DocumentSearcher] Starting section analysis")
             
-            Input:
-                section: {
-                    'content': {
-                        'text': str,
-                        'type': str,
-                        'has_citations': bool
-                    },
-                    'prev_page_text': Optional[str],
-                    'next_page_text': Optional[str]
-                }
-            """
-            print("\n[DocumentSearcher] Starting section analysis: \n", section )
-
+            # Start timing
+            start_time = timezone.now()
+            
             # Get main text with context
             analysis_text = []
-                
             analysis_text.append(section['text'])
-            
             full_text = "\n".join(analysis_text)
             
             prompt = self._construct_search_prompt(
                 full_text, context, keywords, summary
             )
-            print(f"[DocumentSearcher] Search prompt: \n {prompt}")
-
+            print(f"[DocumentSearcher] Search prompt length: {len(prompt)}")
                 
             function_schema = {
                 "name": "analyse_section_content",
@@ -295,53 +415,110 @@ class DocumentSearcher:
             }
 
             print("[DocumentSearcher] Calling OpenAI API")
-            response = self.llm.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[{
-                    "role": "system",
-                    "content": prompt
-                }],
-                temperature=0.3,
-                functions=[function_schema],
-                function_call={"name": "analyse_section_content"}
-            )
-                
+            model_name = "gpt-4o-mini"  # Set the model name here - could be configurable
             
-            prompt_tokens = response.usage.prompt_tokens
-            completion_tokens = response.usage.completion_tokens
-            total_tokens = response.usage.total_tokens
-            # Track API usage
-            self.total_tokens_used += total_tokens
-            self.total_api_calls += 1
-
-            print(f"[DocumentSearcher] API call completed, tokens used: {response.usage.total_tokens}")
-            print(f"[DocumentSearcher] prompt_tokens", prompt_tokens)
-            print(f"[DocumentSearcher] completion_tokens", completion_tokens)
-            print(f"[DocumentSearcher] total_tokens", self.total_tokens_used)
-            # print(f"[DocumentSearcher] estimated_cost", AIModelCosts.calculate_cost(
-            #     total_tokens, 
-            #     "gpt4-mini",
-            #     is_cached=False,
-            #     is_batch=False
-            # ))
-        
-            # print("full Response: ", response)
-            results = json.loads(response.choices[0].message.function_call.arguments)
-            print(f"[DocumentSearcher] API response received:", results)
-            validated_results = SearchResults(**results)
-
-            for idx, match in enumerate(validated_results.responses):
-                print(f"Match {idx + 1}:")
-                if match.has_context:
-                    print(f"  Context: {match.context}")
-                if match.has_keyword:
-                    print(f"  Keyword: {match.keyword}")
-                    print(f"  Keyword Context: {match.keyword_context}")
-                if match.has_similar_keyword:
-                    print(f"  Similar Keyword: {match.similar_keyword}")
+            try:
+                response = self.llm.chat.completions.create(
+                    model=model_name,
+                    messages=[{
+                        "role": "system",
+                        "content": prompt
+                    }],
+                    temperature=0.3,
+                    functions=[function_schema],
+                    function_call={"name": "analyse_section_content"}
+                )
                 
+                # End timing
+                end_time = timezone.now()
+                duration_ms = int((end_time - start_time).total_seconds() * 1000)
                 
-            return validated_results.model_dump()
+                # Calculate costs
+                from .ai_tracking.model_costs import AIModelCosts
+                
+                prompt_tokens = response.usage.prompt_tokens
+                completion_tokens = response.usage.completion_tokens
+                total_tokens = response.usage.total_tokens
+                
+                # Track API usage
+                cost_info = AIModelCosts.calculate_cost(
+                    prompt_tokens, 
+                    completion_tokens, 
+                    model_name
+                )
+                
+                # Create usage record
+                usage_record = {
+                    'model_name': model_name,
+                    'prompt': prompt,
+                    'prompt_tokens': prompt_tokens,
+                    'completion_tokens': completion_tokens,
+                    'total_tokens': total_tokens,
+                    'cost_per_1k_prompt_tokens': cost_info['cost_per_1k_prompt'],
+                    'cost_per_1k_completion_tokens': cost_info['cost_per_1k_completion'],
+                    'total_cost': cost_info['total_cost'],
+                    'start_time': start_time,
+                    'end_time': end_time,
+                    'duration_ms': duration_ms,
+                    'document_id': document_id
+                }
+                
+                self.api_usage_records.append(usage_record)
+                
+                # Track total usage
+                self.total_tokens_used += total_tokens
+                self.total_api_calls += 1
+
+                print(f"[DocumentSearcher] API call completed, tokens used: {total_tokens}")
+                print(f"[DocumentSearcher] prompt_tokens: {prompt_tokens}")
+                print(f"[DocumentSearcher] completion_tokens: {completion_tokens}")
+                print(f"[DocumentSearcher] total_tokens: {self.total_tokens_used}")
+                print(f"[DocumentSearcher] duration_ms: {duration_ms}")
+                print(f"[DocumentSearcher] total_cost: ${cost_info['total_cost']:.6f}")
+            
+                content = response.choices[0].message.function_call.arguments
+                results = json.loads(content)
+                print(f"[DocumentSearcher] API response received")
+                validated_results = SearchResults(**results)
+
+                for idx, match in enumerate(validated_results.responses):
+                    print(f"Match {idx + 1}:")
+                    if match.has_context:
+                        print(f"  Context: {match.context}")
+                    if match.has_keyword:
+                        print(f"  Keyword: {match.keyword}")
+                        print(f"  Keyword Context: {match.keyword_context}")
+                    if match.has_similar_keyword:
+                        print(f"  Similar Keyword: {match.similar_keyword}")
+                    
+                return validated_results.model_dump()
+            
+            except Exception as e:
+                # End timing for error case
+                end_time = timezone.now()
+                duration_ms = int((end_time - start_time).total_seconds() * 1000)
+                
+                print(f"[DocumentSearcher] API call failed: {str(e)}")
+                
+                # Record error
+                self.api_usage_records.append({
+                    'model_name': model_name,
+                    'prompt': prompt,
+                    'prompt_tokens': 0,  # Can't know token count on error
+                    'completion_tokens': 0,
+                    'total_tokens': 0,
+                    'cost_per_1k_prompt_tokens': 0,
+                    'cost_per_1k_completion_tokens': 0,
+                    'total_cost': 0,
+                    'start_time': start_time,
+                    'end_time': end_time,
+                    'duration_ms': duration_ms,
+                    'document_id': document_id,
+                    'error': str(e)
+                })
+                
+                # Re-raise for proper error handling
+                raise
 
     def calculate_relevance_score(
     self,
@@ -440,11 +617,15 @@ class DocumentSearcher:
     context: str,
     keywords: List[str],
     summary: str,  
-    reference_data: Dict
+    reference_data: Dict,
+    document_id: str = None  # Add document_id parameter
     ) -> Dict:
         """Search document with page-based sections"""
         print("\n[DocumentSearcher] Starting document search")
         print(f"[DocumentSearcher] Processing {len(sections)} pages")
+        
+        # Reset usage records for this document
+        self.api_usage_records = []
 
         matches = {
             "context": 0,
@@ -461,7 +642,8 @@ class DocumentSearcher:
                 section=section,
                 context=context,
                 keywords=keywords,
-                summary=summary
+                summary=summary,
+                document_id=document_id  # Pass the document_id
             )
             print("[DocumentSearcher] Search Results: ", results)
 
@@ -532,7 +714,15 @@ class DocumentSearcher:
             for section in matches["relevant_sections"]
         ])
 
-        return matches
+        return {
+            'context_matches': matches["context"],
+            'keyword_matches': matches["keyword"],
+            'similar_matches': matches["similar"],
+            'relevant_sections': matches["relevant_sections"],
+            'relevance_score': matches["relevance_score"],
+            'total_matches': matches["total_matches"],
+            'api_usage': self.api_usage_records  # Add this to return API usage
+        }
     
 
     def _extract_citations(self, text: str, reference_data: Dict) -> List[Dict]:

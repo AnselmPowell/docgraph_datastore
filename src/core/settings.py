@@ -132,6 +132,7 @@ GOVERNANCE_SETTINGS = {
     'SUPPORTED_FORMATS': ['pdf', 'docx', 'txt']
 }
 
+
 # Monitoring settings
 MONITORING_SETTINGS = {
     'LOG_LEVEL': 'INFO',

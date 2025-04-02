@@ -33,41 +33,155 @@ class SearchManager:
             search_sections.append(search_section)
         return search_sections
 
-    def search_documents(
-        self,
-        search_data,
-        context: str,
-        keywords: List[str],
-        user=None  # Add user parameter
-    ) -> Dict:
+    # def search_documents(
+    #     self,
+    #     search_data,
+    #     context: str,
+    #     keywords: List[str],
+    #     user=None  
         
+    # ) -> Dict:
+        
+    #     print(f"[SearchManager] Searching documents for user: {user.email if user else 'No user'}")
+    #     print(f"[SearchManager] Searching document {search_data} documents")
+    #     print(f"[SearchManager] Context: {context}")
+    #     print(f"[SearchManager] Keywords: {keywords}")
+
+
+    #     # Extract file names from input
+    #     file_names = [item.get('file_name', '') for item in search_data if isinstance(item, dict)]
+
+    #     # if not isinstance(file_names, list):
+    #     #     file_names = [file_names]
+            
+    #     print(f"Filtering for file_names: {file_names}")
+    #     # Add user filter to document query
+    #     documents = list(DocumentMetadata.objects.filter(
+    #         file_name__in=file_names,
+    #         user=user
+    #     ) if user else DocumentMetadata.objects.filter(file_name__in=file_names))
+
+        
+    #     print("documets:", len(documents))
+
+    #     if not len(documents) > 0:
+    #         print(f"No documents found for file_names: {file_names}")
+    #         raise ValueError(f"No valid documents found for file_names: {file_names}")
+
+    #     results = []
+    #     print(" documents found")
+    #     for document in documents:
+    #         print(f"[SearchManager] Processing document: {document.file_name}")
+            
+    #         # Get all sections for document directly from model
+    #         sections = DocumentSection.objects.filter(
+    #             document=document,
+    #             content__isnull=False  # Ensure no empty sections
+    #         ).order_by('section_start_page_number').select_related('document')
+            
+    #         search_sections = self.prepare_sections_for_search(sections)
+            
+    #         print("start section search")
+    #         search_result = self.searcher.search_document(
+    #             search_sections,
+    #             context,
+    #             keywords,
+    #             document.summary,
+    #             document.reference
+    #         )
+
+    #         doc_result = {
+    #             'search_results_id': uuid.uuid4(),
+    #             'document_id': str(document.id),
+    #             'question': context,
+    #             'keywords': keywords,
+    #             'title': document.title,
+    #             'authors': document.authors,
+    #             'summary': document.summary,
+    #             'file_name': document.file_name,
+    #             'relevance_score': search_result['relevance_score'],
+    #             'total_matches': search_result['total_matches'],
+    #             'matching_sections': [
+    #                 {
+    #                     'section_id': section['section_id'],
+    #                     'page_number': section['page_number'],
+    #                     'start_text': section['start_text'],
+    #                     # Context matches with citations
+    #                     'context_matches': [
+    #                         {
+    #                             'text': match['text'],
+    #                             'citations': match['citations']
+    #                         }
+    #                         for match in section['context_matches']
+    #                     ],
+    #                     # Keyword matches
+    #                     'keyword_matches': [
+    #                         {
+    #                             'keyword': match['keyword'],
+    #                             'text': match['text']
+    #                         }
+    #                         for match in section['keyword_matches']
+    #                     ],
+    #                     # Similar keyword matches
+    #                     'similar_matches': [
+    #                         {
+    #                             'similar_keyword': match['similar_keyword'],
+    #                             'text': match['text']
+    #                         }
+    #                         for match in section['similar_matches']
+    #                     ]
+    #                 }
+    #                 for section in search_result['relevant_sections']
+    #             ]
+    #         }
+    #         print("Done  processing append results")
+    #         results.append(doc_result)
+    #         print("Sort by relevance score")
+    #         # Sort by relevance score
+    #         results.sort(key=lambda x: x['relevance_score'], reverse=True)
+    #         print("RETURN")
+        
+    #     print(" final results: \n", results)
+
+    #     return {
+    #         'status': 'success',
+    #         'total_matches': len(results),
+    #         'results': results
+    #     }
+
+    def search_documents(
+    self,
+    search_data,
+    context: str,
+    keywords: List[str],
+    user=None  # Add user parameter
+    ) -> Dict:
+    
         print(f"[SearchManager] Searching documents for user: {user.email if user else 'No user'}")
         print(f"[SearchManager] Searching document {search_data} documents")
         print(f"[SearchManager] Context: {context}")
         print(f"[SearchManager] Keywords: {keywords}")
 
-
         # Extract file names from input
         file_names = [item.get('file_name', '') for item in search_data if isinstance(item, dict)]
-
-        # if not isinstance(file_names, list):
-        #     file_names = [file_names]
-            
+                
         print(f"Filtering for file_names: {file_names}")
         # Add user filter to document query
         documents = list(DocumentMetadata.objects.filter(
             file_name__in=file_names,
             user=user
         ) if user else DocumentMetadata.objects.filter(file_name__in=file_names))
-
         
-        print("documets:", len(documents))
+        print("documents:", len(documents))
 
         if not len(documents) > 0:
             print(f"No documents found for file_names: {file_names}")
             raise ValueError(f"No valid documents found for file_names: {file_names}")
 
         results = []
+        # Track total API usage across all documents
+        all_api_usage = []
+        
         print(" documents found")
         for document in documents:
             print(f"[SearchManager] Processing document: {document.file_name}")
@@ -86,8 +200,22 @@ class SearchManager:
                 context,
                 keywords,
                 document.summary,
-                document.reference
+                document.reference,
+                document_id=str(document.id)  # Pass document ID
             )
+            
+            # Collect API usage for this document
+            document_api_usage = search_result.get('api_usage', [])
+            all_api_usage.extend(document_api_usage)
+            
+            # Calculate totals for this document
+            doc_tokens = sum(usage['total_tokens'] for usage in document_api_usage)
+            doc_cost = sum(usage['total_cost'] for usage in document_api_usage)
+            
+            print(f"[SearchManager] Document {document.file_name} API usage:")
+            print(f"[SearchManager] Calls: {len(document_api_usage)}")
+            print(f"[SearchManager] Tokens: {doc_tokens}")
+            print(f"[SearchManager] Cost: ${doc_cost:.6f}")
 
             doc_result = {
                 'search_results_id': uuid.uuid4(),
@@ -100,6 +228,11 @@ class SearchManager:
                 'file_name': document.file_name,
                 'relevance_score': search_result['relevance_score'],
                 'total_matches': search_result['total_matches'],
+                'api_usage': {
+                    'calls': len(document_api_usage),
+                    'tokens': doc_tokens,
+                    'cost': doc_cost
+                },
                 'matching_sections': [
                     {
                         'section_id': section['section_id'],
@@ -133,17 +266,29 @@ class SearchManager:
                     for section in search_result['relevant_sections']
                 ]
             }
-            print("Done  processing append results")
+            
             results.append(doc_result)
-            print("Sort by relevance score")
             # Sort by relevance score
             results.sort(key=lambda x: x['relevance_score'], reverse=True)
-            print("RETURN")
         
-        print(" final results: \n", results)
-
+        # Calculate totals across all documents
+        total_calls = len(all_api_usage)
+        total_tokens = sum(usage['total_tokens'] for usage in all_api_usage)
+        total_cost = sum(usage['total_cost'] for usage in all_api_usage) 
+        
+        print(f"[SearchManager] Total API usage:")
+        print(f"[SearchManager] Calls: {total_calls}")
+        print(f"[SearchManager] Tokens: {total_tokens}")
+        print(f"[SearchManager] Cost: ${total_cost:.6f}")
+        
         return {
             'status': 'success',
             'total_matches': len(results),
-            'results': results
+            'results': results,
+            'api_usage': {
+                'calls': total_calls,
+                'tokens': total_tokens, 
+                'cost': total_cost,
+                'details': all_api_usage
+            }
         }

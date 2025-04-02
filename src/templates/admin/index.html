@@ -1,0 +1,12 @@
+{% extends "admin/index.html" %}
+
+{% block sidebar %}
+{{ block.super }}
+<div class="module" style="margin-top: 20px;">
+  <h2>Monitoring & Analytics</h2>
+  <ul>
+    <li><a href="/admin/ai-dashboard/">AI Usage Dashboard</a></li>
+    <li><a href="/admin/research-metrics/">Research Metrics Dashboard</a></li>
+  </ul>
+</div>
+{% endblock %}

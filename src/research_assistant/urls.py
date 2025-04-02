@@ -2,7 +2,7 @@
 
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import DocumentManagementViewSet, DocumentSearchViewSet, NoteManagerViewSet, ResearchContextViewSet, ArxivSearchViewSet, ReferenceManagementViewSet
+from .views import DocumentManagementViewSet, DocumentSearchViewSet, NoteManagerViewSet, ResearchContextViewSet, ArxivSearchViewSet, ReferenceManagementViewSet, LiteratureReviewViewSet
 from rest_framework.permissions import IsAuthenticated
 
 # Initialize router
@@ -13,6 +13,7 @@ router.register(r'notes', NoteManagerViewSet, basename='notes')
 router.register(r'research-context', ResearchContextViewSet, basename='research-context')
 router.register(r'arxiv-search', ArxivSearchViewSet, basename='arxiv-search')
 router.register(r'references', ReferenceManagementViewSet, basename='references')
+router.register(r'literature', LiteratureReviewViewSet, basename='literature-review')
 
 # Define URL patterns
 urlpatterns = [
@@ -87,7 +88,7 @@ urlpatterns = [
              'post': 'direct_search'
          }, permission_classes=[IsAuthenticated]),
          name='arxiv-direct-search'),
-         
+        #
     path('arxiv-search/context/',
          ArxivSearchViewSet.as_view({
              'post': 'context_search'
@@ -99,4 +100,23 @@ urlpatterns = [
              'post': 'update_references'
          }, permission_classes=[IsAuthenticated]),
          name='update_references'),
+
+
+     path('literature/extract/',
+         LiteratureReviewViewSet.as_view({
+             'post': 'extract'
+         }, permission_classes=[IsAuthenticated]),
+         name='literature-extract'),
+         
+    path('literature/get_review/',
+         LiteratureReviewViewSet.as_view({
+             'get': 'get_review'
+         }, permission_classes=[IsAuthenticated]),
+         name='literature-get-review'),
+         
+    path('literature/check-status/',
+         LiteratureReviewViewSet.as_view({
+             'post': 'check_status'
+         }, permission_classes=[IsAuthenticated]),
+         name='literature-check-status'),
 ]

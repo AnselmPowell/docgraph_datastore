@@ -308,6 +308,38 @@
       </tbody>
     </table>
   </div>
+
+ <!-- Display AI usage metrics -->
+  <div class="dashboard-container">
+    <div class="dashboard-card">
+      <h2>AI API Usage</h2>
+      <div class="metrics-container">
+        <div class="metric-card card-primary">
+          <h3>Total Cost</h3>
+          <div class="metric-value" id="ai-total-cost">--</div>
+          <div class="metric-caption">USD</div>
+        </div>
+        
+        <div class="metric-card card-info">
+          <h3>Total Tokens</h3>
+          <div class="metric-value" id="ai-total-tokens">--</div>
+          <div class="metric-caption">Tokens used</div>
+        </div>
+        
+        <div class="metric-card card-success">
+          <h3>API Calls</h3>
+          <div class="metric-value" id="ai-total-calls">--</div>
+          <div class="metric-caption">Total API calls</div>
+        </div>
+      </div>
+      
+      <div class="chart-container">
+        <h3>AI Usage by Day (Last 7 Days)</h3>
+        <canvas id="ai-usage-chart"></canvas>
+      </div>
+    </div>
+  </div>
+
 </div>
 {% endblock %}
 
@@ -596,6 +628,77 @@
         }
       });
     }
+
+
+    // Update AI usage metrics
+if (data.ai_usage) {
+  document.getElementById('ai-total-cost').textContent = 
+    '$' + data.ai_usage.total_cost.toFixed(2);
+  document.getElementById('ai-total-tokens').textContent = 
+    data.ai_usage.total_tokens.toLocaleString();
+  document.getElementById('ai-total-calls').textContent = 
+    data.ai_usage.total_api_calls.toLocaleString();
+  
+  // Create AI usage chart
+  const dailyUsage = data.ai_usage.daily_usage;
+  const usageDates = dailyUsage.map(item => item.date);
+  const usageCosts = dailyUsage.map(item => item.cost);
+  const usageTokens = dailyUsage.map(item => item.tokens);
+  
+  const aiCtx = document.getElementById('ai-usage-chart').getContext('2d');
+  new Chart(aiCtx, {
+    type: 'bar',
+    data: {
+      labels: usageDates,
+      datasets: [
+        {
+          type: 'line',
+          label: 'Cost ($)',
+          data: usageCosts,
+          borderColor: '#d9534f',
+          backgroundColor: 'rgba(217, 83, 79, 0.1)',
+          yAxisID: 'y1',
+          fill: true
+        },
+        {
+          type: 'bar',
+          label: 'Tokens',
+          data: usageTokens,
+          backgroundColor: 'rgba(68, 126, 155, 0.5)',
+          yAxisID: 'y'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Tokens'
+          }
+        },
+        y1: {
+          position: 'right',
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Cost ($)'
+          },
+          grid: {
+            drawOnChartArea: false
+          }
+        }
+      }
+    }
   });
+}
+
+
+
+  });
+
+  
 </script>
 {% endblock %}

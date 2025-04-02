@@ -278,6 +278,60 @@ class ResearchContext(models.Model):
     def __str__(self):
         return f"Research Context for {self.user.username}"
 
+
+
+class LiteratureReview(models.Model):
+    """Store structured literature review data extracted from documents"""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    document = models.ForeignKey(DocumentMetadata, on_delete=models.CASCADE, related_name='literature_reviews')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='literature_reviews', null=True, blank=True)
+    
+    # Literature review data
+    research_area =  models.JSONField(default=dict)
+    themes = models.JSONField(default=list)
+    chronological_development =  models.JSONField(default=dict)
+    theoretical_frameworks =  models.JSONField(default=dict)
+    methodological_approaches = models.JSONField(default=dict)
+    key_findings = models.JSONField(default=list)
+    method_strengths = models.JSONField(default=list)
+    method_limitations = models.JSONField(default=list)
+    result_strengths = models.JSONField(default=list)
+    result_weaknesses = models.JSONField(default=list)
+    potential_biases = models.JSONField(default=list)
+    
+    # Processing metadata
+    extraction_time = models.FloatField(null=True)
+    processing_status = models.CharField(
+        max_length=50,
+        choices=[
+            ('pending', 'Pending'),
+            ('processing', 'Processing'),
+            ('completed', 'Completed'),
+            ('failed', 'Failed')
+        ],
+        default='pending'
+    )
+    error_message = models.TextField(null=True, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = 'literature_reviews'
+        indexes = [
+            models.Index(fields=['document']),
+            models.Index(fields=['user']),
+            models.Index(fields=['processing_status']),
+            models.Index(fields=['created_at'])
+        ]
+        
+    def __str__(self):
+        return f"Literature Review for {self.document.title or self.document.file_name}"
+
+
+
+
+
         
 class LLMResponseCache(models.Model):
     """Store LLM responses for caching"""
@@ -327,3 +381,46 @@ class DocumentRelationship(models.Model):
 
 
 
+
+
+
+
+
+class AIAPIUsage(models.Model):
+    """Track AI API usage and costs for searches"""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='api_usages', null=True)
+    search_result = models.ForeignKey(SearchResult, on_delete=models.CASCADE, related_name='api_usages', null=True)
+    document = models.ForeignKey(DocumentMetadata, on_delete=models.CASCADE, related_name='api_usages', null=True)
+    
+    # API Call Details
+    model_name = models.CharField(max_length=100)  # e.g., 'gpt-4-mini', 'gpt-3.5-turbo'
+    prompt = models.TextField(null=True)
+    prompt_tokens = models.IntegerField(default=0)
+    completion_tokens = models.IntegerField(default=0)
+    total_tokens = models.IntegerField(default=0)
+    
+    # Cost Tracking
+    cost_per_1k_prompt_tokens = models.DecimalField(max_digits=10, decimal_places=6, default=0)
+    cost_per_1k_completion_tokens = models.DecimalField(max_digits=10, decimal_places=6, default=0)
+    total_cost = models.DecimalField(max_digits=10, decimal_places=6, default=0)
+    
+    # Performance Tracking
+    start_time = models.DateTimeField(null=True)
+    end_time = models.DateTimeField(null=True)
+    duration_ms = models.IntegerField(default=0)
+    
+    # Aggregation Fields
+    is_aggregated = models.BooleanField(default=False)
+    api_calls_count = models.IntegerField(default=1)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        db_table = 'ai_api_usage'
+        indexes = [
+            models.Index(fields=['user']),
+            models.Index(fields=['search_result']),
+            models.Index(fields=['model_name']),
+            models.Index(fields=['created_at'])
+        ]

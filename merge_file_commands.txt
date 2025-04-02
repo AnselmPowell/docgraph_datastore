@@ -1,4 +1,4 @@
-bash merge_files.sh research_assistant/models.py views/document_management.py views/document_search.py services/document_processor.py services/document_summarizer.py search/search_manager.py services/document_searcher.py
+bash merge_files.sh research_assistant/models.py views/document_management.py views/document_search.py services/document_processor.py services/document_summarizer.py search/search_manager.py services/document_searcher.py research_assistant/urls.py
 
 
 bash merge_files.sh auth_api/urls.py auth_api/models.py auth_api/serializers.py auth_api/views.py auth_api/authentication.py
@@ -9,3 +9,8 @@ Matching files merged into output.txt
 bash merge_files.sh Dockerfile .env config.py core/urls.py core/settings.py research_assistant/services/pdf_parser.py
 
 File not found
+
+
+bash merge_files.sh research_assistant/models.py research_context.py arxiv_search.py note_manager.py search_term_generator.py auth_api/models.py auth_api/serializers.py auth_api/views.py auth_api/authentication.py
+
+bash merge_files.sh auth_api/admin.py auth_api/admin_monitoring/__init__.py auth_api/admin_monitoring/dashboard.py templates/admin/user_activity_dashboard.html research_assistant/admin.py research_assistant/admin_dashboard/__init__.py research_assistant/admin_dashboard/dashboard.py templates/research_assistant/dashboard.html

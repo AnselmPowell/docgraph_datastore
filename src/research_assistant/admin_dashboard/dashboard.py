@@ -36,7 +36,7 @@
 #         }
 #         return TemplateResponse(
 #             request, 
-#             'admin/research_assistant/dashboard.html', 
+#             'research_assistant/dashboard.html', 
 #             context
 #         )
     
@@ -181,7 +181,7 @@ class ResearchAssistantDashboard:
         }
         return TemplateResponse(
             request, 
-            'admin/research_assistant/dashboard.html', 
+            'research_assistant/dashboard.html', 
             context
         )
     
@@ -367,3 +367,97 @@ class ResearchAssistantDashboard:
                 'query_id': query_id
             }
         })
+    
+
+    def api_view(self, request):
+        """API endpoint to get dashboard data"""
+        # Existing code remains
+        
+        # Add AI usage metrics
+        from ..models import AIAPIUsage
+        from django.db.models import Sum, Avg, Count
+        
+        # Get filter parameters
+        user_id = request.GET.get('user_id')
+        model_name = request.GET.get('model_name')
+        
+        # Filter queries if needed
+        usage_query = AIAPIUsage.objects
+        if user_id:
+            usage_query = usage_query.filter(user_id=user_id)
+        if model_name and model_name != 'all':
+            usage_query = usage_query.filter(model_name=model_name)
+            
+        # Get basic metrics
+        total_cost = usage_query.aggregate(
+            cost_sum=Sum('total_cost')
+        )['cost_sum'] or 0
+        
+        total_tokens = usage_query.aggregate(
+            tokens_sum=Sum('total_tokens')
+        )['tokens_sum'] or 0
+        
+        total_api_calls = usage_query.count()
+        
+        # Get cost by model
+        model_metrics = usage_query.values('model_name').annotate(
+            model_cost=Sum('total_cost'),
+            model_tokens=Sum('total_tokens'),
+            model_calls=Count('id')
+        ).order_by('-model_cost')
+        
+        # Get cost by user
+        user_metrics = []
+        if not user_id:
+            user_metrics = usage_query.values('user__email').annotate(
+                user_cost=Sum('total_cost'),
+                user_tokens=Sum('total_tokens'),
+                user_calls=Count('id')
+            ).order_by('-user_cost')[:10]  # Top 10 users
+            
+        # Get daily usage
+        daily_usage = usage_query.filter(
+            created_at__gte=one_week_ago
+        ).values('created_at__date').annotate(
+            date_cost=Sum('total_cost'),
+            date_tokens=Sum('total_tokens'),
+            date_calls=Count('id')
+        ).order_by('created_at__date')
+        
+        # Format for JSON
+        daily_usage_formatted = []
+        for item in daily_usage:
+            daily_usage_formatted.append({
+                'date': item['created_at__date'].strftime('%Y-%m-%d'),
+                'cost': float(item['date_cost']),
+                'tokens': item['date_tokens'],
+                'calls': item['date_calls']
+            })
+            
+        # Add to response data
+        response_data = {
+            'user_metrics': {
+                # Existing user metrics
+            },
+            'engagement_trends': user_trend_data,
+            'filter_options': {
+                # Existing filter options
+            },
+            'filter_results': {
+                # Existing filter results
+            },
+            'active_filters': {
+                # Existing active filters
+            },
+            # Add AI usage data
+            'ai_usage': {
+                'total_cost': float(total_cost),
+                'total_tokens': total_tokens,
+                'total_api_calls': total_api_calls,
+                'model_metrics': list(model_metrics),
+                'user_metrics': list(user_metrics),
+                'daily_usage': daily_usage_formatted
+            }
+        }
+        
+        return JsonResponse(response_data)
