@@ -507,7 +507,7 @@ class StrengthLimitation(BaseModel):
     page: int = Field(..., description="Page number where the quote was found INT type(just the number)")
 
 class LiteratureReviewData(BaseModel):
-    research_area: str = Field(..., description=" minimum of 100 words, Identify the specific field or subfield (which area is this reseach taking place in? (Including a difinition of the research area). minimum of 200 words")
+    research_area: str = Field(..., description=" minimum of 300 words, Identify the specific field or subfield (which area is this reseach taking place in? (Including a difinition of the research area). minimum of 300 words")
     themes: List[str] = Field(..., description=" Extract a list of Themes or subtopics found in the document these themes should be based on the different subject and content and topics the document covers str type(just the number) listing all the pages that topic shows up (e.g 1, 4, 16)")
     chronological_development: Optional[researchApproach] = Field(None, description="Chronological Development (how the research has builds on previous work)")
     theoretical_frameworks: Optional[researchApproach] = Field(None, description="Theoretical Frameworks (the theories underpinning this research)")
@@ -606,7 +606,7 @@ class LiteratureExtractor:
         
         Analyze this academic paper and extract the following information in a STRUCTURED FORMAT:
         
-        1. Research Area: minimum of 100 words. Identify the specific field or subfield (which area is this reseach taking place in? Including a difinition of the research area. minimum of 100 words)
+        1. Research Area: minimum of 300 words. Identify the specific field or subfield (which area is this reseach taking place in? Including a difinition of the research area. minimum of 300 words)
         
         2. Themes & Subtopics: Extract a list of Themes or subtopics found in the document these themes should be based on the different subject and content and topics the document covers, str type(just the number) listing all the pages that topic shows up (e.g "1, 4, 16)
         
@@ -632,6 +632,7 @@ class LiteratureExtractor:
         
         IMPORTANT INSTRUCTIONS:
         - Ensure to provide detailed information for each section as much as possible, You MUST ADHERE TO THE WORD COUNT FOR THE SECTION. Explain clarely in as much detail for the user to understand the whole research.
+        - Locate as many of the results and finding as possible, metics, key findings ect. 
         - For each section, include PAGE NUMBER where the information was found. INT type(just the number)
         - For important statements, extract the EXACT TEXT and any CITATIONS in the text word for word
         - Must provide as must detail so the user have a clear understannding of the whole research.
@@ -646,7 +647,7 @@ class LiteratureExtractor:
          {"""
                 {
                 "research_area": {
-                    "description": "Identify the specific field or subfield of the research, including a definition of the research area. Explain in as much detail as possible.",
+                    "description": "in min of 300 words: Identify the specific field or subfield of the research, including a definition of the research area. Explain in as much detail as possible.",
                     "page": "Page number where this information is found.INT type(just the number)"
                 },
                 "themes": [
@@ -702,11 +703,23 @@ class LiteratureExtractor:
                     "page": "Page number where this finding is discussed."
                     },
                     {
-                    "description": "Detailed explanation of all the finding, metrics and results  explain all the results and the key findings.",
+                    "description": "Detailed explanation of all the finding, metrics and results explain all the results and the key findings.",
                     "significance": "Why this finding is important/ relation to the method.",
                     "key_quotes": [
                         {
-                        "text": "Exact quote supporting the finding.",
+                        "text": "Exact quote supporting the finding for the document.",
+                        "citation_data": "Citation information if available.",
+                        "page": "Page number where the quote appears."
+                        }
+                    ],
+                    "page": "Page number where this finding is discussed."
+                    },
+                    {
+                    "description": "Detailed explanation of all the finding, metrics and results explain all the results and the key findings.",
+                    "significance": "Why this finding is important/ relation to the method.",
+                    "key_quotes": [
+                        {
+                        "text": "Exact quote supporting the finding for the document.",
                         "citation_data": "Citation information if available.",
                         "page": "Page number where the quote appears."
                         }
@@ -781,7 +794,7 @@ class LiteratureExtractor:
                 ]
                 } \n\n
           
-       1. Research Area: minimum of 100 words. Identify the specific field or subfield (which area is this reseach taking place in? Including a difinition of the research area. minimum of 100 words)
+       1. Research Area: minimum of 300 words. Identify the specific field or subfield (which area is this reseach taking place in? Including a difinition of the research area. minimum of 300 words)
         
         2. Themes & Subtopics: Extract a list of Themes or subtopics found in the document these themes should be based on the different subject and content the document covers, listing all the pages that topic shows up (e.g "1, 4, 16)
         
